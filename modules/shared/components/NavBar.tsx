@@ -1,10 +1,9 @@
 "use client";
+import { motion } from "framer-motion";
+import { GraduationCap } from "lucide-react";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 
-import { motion } from 'framer-motion';
-import { GraduationCap } from 'lucide-react';
-import { GoogleAuthButton } from '@/components/auth/google-auth-button';
-
-export function Header() {
+export const NavBar = () => {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -19,9 +18,9 @@ export function Header() {
           <GraduationCap className="w-8 h-8 text-primary" />
           <h1 className="text-2xl font-bold">QuizCraft</h1>
         </motion.div>
-        
+
         <GoogleAuthButton />
       </div>
     </motion.header>
   );
-}
+};
