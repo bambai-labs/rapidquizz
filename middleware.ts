@@ -31,21 +31,28 @@ export async function middleware(request: NextRequest) {
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
   // issues with users being randomly logged out.
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  // TODO: Implementar lógica de autenticación cuando esté listo el login con Supabase
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser()
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/_next') &&
-    !request.nextUrl.pathname.startsWith('/api')
-  ) {
-    // // no user, potentially respond by redirecting the user to the login page
-    // const url = request.nextUrl.clone()
-    // url.pathname = '/auth/login'
-    // return NextResponse.redirect(url)
-  }
+  // Protección de rutas básica (sin autenticación por ahora)
+  // const { pathname } = request.nextUrl
+
+  // // Rutas públicas que no requieren autenticación
+  // const publicRoutes = ['/landing', '/auth']
+  // const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
+
+  // // Rutas privadas que requieren autenticación
+  // const privateRoutes = ['/home']
+  // const isPrivateRoute = privateRoutes.some(route => pathname.startsWith(route))
+
+  // // Si es una ruta privada, redirigir a landing (temporalmente)
+  // if (isPrivateRoute) {
+  //   const url = request.nextUrl.clone()
+  //   url.pathname = '/landing'
+  //   return NextResponse.redirect(url)
+  // }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
   // creating a new response object with NextResponse.next() make sure to:
