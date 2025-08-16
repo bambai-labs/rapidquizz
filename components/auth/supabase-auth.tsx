@@ -3,10 +3,21 @@
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { createClient } from '@/lib/supabase'
+import { useEffect, useState } from 'react'
 
 const supabase = createClient()
 
 export function SupabaseAuth() {
+  const [redirectUrl, setRedirectUrl] = useState<string>('')
+
+  useEffect(() => {
+    setRedirectUrl(`${window.location.origin}/auth/callback`)
+  }, [])
+
+  if (!redirectUrl) {
+    return <div className="w-full max-w-md mx-auto">Cargando...</div>
+  }
+
   return (
     <div className="w-full max-w-md mx-auto">
       <Auth
@@ -23,7 +34,7 @@ export function SupabaseAuth() {
           },
         }}
         providers={['google', 'github']}
-        redirectTo={`${window.location.origin}/auth/callback`}
+        redirectTo={redirectUrl}
       />
     </div>
   )

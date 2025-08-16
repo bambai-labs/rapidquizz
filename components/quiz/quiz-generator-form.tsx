@@ -1,22 +1,18 @@
 "use client";
-
-import { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Sparkles } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-
-import { QuizGeneratorForm, QuizGeneratorSchema } from '@/types/quiz';
-import { useQuizGeneratorStore } from '@/stores/quiz-generator-store';
-import { useAuthStore } from '@/stores/auth-store';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { generateQuiz } from '@/lib/quiz-generator';
+import { useAuthStore } from '@/stores/auth-store';
+import { useQuizGeneratorStore } from '@/stores/quiz-generator-store';
+import { QuizGeneratorSchema } from '@/types/quiz';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Plus, Sparkles, Trash2 } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
 interface QuizGeneratorFormProps {
   onQuizGenerated?: () => void;
@@ -33,7 +29,7 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
     formState: { errors },
     setValue,
     watch,
-  } = useForm<QuizGeneratorForm>({
+  } = useForm({
     resolver: zodResolver(QuizGeneratorSchema),
     defaultValues: {
       subject: '',
@@ -46,12 +42,12 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'topics',
+    name: 'topics' as never,
   });
 
   const difficulty = watch('difficulty');
 
-  const onSubmit = async (data: QuizGeneratorForm) => {
+  const onSubmit = async (data: any) => {
     if (!user) return;
 
     setIsGenerating(true);

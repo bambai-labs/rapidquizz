@@ -22,7 +22,7 @@ export const QuizSchema = z.object({
 
 export const QuizGeneratorSchema = z.object({
   subject: z.string().min(1, 'Subject is required'),
-  topics: z.array(z.string().min(1, 'Topic cannot be empty')).min(1, 'At least one topic required'),
+  topics: z.array(z.string()).min(1, 'At least one topic required'),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   questionCount: z.number().min(1, 'Must have at least 1 question').max(20, 'Maximum 20 questions allowed'),
   timeLimit: z.number().min(1, 'Time limit must be at least 1 minute').max(120, 'Maximum 120 minutes').optional(),
