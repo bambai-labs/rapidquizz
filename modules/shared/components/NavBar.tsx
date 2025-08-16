@@ -4,9 +4,11 @@ import { GraduationCap } from "lucide-react";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { LoginButton } from "@/modules/auth/components/LoginButton";
 import { useAuthStore } from "@/stores/auth-store";
+import { useRouter } from "next/navigation";
+import { AuthStatus } from "@/modules/auth/types/AuthStatus";
 
 export const NavBar = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { authStatus } = useAuthStore();
 
   return (
     <motion.header
@@ -24,7 +26,7 @@ export const NavBar = () => {
         </motion.div>
 
         <div className="flex items-center gap-2">
-          {isAuthenticated ? (
+          {authStatus === AuthStatus.AUTHENTICATED ? (
             <GoogleAuthButton />
           ) : (
             <>

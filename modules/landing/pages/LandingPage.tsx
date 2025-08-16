@@ -1,3 +1,4 @@
+"use client";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { motion } from "framer-motion";
 

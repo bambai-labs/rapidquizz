@@ -1,15 +1,16 @@
 "use client";
 
 import { Button } from '@/components/ui/button';
+import { AuthStatus } from '@/modules/auth/types/AuthStatus';
 import { useAuthStore } from '@/stores/auth-store';
 import { motion } from 'framer-motion';
 import { Chrome } from 'lucide-react';
 
 export function GoogleAuthButton() {
-  const { isAuthenticated, user, login, logout } = useAuthStore();
+  const { authStatus, user, login, logout } = useAuthStore();
 
   const handleAuth = () => {
-    if (isAuthenticated) {
+    if (authStatus === AuthStatus.AUTHENTICATED) {
       logout();
     } else {
       // Mock Google OAuth - In a real app, use NextAuth or similar
@@ -30,10 +31,10 @@ export function GoogleAuthButton() {
     >
       <Button
         onClick={handleAuth}
-        variant={isAuthenticated ? "outline" : "default"}
+        variant={authStatus === AuthStatus.AUTHENTICATED ? "outline" : "default"}
         className="flex items-center gap-2 min-w-[200px]"
       >
-        {isAuthenticated ? (
+        {authStatus === AuthStatus.AUTHENTICATED ? (
           <>
             <img 
               src={user?.image} 

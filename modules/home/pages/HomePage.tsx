@@ -1,3 +1,4 @@
+"use client";
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { QuizGeneratorFormComponent } from "@/components/quiz/quiz-generator-form";
 import { useAuthStore } from "@/stores/auth-store";
