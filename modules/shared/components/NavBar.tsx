@@ -2,8 +2,12 @@
 import { motion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
 import { GoogleAuthButton } from "@/components/auth/google-auth-button";
+import { LoginButton } from "@/modules/auth/components/LoginButton";
+import { useAuthStore } from "@/stores/auth-store";
 
 export const NavBar = () => {
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -19,7 +23,17 @@ export const NavBar = () => {
           <h1 className="text-2xl font-bold">QuizCraft</h1>
         </motion.div>
 
-        <GoogleAuthButton />
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <GoogleAuthButton />
+          ) : (
+            <>
+              <LoginButton />
+              <span className="text-sm text-muted-foreground">or</span>
+              <GoogleAuthButton />
+            </>
+          )}
+        </div>
       </div>
     </motion.header>
   );
