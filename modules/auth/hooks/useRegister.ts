@@ -1,4 +1,3 @@
-import { useAuthStore } from "@/stores/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,7 +27,6 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const useRegister = () => {
   const router = useRouter();
-  const { login } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -55,7 +53,6 @@ export const useRegister = () => {
       };
 
       // Simular que el registro fue exitoso y hacer login automático
-      login(mockUser);
 
       // Redirigir al home después del registro exitoso
       router.push("/home");

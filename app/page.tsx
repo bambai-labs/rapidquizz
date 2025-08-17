@@ -1,11 +1,5 @@
-"use client";
-import { HashLoader } from "react-spinners";
+import { LandingPage } from "@/modules/landing/pages/LandingPage";
 
-export default function Home() {
-
-  return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <HashLoader color="#000" />
-    </div>
-  )
+export default function Index() {
+  return <LandingPage />;
 }

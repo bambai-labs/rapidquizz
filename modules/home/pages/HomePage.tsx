@@ -1,7 +1,6 @@
 "use client";
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { QuizGeneratorFormComponent } from "@/components/quiz/quiz-generator-form";
-import { useAuthStore } from "@/stores/auth-store";
 import { useQuizGeneratorStore } from "@/stores/quiz-generator-store";
 import { useQuizStore } from "@/stores/quiz-store";
 import { Quiz } from "@/types/quiz";
@@ -11,7 +10,6 @@ import { useState } from "react";
 export const HomePage = () => {
   const { generatedQuizzes } = useQuizGeneratorStore();
   const { setCurrentQuiz, startQuiz } = useQuizStore();
-  const { user } = useAuthStore();
 
   const [showGenerator, setShowGenerator] = useState(false);
 
@@ -33,7 +31,7 @@ export const HomePage = () => {
           className="text-center mb-8"
         >
           <h2 className="text-3xl font-bold mb-4">
-            Welcome back, {user?.name}!
+            Welcome back, Jhon doe!
           </h2>
           <p className="text-muted-foreground mb-6">
             Create and manage your interactive quizzes

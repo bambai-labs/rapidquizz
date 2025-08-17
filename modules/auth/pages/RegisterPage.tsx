@@ -267,7 +267,7 @@ export const RegisterPage = () => {
                   <p className="text-sm text-muted-foreground">
                     ¿Ya tienes una cuenta?{" "}
                     <Link
-                      href="/auth/login"
+                      href="/login"
                       className="text-primary hover:underline transition-colors"
                     >
                       Inicia sesión aquí

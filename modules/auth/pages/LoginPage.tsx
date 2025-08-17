@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/stores/auth-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
@@ -24,7 +23,6 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginPage = () => {
-  const { login } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -47,7 +45,7 @@ export const LoginPage = () => {
         image: undefined,
       };
       
-      login(mockUser);
+      
       
       // Redirigir al home después del login exitoso
       window.location.href = "/home";
@@ -238,7 +236,7 @@ export const LoginPage = () => {
                   <p className="text-sm text-muted-foreground">
                     ¿No tienes una cuenta?{" "}
                     <Link
-                      href="/auth/register"
+                      href="/register"
                       className="text-primary hover:underline transition-colors"
                     >
                       Regístrate aquí

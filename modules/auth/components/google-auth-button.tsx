@@ -19,13 +19,11 @@ export function GoogleAuthButton() {
     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
       <Button
         onClick={handleAuth}
-        variant="default"
+        variant="outline"
         className="flex items-center gap-2 min-w-[200px]"
       >
-        <>
-          <Chrome className="w-5 h-5" />
-          Sign in with Google
-        </>
+        <Chrome className="w-5 h-5" />
+        Sign in with Google
       </Button>
     </motion.div>
   );

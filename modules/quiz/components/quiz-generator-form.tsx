@@ -47,7 +47,6 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
 
   const onSubmit = async (data: any) => {
     
-
     setIsGenerating(true);
     setError(null);
 
