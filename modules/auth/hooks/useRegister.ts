@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { signup } from "@/actions/auth";
 
 const registerSchema = z
   .object({
@@ -41,21 +42,17 @@ export const useRegister = () => {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-  
     setIsLoading(true);
     try {
-      // Simular registro - en un caso real, aquí harías la llamada a tu API
-      const mockUser = {
-        id: "1",
-        name: data.email.split("@")[0], // Usar la parte del email como nombre
-        email: data.email,
-        image: undefined,
-      };
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
 
-      // Simular que el registro fue exitoso y hacer login automático
+      await signup(formData);
 
-      // Redirigir al home después del registro exitoso
-      router.push("/home");
+      toast(
+        "Cuenta creada correctamente, por favor verifica tu correo para activar tu cuenta"
+      );
     } catch (error) {
       console.error("Error al registrarse:", error);
       form.setError("root", {

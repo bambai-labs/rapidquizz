@@ -1,19 +1,25 @@
 "use client";
+import { login } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "El email es requerido")
-    .email(),
+  email: z.string().min(1, "El email es requerido").email(),
   password: z
     .string()
     .min(1, "La contraseña es requerida")
@@ -37,18 +43,13 @@ export const LoginPage = () => {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      // Simular autenticación - en un caso real, aquí harías la llamada a tu API
-      const mockUser = {
-        id: "1",
-        name: data.email.split("@")[0], // Usar la parte del email como nombre
-        email: data.email,
-        image: undefined,
-      };
-      
-      
-      
-      // Redirigir al home después del login exitoso
-      window.location.href = "/home";
+      const formData = new FormData();
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+
+      await login(formData);
+
+      toast("Inicio de sesión exitoso");
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
       form.setError("root", {
@@ -94,7 +95,10 @@ export const LoginPage = () => {
             className="bg-card border rounded-lg p-6 shadow-lg"
           >
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="email"
