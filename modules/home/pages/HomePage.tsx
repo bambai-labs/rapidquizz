@@ -1,7 +1,7 @@
 "use client";
+import { logout } from "@/actions/auth";
 import { QuizCard } from "@/components/quiz/quiz-card";
 import { QuizGeneratorFormComponent } from "@/components/quiz/quiz-generator-form";
-import { createClient } from "@/lib/supabase/client";
 import { useQuizGeneratorStore } from "@/stores/quiz-generator-store";
 import { useQuizStore } from "@/stores/quiz-store";
 import { Quiz } from "@/types/quiz";
@@ -20,6 +20,10 @@ export const HomePage = () => {
 
   const handleQuizGenerated = () => {
     setShowGenerator(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -58,7 +62,7 @@ export const HomePage = () => {
               exit={{ opacity: 0, y: -20 }}
               className="space-y-6"
             >
-              <div className="text-center">
+              <div className="text-center flex flex-col items-center gap-4">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -66,6 +70,15 @@ export const HomePage = () => {
                   className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   Create New Quiz
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout}
+                  className="bg-secondary text-primary border border-primary px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                  Logout
                 </motion.button>
               </div>
 
