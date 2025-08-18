@@ -1,6 +1,6 @@
-"use client";
-import { login } from "@/actions/auth";
-import { Button } from "@/components/ui/button";
+'use client'
+import { login } from '@/actions/auth'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -8,58 +8,66 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 const loginSchema = z.object({
-  email: z.string().min(1, "El email es requerido").email(),
+  email: z.string().min(1, 'El email es requerido').email(),
   password: z
     .string()
-    .min(1, "La contraseña es requerida")
-    .min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
+    .min(1, 'La contraseña es requerida')
+    .min(6, 'La contraseña debe tener al menos 6 caracteres'),
+})
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type LoginFormData = z.infer<typeof loginSchema>
 
 export const LoginPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const formData = new FormData();
-      formData.append("email", data.email);
-      formData.append("password", data.password);
+      const formData = new FormData()
+      formData.append('email', data.email)
+      formData.append('password', data.password)
 
-      await login(formData);
+      const result = await login(formData)
 
-      toast("Inicio de sesión exitoso");
+      if (result.success) {
+        toast.success('Logged in successfully')
+        router.replace('/dashboard')
+        return
+      }
+
+      toast.error(result.errorMessage || 'Something went wrong')
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      form.setError("root", {
-        type: "manual",
-        message: "Credenciales inválidas. Intenta de nuevo.",
-      });
+      console.error('Error al iniciar sesión:', error)
+      /*form.setError('root', {
+        type: 'manual',
+        message: 'Credenciales inválidas. Intenta de nuevo.',
+      })*/
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
@@ -127,7 +135,7 @@ export const LoginPage = () => {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="••••••••"
                             {...field}
                             className="transition-all duration-200 focus:ring-2 focus:ring-primary/20 pr-10"
@@ -238,7 +246,7 @@ export const LoginPage = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-muted-foreground">
-                    ¿No tienes una cuenta?{" "}
+                    ¿No tienes una cuenta?{' '}
                     <Link
                       href="/register"
                       className="text-primary hover:underline transition-colors"
@@ -253,5 +261,5 @@ export const LoginPage = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}

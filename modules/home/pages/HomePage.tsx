@@ -6,12 +6,15 @@ import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { Quiz } from '@/types/quiz'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export const HomePage = () => {
   const { generatedQuizzes } = useQuizGeneratorStore()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
   const [showGenerator, setShowGenerator] = useState(false)
+  const router = useRouter()
 
   const handleStartQuiz = (quiz: Quiz) => {
     setCurrentQuiz(quiz)
@@ -23,7 +26,14 @@ export const HomePage = () => {
   }
 
   const handleLogout = async () => {
-    await logout()
+    const result = await logout()
+    if (result.success) {
+      toast.success('Logged out successfully')
+      router.replace('/login')
+      return
+    }
+
+    toast.error(result.errorMessage || 'An error occurred')
   }
 
   return (

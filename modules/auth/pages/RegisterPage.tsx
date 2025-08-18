@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -7,11 +7,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useRegister } from "../hooks/useRegister";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
+import { useRegister } from '../hooks/useRegister'
 
 export const RegisterPage = () => {
   const {
@@ -22,7 +22,7 @@ export const RegisterPage = () => {
     onSubmit,
     setShowPassword,
     setShowConfirmPassword,
-  } = useRegister();
+  } = useRegister()
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
@@ -90,7 +90,7 @@ export const RegisterPage = () => {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            type={showPassword ? "text" : "password"}
+                            type={showPassword ? 'text' : 'password'}
                             placeholder="••••••••"
                             {...field}
                             className="transition-all duration-200 focus:ring-2 focus:ring-primary/20 pr-10"
@@ -152,7 +152,7 @@ export const RegisterPage = () => {
                       <FormControl>
                         <div className="relative">
                           <Input
-                            type={showConfirmPassword ? "text" : "password"}
+                            type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="••••••••"
                             {...field}
                             className="transition-all duration-200 focus:ring-2 focus:ring-primary/20 pr-10"
@@ -207,7 +207,7 @@ export const RegisterPage = () => {
                   )}
                 />
 
-                <AnimatePresence>
+                {/* <AnimatePresence>
                   {form.formState.errors.root && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -216,11 +216,11 @@ export const RegisterPage = () => {
                       className="bg-destructive/10 border border-destructive/20 rounded-md p-3"
                     >
                       <p className="text-destructive text-sm">
-                        {form.formState.errors.root.message}
+                        {form.formState.errors.}
                       </p>
                     </motion.div>
                   )}
-                </AnimatePresence>
+                </AnimatePresence> */}
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -265,7 +265,7 @@ export const RegisterPage = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-muted-foreground">
-                    ¿Ya tienes una cuenta?{" "}
+                    ¿Ya tienes una cuenta?{' '}
                     <Link
                       href="/login"
                       className="text-primary hover:underline transition-colors"
@@ -280,5 +280,5 @@ export const RegisterPage = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
