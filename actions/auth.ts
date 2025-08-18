@@ -1,17 +1,17 @@
-'use server'
-import { createClient } from '@/lib/supabase/server'
+'use client'
+import { createClient } from '@/lib/supabase/client'
 import { Result } from '@/types/result.type'
-import { revalidatePath } from 'next/cache'
 
-export async function login(formData: FormData): Promise<Result<void>> {
-  const supabase = await createClient()
+export async function login(
+  email: string,
+  password: string,
+): Promise<Result<void>> {
+  const supabase = createClient()
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  })
 
   if (error) {
     return {
@@ -20,21 +20,21 @@ export async function login(formData: FormData): Promise<Result<void>> {
     }
   }
 
-  revalidatePath('/', 'layout')
   return {
     success: true,
   }
 }
 
-export async function signup(formData: FormData): Promise<Result<void>> {
-  const supabase = await createClient()
+export async function signup(
+  email: string,
+  password: string,
+): Promise<Result<void>> {
+  const supabase = createClient()
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  })
 
   if (error) {
     return {
@@ -43,14 +43,13 @@ export async function signup(formData: FormData): Promise<Result<void>> {
     }
   }
 
-  revalidatePath('/', 'layout')
   return {
     success: true,
   }
 }
 
 export async function logout(): Promise<Result<void>> {
-  const supabase = await createClient()
+  const supabase = createClient()
   const { error } = await supabase.auth.signOut()
 
   if (error) {
@@ -60,7 +59,6 @@ export async function logout(): Promise<Result<void>> {
     }
   }
 
-  revalidatePath('/', 'layout')
   return {
     success: true,
   }

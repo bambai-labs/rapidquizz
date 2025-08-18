@@ -1,39 +1,29 @@
 'use client'
-import { logout } from '@/actions/auth'
 import { QuizCard } from '@/components/quiz/quiz-card'
 import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
+import { useAuthStore } from '@/stores/auth-store'
 import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { Quiz } from '@/types/quiz'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { toast } from 'sonner'
 
 export const HomePage = () => {
+  const router = useRouter()
   const { generatedQuizzes } = useQuizGeneratorStore()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
   const [showGenerator, setShowGenerator] = useState(false)
-  const router = useRouter()
+  const { user } = useAuthStore()
 
   const handleStartQuiz = (quiz: Quiz) => {
     setCurrentQuiz(quiz)
     startQuiz()
+    router.push('/quiz')
   }
 
   const handleQuizGenerated = () => {
     setShowGenerator(false)
-  }
-
-  const handleLogout = async () => {
-    const result = await logout()
-    if (result.success) {
-      toast.success('Logged out successfully')
-      router.replace('/login')
-      return
-    }
-
-    toast.error(result.errorMessage || 'An error occurred')
   }
 
   return (
@@ -44,7 +34,9 @@ export const HomePage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h2 className="text-3xl font-bold mb-4">Welcome back,!</h2>
+          <h2 className="text-3xl font-bold mb-4">
+            Welcome back, {user?.email ?? 'User'}!
+          </h2>
           <p className="text-muted-foreground mb-6">
             Create and manage your interactive quizzes
           </p>
@@ -78,15 +70,6 @@ export const HomePage = () => {
                   className="bg-primary text-primary-foreground px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
                 >
                   Create New Quiz
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLogout}
-                  className="bg-secondary text-primary border border-primary px-8 py-4 rounded-lg font-semibold text-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                >
-                  Logout
                 </motion.button>
               </div>
 

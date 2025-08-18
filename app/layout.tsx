@@ -1,4 +1,5 @@
 import { Toaster } from '@/components/ui/sonner'
+import { AuthWrapper } from '@/modules/auth/components/AuthWrapper'
 import { NavBar } from '@/modules/shared/components/NavBar'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NavBar />
-        {children}
-        <Toaster position="top-center" />
+        <AuthWrapper>
+          <NavBar />
+          {children}
+          <Toaster position="top-center" />
+        </AuthWrapper>
       </body>
     </html>
   )

@@ -1,11 +1,15 @@
-"use client";
-import { GoogleAuthButton } from "@/components/auth/google-auth-button";
-import { LoginButton } from "@/modules/auth/components/LoginButton";
-import { motion } from "framer-motion";
-import { GraduationCap } from "lucide-react";
-import Link from "next/link";
+'use client'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
+import { Button } from '@/components/ui/button'
+import { LoginButton } from '@/modules/auth/components/LoginButton'
+import { motion } from 'framer-motion'
+import { GraduationCap } from 'lucide-react'
+import Link from 'next/link'
+import { useNavBar } from '../hooks/useNavBar'
 
 export const NavBar = () => {
+  const { isAuthenticated, loading, handleLogout } = useNavBar()
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -24,11 +28,25 @@ export const NavBar = () => {
         </Link>
 
         <div className="flex items-center gap-2">
-          <LoginButton />
-          <span className="text-sm text-muted-foreground">or</span>
-          <GoogleAuthButton />
+          {isAuthenticated ? (
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                variant="outline"
+                onClick={handleLogout}
+                disabled={loading}
+              >
+                Logout
+              </Button>
+            </motion.div>
+          ) : (
+            <>
+              <LoginButton />
+              <span className="text-sm text-muted-foreground">or</span>
+              <GoogleAuthButton />
+            </>
+          )}
         </div>
       </div>
     </motion.header>
-  );
-};
+  )
+}

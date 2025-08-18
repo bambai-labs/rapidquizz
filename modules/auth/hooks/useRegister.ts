@@ -44,11 +44,7 @@ export const useRegister = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true)
     try {
-      const formData = new FormData()
-      formData.append('email', data.email)
-      formData.append('password', data.password)
-
-      const result = await signup(formData)
+      const result = await signup(data.email, data.password)
 
       if (result.success) {
         toast.success(

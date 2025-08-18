@@ -32,11 +32,7 @@ export const useLogin = () => {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     try {
-      const formData = new FormData()
-      formData.append('email', data.email)
-      formData.append('password', data.password)
-
-      const result = await login(formData)
+      const result = await login(data.email, data.password)
 
       if (result.success) {
         toast.success('Logged in successfully')

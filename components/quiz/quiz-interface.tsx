@@ -1,18 +1,18 @@
 'use client'
-
-import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
-import { useEffect, useState } from 'react'
-
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
+import { AnimatePresence, motion } from 'framer-motion'
+import { CheckCircle, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { HashLoader } from 'react-spinners'
 
 export function QuizInterface() {
+  const router = useRouter()
   const {
     currentQuiz,
     currentQuestionIndex,
@@ -25,10 +25,10 @@ export function QuizInterface() {
     finishQuiz,
   } = useQuizStore()
 
+  const [isLoading, setIsLoading] = useState(false)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   const [questionStartTime, setQuestionStartTime] = useState<Date>(new Date())
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
-
   const currentQuestion = currentQuiz?.questions[currentQuestionIndex]
   const isLastQuestion =
     currentQuiz && currentQuestionIndex === currentQuiz.questions.length - 1
@@ -64,8 +64,35 @@ export function QuizInterface() {
     setQuestionStartTime(new Date())
   }, [currentQuestionIndex, currentQuestion?.id, answers])
 
-  if (!currentQuiz || !currentQuestion || !isQuizActive) {
-    return null
+  // Si está cargando, mostrar loader
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <HashLoader color="#000" />
+        </div>
+      </div>
+    )
+  }
+
+  // Si no hay quiz o no hay pregunta actual y NO está cargando, mostrar mensaje de error
+  if ((!currentQuiz || !currentQuestion) && !isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <h1 className="text-2xl font-bold">No se encontró ningún quiz</h1>
+          <p className="text-muted-foreground">
+            Por favor regresa a la página principal y comienza un nuevo quiz
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => router.replace('/dashboard')}
+          >
+            Volver al inicio
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   const handleOptionSelect = (optionIndex: number) => {
@@ -76,7 +103,7 @@ export function QuizInterface() {
     if (selectedOption !== null) {
       const timeSpent = (Date.now() - questionStartTime.getTime()) / 1000
       const answer: QuizAnswer = {
-        questionId: currentQuestion.id,
+        questionId: currentQuestion?.id!,
         selectedAnswer: selectedOption,
         timeSpent,
       }
@@ -84,7 +111,10 @@ export function QuizInterface() {
       submitAnswer(answer)
 
       if (isLastQuestion) {
+        setIsLoading(true)
+        router.push('/quiz/results')
         finishQuiz()
+        setIsLoading(false)
       } else {
         nextQuestion()
       }
@@ -107,10 +137,10 @@ export function QuizInterface() {
       >
         <div className="flex justify-between items-center mb-4">
           <div>
-            <h1 className="text-2xl font-bold">{currentQuiz.title}</h1>
+            <h1 className="text-2xl font-bold">{currentQuiz!.title}</h1>
             <p className="text-muted-foreground">
               Question {currentQuestionIndex + 1} of{' '}
-              {currentQuiz.questions.length}
+              {currentQuiz!.questions.length}
             </p>
           </div>
 
@@ -139,13 +169,13 @@ export function QuizInterface() {
           <Card>
             <CardHeader>
               <CardTitle className="text-xl leading-relaxed">
-                {currentQuestion.question}
+                {currentQuestion!.question}
               </CardTitle>
             </CardHeader>
 
             <CardContent>
               <div className="space-y-3">
-                {currentQuestion.options.map((option, index) => {
+                {currentQuestion!.options.map((option, index) => {
                   const isSelected = selectedOption === index
 
                   return (
@@ -200,7 +230,7 @@ export function QuizInterface() {
         </Button>
 
         <div className="flex gap-2">
-          {currentQuiz.questions.map((_, index) => (
+          {currentQuiz!.questions.map((_, index) => (
             <div
               key={index}
               className={`w-3 h-3 rounded-full transition-colors ${

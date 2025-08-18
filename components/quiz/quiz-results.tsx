@@ -1,5 +1,9 @@
 'use client'
-
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { useQuizStore } from '@/stores/quiz-store'
 import { motion } from 'framer-motion'
 import {
   CheckCircle,
@@ -9,23 +13,52 @@ import {
   Trophy,
   XCircle,
 } from 'lucide-react'
-
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-
-import { useQuizStore } from '@/stores/quiz-store'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { HashLoader } from 'react-spinners'
 
 export function QuizResults() {
   const { currentQuiz, results, resetQuiz, answers } = useQuizStore()
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
-  if (!results || !currentQuiz) {
-    return null
+  const onGoHome = () => {
+    router.replace('/dashboard')
+    setIsLoading(true)
+    resetQuiz()
+    setIsLoading(false)
+  }
+
+  // Si está cargando, mostrar loader
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <HashLoader color="#000" />
+        </div>
+      </div>
+    )
+  }
+
+  // Si no hay resultados o no hay quiz y NO está cargando, mostrar mensaje de error
+  if ((!results || !currentQuiz) && !isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <h1 className="text-2xl font-bold">No se encontraron resultados</h1>
+          <p className="text-muted-foreground">
+            Por favor regresa a la página principal y comienza un nuevo quiz
+          </p>
+          <Button variant="outline" onClick={onGoHome}>
+            Volver al inicio
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   const correctAnswers = answers.filter((answer) => {
-    const question = currentQuiz.questions.find(
+    const question = currentQuiz!.questions.find(
       (q) => q.id === answer.questionId,
     )
     return question && question.correctAnswer === answer.selectedAnswer
@@ -48,7 +81,7 @@ export function QuizResults() {
     return { label: 'Needs Improvement', variant: 'destructive' as const }
   }
 
-  const scoreBadge = getScoreBadge(results.score)
+  const scoreBadge = getScoreBadge(results!.score)
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -67,7 +100,7 @@ export function QuizResults() {
         </motion.div>
 
         <h1 className="text-3xl font-bold mb-2">Quiz Complete!</h1>
-        <p className="text-muted-foreground">{currentQuiz.title}</p>
+        <p className="text-muted-foreground">{currentQuiz!.title}</p>
       </motion.div>
 
       {/* Score Card */}
@@ -80,8 +113,8 @@ export function QuizResults() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="text-4xl font-bold mb-2">
-              <span className={getScoreColor(results.score)}>
-                {results.score}%
+              <span className={getScoreColor(results!.score)}>
+                {results!.score}%
               </span>
             </CardTitle>
             <Badge className="mx-auto" variant={scoreBadge.variant}>
@@ -90,13 +123,13 @@ export function QuizResults() {
           </CardHeader>
 
           <CardContent>
-            <Progress value={results.score} className="h-3 mb-6" />
+            <Progress value={results!.score} className="h-3 mb-6" />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div className="flex flex-col items-center">
                 <Target className="w-8 h-8 text-primary mb-2" />
                 <div className="text-2xl font-bold">
-                  {correctAnswers}/{results.totalQuestions}
+                  {correctAnswers}/{results!.totalQuestions}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Correct Answers
@@ -106,8 +139,8 @@ export function QuizResults() {
               <div className="flex flex-col items-center">
                 <Clock className="w-8 h-8 text-primary mb-2" />
                 <div className="text-2xl font-bold">
-                  {Math.floor(results.timeSpent / 60)}:
-                  {(results.timeSpent % 60).toString().padStart(2, '0')}
+                  {Math.floor(results!.timeSpent / 60)}:
+                  {(results!.timeSpent % 60).toString().padStart(2, '0')}
                 </div>
                 <div className="text-sm text-muted-foreground">Time Spent</div>
               </div>
@@ -115,7 +148,7 @@ export function QuizResults() {
               <div className="flex flex-col items-center">
                 <Trophy className="w-8 h-8 text-primary mb-2" />
                 <div className="text-2xl font-bold">
-                  {Math.round(results.timeSpent / results.totalQuestions)}s
+                  {Math.round(results!.timeSpent / results!.totalQuestions)}s
                 </div>
                 <div className="text-sm text-muted-foreground">
                   Avg. per Question
@@ -135,7 +168,7 @@ export function QuizResults() {
       >
         <h2 className="text-xl font-semibold">Question Review</h2>
 
-        {currentQuiz.questions.map((question, index) => {
+        {currentQuiz!.questions.map((question, index) => {
           const userAnswer = answers.find((a) => a.questionId === question.id)
           const isCorrect =
             userAnswer?.selectedAnswer === question.correctAnswer
@@ -220,7 +253,7 @@ export function QuizResults() {
         transition={{ delay: 0.6 }}
         className="flex justify-center"
       >
-        <Button onClick={resetQuiz} size="lg">
+        <Button onClick={onGoHome} size="lg">
           <RotateCcw className="w-5 h-5 mr-2" />
           Take Another Quiz
         </Button>
