@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, ChevronLeft, ChevronRight, CheckCircle, XCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion'
+import { CheckCircle, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 
-import { useQuizStore } from '@/stores/quiz-store';
-import { QuizAnswer } from '@/types/quiz';
+import { useQuizStore } from '@/stores/quiz-store'
+import { QuizAnswer } from '@/types/quiz'
 
 export function QuizInterface() {
   const {
@@ -23,74 +23,79 @@ export function QuizInterface() {
     previousQuestion,
     submitAnswer,
     finishQuiz,
-  } = useQuizStore();
+  } = useQuizStore()
 
-  const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [questionStartTime, setQuestionStartTime] = useState<Date>(new Date());
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null)
+  const [questionStartTime, setQuestionStartTime] = useState<Date>(new Date())
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
 
-  const currentQuestion = currentQuiz?.questions[currentQuestionIndex];
-  const isLastQuestion = currentQuiz && currentQuestionIndex === currentQuiz.questions.length - 1;
-  const progress = currentQuiz ? ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100 : 0;
+  const currentQuestion = currentQuiz?.questions[currentQuestionIndex]
+  const isLastQuestion =
+    currentQuiz && currentQuestionIndex === currentQuiz.questions.length - 1
+  const progress = currentQuiz
+    ? ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100
+    : 0
 
   // Timer effect
   useEffect(() => {
-    if (!currentQuiz?.timeLimit || !startTime) return;
+    if (!currentQuiz?.timeLimit || !startTime) return
 
     const interval = setInterval(() => {
-      const elapsed = (Date.now() - startTime.getTime()) / 1000 / 60; // minutes
-      const remaining = currentQuiz.timeLimit! - elapsed;
-      
-      if (remaining <= 0) {
-        finishQuiz();
-        setTimeRemaining(0);
-      } else {
-        setTimeRemaining(Math.ceil(remaining));
-      }
-    }, 1000);
+      const elapsed = (Date.now() - startTime.getTime()) / 1000 / 60 // minutes
+      const remaining = currentQuiz.timeLimit! - elapsed
 
-    return () => clearInterval(interval);
-  }, [currentQuiz?.timeLimit, startTime, finishQuiz]);
+      if (remaining <= 0) {
+        finishQuiz()
+        setTimeRemaining(0)
+      } else {
+        setTimeRemaining(Math.ceil(remaining))
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [currentQuiz?.timeLimit, startTime, finishQuiz])
 
   // Reset selected option when question changes
   useEffect(() => {
-    const existingAnswer = answers.find(a => a.questionId === currentQuestion?.id);
-    setSelectedOption(existingAnswer?.selectedAnswer ?? null);
-    setQuestionStartTime(new Date());
-  }, [currentQuestionIndex, currentQuestion?.id, answers]);
+    const existingAnswer = answers.find(
+      (a) => a.questionId === currentQuestion?.id,
+    )
+    setSelectedOption(existingAnswer?.selectedAnswer ?? null)
+    setQuestionStartTime(new Date())
+  }, [currentQuestionIndex, currentQuestion?.id, answers])
 
   if (!currentQuiz || !currentQuestion || !isQuizActive) {
-    return null;
+    return null
   }
 
   const handleOptionSelect = (optionIndex: number) => {
-    setSelectedOption(optionIndex);
-  };
+    setSelectedOption(optionIndex)
+  }
 
   const handleNext = () => {
     if (selectedOption !== null) {
-      const timeSpent = (Date.now() - questionStartTime.getTime()) / 1000;
+      const timeSpent = (Date.now() - questionStartTime.getTime()) / 1000
       const answer: QuizAnswer = {
         questionId: currentQuestion.id,
         selectedAnswer: selectedOption,
         timeSpent,
-      };
-      
-      submitAnswer(answer);
+      }
+
+      submitAnswer(answer)
 
       if (isLastQuestion) {
-        finishQuiz();
+        finishQuiz()
       } else {
-        nextQuestion();
+        nextQuestion()
       }
     }
-  };
+  }
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
-      previousQuestion();
+      previousQuestion()
     }
-  };
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -104,20 +109,21 @@ export function QuizInterface() {
           <div>
             <h1 className="text-2xl font-bold">{currentQuiz.title}</h1>
             <p className="text-muted-foreground">
-              Question {currentQuestionIndex + 1} of {currentQuiz.questions.length}
+              Question {currentQuestionIndex + 1} of{' '}
+              {currentQuiz.questions.length}
             </p>
           </div>
-          
+
           {timeRemaining !== null && (
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-muted-foreground" />
-              <Badge variant={timeRemaining <= 5 ? "destructive" : "secondary"}>
+              <Badge variant={timeRemaining <= 5 ? 'destructive' : 'secondary'}>
                 {timeRemaining} min left
               </Badge>
             </div>
           )}
         </div>
-        
+
         <Progress value={progress} className="h-2" />
       </motion.div>
 
@@ -136,12 +142,12 @@ export function QuizInterface() {
                 {currentQuestion.question}
               </CardTitle>
             </CardHeader>
-            
+
             <CardContent>
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => {
-                  const isSelected = selectedOption === index;
-                  
+                  const isSelected = selectedOption === index
+
                   return (
                     <motion.div
                       key={index}
@@ -157,18 +163,20 @@ export function QuizInterface() {
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                            isSelected 
-                              ? 'border-primary bg-primary text-primary-foreground' 
-                              : 'border-muted-foreground'
-                          }`}>
+                          <div
+                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                              isSelected
+                                ? 'border-primary bg-primary text-primary-foreground'
+                                : 'border-muted-foreground'
+                            }`}
+                          >
                             {isSelected && <CheckCircle className="w-4 h-4" />}
                           </div>
                           <span className="font-medium">{option}</span>
                         </div>
                       </button>
                     </motion.div>
-                  );
+                  )
                 })}
               </div>
             </CardContent>
@@ -199,8 +207,8 @@ export function QuizInterface() {
                 index < currentQuestionIndex
                   ? 'bg-green-500'
                   : index === currentQuestionIndex
-                  ? 'bg-primary'
-                  : 'bg-muted-foreground/30'
+                    ? 'bg-primary'
+                    : 'bg-muted-foreground/30'
               }`}
             />
           ))}
@@ -216,5 +224,5 @@ export function QuizInterface() {
         </Button>
       </motion.div>
     </div>
-  );
+  )
 }

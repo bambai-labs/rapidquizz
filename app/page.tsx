@@ -1,5 +1,5 @@
-import { LandingPage } from "@/modules/landing/pages/LandingPage";
+import { LandingPage } from '@/modules/landing/pages/LandingPage'
 
 export default function Index() {
-  return <LandingPage />;
+  return <LandingPage />
 }

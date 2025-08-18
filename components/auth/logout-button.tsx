@@ -1,13 +1,9 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+'use client'
+import { Button } from '@/components/ui/button'
+import { LogOut } from 'lucide-react'
 
 export function LogoutButton() {
-  
-
-  const handleLogout = async () => {
-    
-  };
+  const handleLogout = async () => {}
 
   return (
     <Button
@@ -20,4 +16,3 @@ export function LogoutButton() {
     </Button>
   )
 }
-

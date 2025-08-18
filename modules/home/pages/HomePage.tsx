@@ -1,30 +1,30 @@
-"use client";
-import { logout } from "@/actions/auth";
-import { QuizCard } from "@/components/quiz/quiz-card";
-import { QuizGeneratorFormComponent } from "@/components/quiz/quiz-generator-form";
-import { useQuizGeneratorStore } from "@/stores/quiz-generator-store";
-import { useQuizStore } from "@/stores/quiz-store";
-import { Quiz } from "@/types/quiz";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+'use client'
+import { logout } from '@/actions/auth'
+import { QuizCard } from '@/components/quiz/quiz-card'
+import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
+import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
+import { useQuizStore } from '@/stores/quiz-store'
+import { Quiz } from '@/types/quiz'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useState } from 'react'
 
 export const HomePage = () => {
-  const { generatedQuizzes } = useQuizGeneratorStore();
-  const { setCurrentQuiz, startQuiz } = useQuizStore();
-  const [showGenerator, setShowGenerator] = useState(false);
+  const { generatedQuizzes } = useQuizGeneratorStore()
+  const { setCurrentQuiz, startQuiz } = useQuizStore()
+  const [showGenerator, setShowGenerator] = useState(false)
 
   const handleStartQuiz = (quiz: Quiz) => {
-    setCurrentQuiz(quiz);
-    startQuiz();
-  };
+    setCurrentQuiz(quiz)
+    startQuiz()
+  }
 
   const handleQuizGenerated = () => {
-    setShowGenerator(false);
-  };
+    setShowGenerator(false)
+  }
 
   const handleLogout = async () => {
-    await logout();
-  };
+    await logout()
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -34,9 +34,7 @@ export const HomePage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h2 className="text-3xl font-bold mb-4">
-            Welcome back,!
-          </h2>
+          <h2 className="text-3xl font-bold mb-4">Welcome back,!</h2>
           <p className="text-muted-foreground mb-6">
             Create and manage your interactive quizzes
           </p>
@@ -101,5 +99,5 @@ export const HomePage = () => {
         </AnimatePresence>
       </div>
     </div>
-  );
-};
+  )
+}

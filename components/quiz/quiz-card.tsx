@@ -1,16 +1,22 @@
-"use client";
+'use client'
 
-import { motion } from 'framer-motion';
-import { Clock, BookOpen, Users, Calendar } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Quiz } from '@/types/quiz';
-import { format } from 'date-fns';
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Quiz } from '@/types/quiz'
+import { format } from 'date-fns'
+import { motion } from 'framer-motion'
+import { BookOpen, Calendar, Clock } from 'lucide-react'
 
 interface QuizCardProps {
-  quiz: Quiz;
-  onStartQuiz: (quiz: Quiz) => void;
+  quiz: Quiz
+  onStartQuiz: (quiz: Quiz) => void
 }
 
 export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
@@ -18,7 +24,7 @@ export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
     easy: 'bg-green-100 text-green-800 border-green-200',
     medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     hard: 'bg-red-100 text-red-800 border-red-200',
-  };
+  }
 
   return (
     <motion.div
@@ -58,7 +64,7 @@ export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
               </div>
             )}
           </div>
-          
+
           <div className="mt-4 text-xs text-muted-foreground flex items-center gap-2">
             <Calendar className="w-3 h-3" />
             <span>Created {format(quiz.createdAt, 'MMM dd, yyyy')}</span>
@@ -66,7 +72,7 @@ export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
         </CardContent>
 
         <CardFooter>
-          <Button 
+          <Button
             onClick={() => onStartQuiz(quiz)}
             className="w-full"
             size="sm"
@@ -76,5 +82,5 @@ export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
         </CardFooter>
       </Card>
     </motion.div>
-  );
+  )
 }
