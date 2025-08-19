@@ -19,6 +19,7 @@ export const HomePage = () => {
   const handleStartQuiz = (quiz: Quiz) => {
     setCurrentQuiz(quiz)
     startQuiz()
+    console.log(quiz)
     router.push('/quiz')
   }
 

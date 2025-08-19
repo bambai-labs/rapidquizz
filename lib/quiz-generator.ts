@@ -1,94 +1,89 @@
+import { OpenAiApi } from '@/api/OpenAiApi'
+import { ChatCompletionResponse } from '@/api/responses/ChatCompletionResponse'
 import { Quiz, QuizGeneratorForm, QuizQuestion } from '@/types/quiz'
+import { Result } from '@/types/result.type'
 
-// Mock quiz generation - In a real app, this would call an AI service or API
 export async function generateQuiz(
   formData: QuizGeneratorForm,
   userId: string,
-): Promise<Quiz> {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  const sampleQuestions: Partial<QuizQuestion>[] = [
-    {
-      question: `What is a fundamental concept in ${formData.subject}?`,
-      options: [
-        'Basic principle',
-        'Advanced technique',
-        'Complex theory',
-        'Simple rule',
-      ],
-      correctAnswer: 0,
-      explanation:
-        'This represents a foundational understanding of the subject.',
-    },
-    {
-      question: `Which of the following best describes ${formData.topics[0]}?`,
-      options: [
-        'Primary concept',
-        'Secondary idea',
-        'Tertiary notion',
-        'Quaternary element',
-      ],
-      correctAnswer: 0,
-      explanation: 'This is the most accurate description of the topic.',
-    },
-    {
-      question: `How does ${formData.subject} relate to practical applications?`,
-      options: [
-        'Through direct implementation',
-        'Via theoretical frameworks',
-        'By abstract reasoning',
-        'Using complex models',
-      ],
-      correctAnswer: 0,
-      explanation: 'Practical implementation is the most direct relationship.',
-    },
-    {
-      question: `What is the importance of understanding ${formData.topics[0]} in ${formData.subject}?`,
-      options: [
-        'Essential for mastery',
-        'Helpful but optional',
-        'Completely unnecessary',
-        'Only for experts',
-      ],
-      correctAnswer: 0,
-      explanation:
-        'Understanding core topics is essential for subject mastery.',
-    },
-    {
-      question: `Which approach is most effective when studying ${formData.subject}?`,
-      options: [
-        'Systematic learning',
-        'Random exploration',
-        'Memorization only',
-        'Passive reading',
-      ],
-      correctAnswer: 0,
-      explanation: 'Systematic learning provides the best foundation.',
-    },
-  ]
-
-  const questions: QuizQuestion[] = sampleQuestions
-    .slice(0, formData.questionCount)
-    .map((q, index) => ({
-      id: `q-${Date.now()}-${index}`,
-      question: q.question!,
-      options: q.options!,
-      correctAnswer: q.correctAnswer!,
-      explanation: q.explanation,
-    }))
-
-  const quiz: Quiz = {
-    id: `quiz-${Date.now()}`,
-    title: `${formData.subject} - ${formData.topics.join(', ')} Quiz`,
-    subject: formData.subject,
-    topics: formData.topics,
-    questions,
-    createdAt: new Date(),
-    createdBy: userId,
-    difficulty: formData.difficulty,
-    timeLimit: formData.timeLimit,
+): Promise<Result<Quiz>> {
+  try {
+    const { data } = await OpenAiApi.post<ChatCompletionResponse>(
+      'v1/chat/completions',
+      {
+        model: 'gpt-5-mini',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a helpful assistant that generates quiz questions and answers for a given subject and topic.',
+          },
+          {
+            role: 'developer',
+            content: `I want you to generate a quiz in JSON format.  
+  
+  Input parameters:  
+  - Number of questions: ${formData.questionCount}  
+  - Subject: ${formData.subject}  
+  - Topics: ${formData.topics.join(', ')}  
+  - Difficulty: ${formData.difficulty}  
+  
+  Output requirements:  
+  1. The JSON must contain an array called "questions".  
+  2. Each element of the array should have the following structure:  
+     - "id": string (e.g., "q1", "q2", etc.)  
+     - "question": string (the question text).  
+     - "options": string[] (array of answer options).  
+     - "correctAnswer": number (index of the correct answer, starting from 0).  
+     - "explanation": string (optional, explanation of why the answer is correct).  
+  
+  Example structure:  
+  
+  {
+    "questions": [
+      {
+        "id": "q1",
+        "question": "What is the capital of France?",
+        "options": ["Madrid", "Paris", "Rome", "Berlin"],
+        "correctAnswer": 1,
+        "explanation": "Paris is the capital of France."
+      }
+    ]
   }
+  
+  Please generate the quiz now based on the provided parameters.
+  `,
+          },
+        ],
+      },
+    )
 
-  return quiz
+    const questions = (
+      JSON.parse(data.choices[0].message.content) as {
+        questions: QuizQuestion[]
+      }
+    ).questions
+
+    const quiz: Quiz = {
+      id: `quiz-${Date.now()}`,
+      title: `${formData.subject} - ${formData.topics.join(', ')} Quiz`,
+      subject: formData.subject,
+      topics: formData.topics,
+      questions,
+      createdAt: new Date(),
+      createdBy: userId,
+      difficulty: formData.difficulty,
+      timeLimit: formData.timeLimit,
+    }
+    return {
+      success: true,
+      data: quiz,
+    }
+  } catch (error: any) {
+    console.log(error)
+    return {
+      success: false,
+      errorMessage: error.message,
+    }
+  }
 }

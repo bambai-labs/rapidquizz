@@ -75,6 +75,10 @@ export function QuizInterface() {
     )
   }
 
+  console.log('currentQuiz', currentQuiz)
+  console.log('currentQuestion', currentQuestion)
+  console.log('isLoading', isLoading)
+
   // Si no hay quiz o no hay pregunta actual y NO está cargando, mostrar mensaje de error
   if ((!currentQuiz || !currentQuestion) && !isLoading) {
     return (
