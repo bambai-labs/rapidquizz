@@ -64,6 +64,25 @@ export const RegisterPage = () => {
               >
                 <FormField
                   control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nombre de Usuario</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="mi_usuario"
+                          {...field}
+                          className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>

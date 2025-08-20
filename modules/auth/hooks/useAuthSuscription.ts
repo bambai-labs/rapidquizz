@@ -19,6 +19,7 @@ export const useAuthSuscription = () => {
       id: data.user.id,
       email: data.user.email || '',
       name: data.user.user_metadata.name || '',
+      username: data.user.user_metadata.username || '',
       photoUrl: data.user.user_metadata.avatar_url || '',
     })
   }
@@ -40,6 +41,7 @@ export const useAuthSuscription = () => {
             id: user.id,
             email: user.email || '',
             name: user.user_metadata.name || '',
+            username: user.user_metadata.username || '',
             photoUrl: user.user_metadata.avatar_url || '',
           })
           return

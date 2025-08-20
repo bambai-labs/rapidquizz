@@ -45,7 +45,7 @@ export const HomePage = () => {
           className="text-center mb-8"
         >
           <h2 className="text-3xl font-bold mb-4">
-            Welcome back, {user?.email ?? 'User'}!
+            Welcome back, {user?.username ?? 'User'}!
           </h2>
           <p className="text-muted-foreground mb-6">
             Create and manage your interactive quizzes

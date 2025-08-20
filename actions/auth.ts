@@ -28,12 +28,19 @@ export async function login(
 export async function signup(
   email: string,
   password: string,
+  username: string,
 ): Promise<Result<void>> {
   const supabase = createClient()
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        username: username,
+        name: username, // También guardamos el username como name para compatibilidad
+      },
+    },
   })
 
   if (error) {

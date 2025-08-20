@@ -8,6 +8,15 @@ import { z } from 'zod'
 
 const registerSchema = z
   .object({
+    username: z
+      .string()
+      .min(1, 'El nombre de usuario es requerido')
+      .min(3, 'El nombre de usuario debe tener al menos 3 caracteres')
+      .max(20, 'El nombre de usuario no puede tener más de 20 caracteres')
+      .regex(
+        /^[a-zA-Z0-9_]+$/,
+        'El nombre de usuario solo puede contener letras, números y guiones bajos',
+      ),
     email: z.string().min(1, 'El email es requerido').email(),
     password: z
       .string()
@@ -35,6 +44,7 @@ export const useRegister = () => {
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -44,7 +54,7 @@ export const useRegister = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true)
     try {
-      const result = await signup(data.email, data.password)
+      const result = await signup(data.email, data.password, data.username)
 
       if (result.success) {
         toast.success(
