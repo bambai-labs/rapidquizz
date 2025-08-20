@@ -17,15 +17,17 @@ import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { QuizGeneratorSchema } from '@/types/quiz'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Plus, Sparkles, Trash2 } from 'lucide-react'
+import { Plus, Sparkles, Trash2, X } from 'lucide-react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 interface QuizGeneratorFormProps {
   onQuizGenerated?: () => void
+  onCancel?: () => void
 }
 
 export function QuizGeneratorFormComponent({
   onQuizGenerated,
+  onCancel,
 }: QuizGeneratorFormProps) {
   const { isGenerating, addGeneratedQuiz, setIsGenerating, setError } =
     useQuizGeneratorStore()
@@ -265,16 +267,38 @@ export function QuizGeneratorFormComponent({
               {isGenerating ? (
                 <div className="flex items-center gap-2">
                   <LoadingSpinner size="sm" />
-                  Generating Quiz...
+                  Generando Quiz...
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
-                  Generate Quiz
+                  Generar Quiz
                 </div>
               )}
             </Button>
           </motion.div>
+
+          {/* Cancel Button */}
+          {onCancel && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="-mt-3"
+            >
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={isGenerating}
+                className="w-full"
+                size="lg"
+              >
+                <X className="w-4 h-4 mr-2" />
+                Cancelar
+              </Button>
+            </motion.div>
+          )}
         </form>
       </CardContent>
     </Card>

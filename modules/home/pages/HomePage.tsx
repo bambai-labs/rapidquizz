@@ -2,7 +2,6 @@
 import { QuizCard } from '@/components/quiz/quiz-card'
 import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
 import { useAuthStore } from '@/stores/auth-store'
-import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { useUserQuizzesStore } from '@/stores/user-quizzes-store'
 import { Quiz } from '@/types/quiz'
@@ -12,7 +11,6 @@ import { useEffect, useState } from 'react'
 
 export const HomePage = () => {
   const router = useRouter()
-  const { generatedQuizzes } = useQuizGeneratorStore()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
   const { userQuizzes, isLoading, loadUserQuizzes } = useUserQuizzesStore()
   const [showGenerator, setShowGenerator] = useState(false)
@@ -27,13 +25,11 @@ export const HomePage = () => {
 
   const handleQuizGenerated = () => {
     setShowGenerator(false)
-    // Recargar la lista de quizzes después de generar uno nuevo
     if (user) {
       loadUserQuizzes(user.id)
     }
   }
 
-  // Cargar quizzes del usuario cuando se monta el componente
   useEffect(() => {
     if (user) {
       loadUserQuizzes(user.id)
@@ -66,6 +62,7 @@ export const HomePage = () => {
             >
               <QuizGeneratorFormComponent
                 onQuizGenerated={handleQuizGenerated}
+                onCancel={() => setShowGenerator(false)}
               />
             </motion.div>
           ) : (
