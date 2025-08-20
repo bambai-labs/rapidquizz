@@ -54,10 +54,56 @@ export type QuizGeneratorForm = z.infer<typeof QuizGeneratorSchema>
 export type QuizAnswer = z.infer<typeof QuizAnswerSchema>
 
 export interface QuizResult {
+  id?: string
   quizId: string
+  userId?: string
   answers: QuizAnswer[]
   score: number
   totalQuestions: number
   completedAt: Date
   timeSpent: number
+}
+
+// Tipos para la base de datos
+export interface DatabaseQuiz {
+  id: string
+  title: string
+  subject: string
+  topics: string[]
+  difficulty: 'easy' | 'medium' | 'hard'
+  time_limit?: number
+  created_at: string
+  created_by: string
+  updated_at: string
+}
+
+export interface DatabaseQuizQuestion {
+  id: string
+  quiz_id: string
+  question_text: string
+  options: string[]
+  correct_answer: number
+  explanation?: string
+  question_order: number
+  created_at: string
+}
+
+export interface DatabaseQuizResult {
+  id: string
+  quiz_id: string
+  user_id: string
+  score: number
+  total_questions: number
+  time_spent: number
+  completed_at: string
+  created_at: string
+}
+
+export interface DatabaseQuizAnswer {
+  id: string
+  quiz_result_id: string
+  question_id: string
+  selected_answer: number
+  time_spent: number
+  created_at: string
 }

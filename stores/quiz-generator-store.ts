@@ -18,10 +18,21 @@ export const useQuizGeneratorStore = create<QuizGeneratorState>((set) => ({
   isGenerating: false,
   error: null,
 
-  addGeneratedQuiz: (quiz) =>
+  addGeneratedQuiz: (quiz) => {
     set((state) => ({
       generatedQuizzes: [quiz, ...state.generatedQuizzes],
-    })),
+    }))
+
+    // También añadir al store de quizzes del usuario si está disponible
+    try {
+      const { useUserQuizzesStore } = require('./user-quizzes-store')
+      const userQuizzesStore = useUserQuizzesStore.getState()
+      userQuizzesStore.addQuiz(quiz)
+    } catch (error) {
+      // Store no disponible, continuar silenciosamente
+      console.log('User quizzes store not available')
+    }
+  },
 
   setIsGenerating: (isGenerating) => set({ isGenerating }),
 

@@ -1,4 +1,6 @@
+import { loadQuiz, saveQuizResult } from '@/lib/quiz-database'
 import { Quiz, QuizAnswer, QuizResult } from '@/types/quiz'
+import { Result } from '@/types/result.type'
 import { create } from 'zustand'
 
 interface QuizState {
@@ -8,16 +10,21 @@ interface QuizState {
   startTime: Date | null
   isQuizActive: boolean
   results: QuizResult | null
+  isLoading: boolean
+  error: string | null
 
   // Actions
   setCurrentQuiz: (quiz: Quiz) => void
+  loadQuizById: (quizId: string) => Promise<Result<Quiz>>
   startQuiz: () => void
   nextQuestion: () => void
   previousQuestion: () => void
   submitAnswer: (answer: QuizAnswer) => void
-  finishQuiz: () => void
+  finishQuiz: (userId?: string) => Promise<void>
   resetQuiz: () => void
   setResults: (results: QuizResult) => void
+  setLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
 }
 
 export const useQuizStore = create<QuizState>((set, get) => ({
@@ -27,8 +34,31 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   startTime: null,
   isQuizActive: false,
   results: null,
+  isLoading: false,
+  error: null,
 
   setCurrentQuiz: (quiz) => set({ currentQuiz: quiz }),
+
+  loadQuizById: async (quizId: string) => {
+    set({ isLoading: true, error: null })
+    try {
+      const result = await loadQuiz(quizId)
+      if (result.success && result.data) {
+        set({ currentQuiz: result.data, isLoading: false })
+        return result
+      } else {
+        set({
+          error: result.errorMessage || 'Error al cargar el quiz',
+          isLoading: false,
+        })
+        return result
+      }
+    } catch (error: any) {
+      const errorMessage = `Error inesperado: ${error.message}`
+      set({ error: errorMessage, isLoading: false })
+      return { success: false, errorMessage }
+    }
+  },
 
   startQuiz: () =>
     set({
@@ -72,7 +102,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       return { answers: updatedAnswers }
     }),
 
-  finishQuiz: () => {
+  finishQuiz: async (userId?: string) => {
     const state = get()
     if (!state.currentQuiz || !state.startTime) return
 
@@ -89,15 +119,39 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       }
     })
 
+    const score = Math.round(
+      (correctAnswers / state.currentQuiz.questions.length) * 100,
+    )
+
     const results: QuizResult = {
       quizId: state.currentQuiz.id,
+      userId,
       answers: state.answers,
-      score: Math.round(
-        (correctAnswers / state.currentQuiz.questions.length) * 100,
-      ),
+      score,
       totalQuestions: state.currentQuiz.questions.length,
       completedAt: endTime,
       timeSpent: Math.round(timeSpent),
+    }
+
+    // Guardar el resultado en la base de datos si hay un usuario
+    if (userId && state.currentQuiz.id) {
+      try {
+        const saveResult = await saveQuizResult(
+          state.currentQuiz.id,
+          userId,
+          state.answers,
+          score,
+          state.currentQuiz.questions.length,
+          Math.round(timeSpent),
+        )
+        if (saveResult.success) {
+          results.id = saveResult.data
+        } else {
+          console.error('Error al guardar resultado:', saveResult.errorMessage)
+        }
+      } catch (error) {
+        console.error('Error inesperado al guardar resultado:', error)
+      }
     }
 
     set({
@@ -117,4 +171,8 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     }),
 
   setResults: (results) => set({ results }),
+
+  setLoading: (loading) => set({ isLoading: loading }),
+
+  setError: (error) => set({ error }),
 }))

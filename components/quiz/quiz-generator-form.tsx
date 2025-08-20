@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { generateQuiz } from '@/lib/quiz-generator'
+import { useAuthStore } from '@/stores/auth-store'
 import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { QuizGeneratorSchema } from '@/types/quiz'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,6 +29,7 @@ export function QuizGeneratorFormComponent({
 }: QuizGeneratorFormProps) {
   const { isGenerating, addGeneratedQuiz, setIsGenerating, setError } =
     useQuizGeneratorStore()
+  const { user } = useAuthStore()
 
   const {
     register,
@@ -59,11 +61,17 @@ export function QuizGeneratorFormComponent({
     setError(null)
 
     try {
+      if (!user) {
+        setError('Debes estar autenticado para generar un quiz')
+        setIsGenerating(false)
+        return
+      }
+
       const {
         success,
         data: quiz,
         errorMessage,
-      } = await generateQuiz(data, '1')
+      } = await generateQuiz(data, user.id)
 
       if (!success && !quiz) {
         setError(errorMessage ?? 'Failed to generate quiz. Please try again.')

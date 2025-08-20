@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -13,6 +14,7 @@ import { HashLoader } from 'react-spinners'
 
 export function QuizInterface() {
   const router = useRouter()
+  const { user } = useAuthStore()
   const {
     currentQuiz,
     currentQuestionIndex,
@@ -75,10 +77,6 @@ export function QuizInterface() {
     )
   }
 
-  console.log('currentQuiz', currentQuiz)
-  console.log('currentQuestion', currentQuestion)
-  console.log('isLoading', isLoading)
-
   // Si no hay quiz o no hay pregunta actual y NO está cargando, mostrar mensaje de error
   if ((!currentQuiz || !currentQuestion) && !isLoading) {
     return (
@@ -103,7 +101,7 @@ export function QuizInterface() {
     setSelectedOption(optionIndex)
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedOption !== null) {
       const timeSpent = (Date.now() - questionStartTime.getTime()) / 1000
       const answer: QuizAnswer = {
@@ -116,8 +114,8 @@ export function QuizInterface() {
 
       if (isLastQuestion) {
         setIsLoading(true)
+        await finishQuiz(user?.id)
         router.push('/quiz/results')
-        finishQuiz()
         setIsLoading(false)
       } else {
         nextQuestion()

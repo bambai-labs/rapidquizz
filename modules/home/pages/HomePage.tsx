@@ -4,15 +4,17 @@ import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-for
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { useQuizStore } from '@/stores/quiz-store'
+import { useUserQuizzesStore } from '@/stores/user-quizzes-store'
 import { Quiz } from '@/types/quiz'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const HomePage = () => {
   const router = useRouter()
   const { generatedQuizzes } = useQuizGeneratorStore()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
+  const { userQuizzes, isLoading, loadUserQuizzes } = useUserQuizzesStore()
   const [showGenerator, setShowGenerator] = useState(false)
   const { user } = useAuthStore()
 
@@ -25,7 +27,18 @@ export const HomePage = () => {
 
   const handleQuizGenerated = () => {
     setShowGenerator(false)
+    // Recargar la lista de quizzes después de generar uno nuevo
+    if (user) {
+      loadUserQuizzes(user.id)
+    }
   }
+
+  // Cargar quizzes del usuario cuando se monta el componente
+  useEffect(() => {
+    if (user) {
+      loadUserQuizzes(user.id)
+    }
+  }, [user, loadUserQuizzes])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -74,11 +87,12 @@ export const HomePage = () => {
                 </motion.button>
               </div>
 
-              {generatedQuizzes.length > 0 && (
+              {/* Mostrar quizzes guardados en la base de datos */}
+              {userQuizzes.length > 0 && (
                 <div>
                   <h3 className="text-2xl font-semibold mb-6">Your Quizzes</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {generatedQuizzes.map((quiz) => (
+                    {userQuizzes.map((quiz) => (
                       <QuizCard
                         key={quiz.id}
                         quiz={quiz}
@@ -86,6 +100,25 @@ export const HomePage = () => {
                       />
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Mostrar loading state si está cargando */}
+              {isLoading && (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                  <p className="text-muted-foreground mt-2">
+                    Cargando quizzes...
+                  </p>
+                </div>
+              )}
+
+              {/* Mostrar mensaje si no hay quizzes */}
+              {!isLoading && userQuizzes.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">
+                    No tienes quizzes aún. ¡Crea tu primer quiz!
+                  </p>
                 </div>
               )}
             </motion.div>
