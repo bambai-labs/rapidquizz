@@ -5,15 +5,47 @@ import { Result } from '@/types/result.type'
 export async function generateQuiz(
   formData: QuizGeneratorForm,
   userId: string,
+  files?: File[],
 ): Promise<Result<Quiz>> {
   try {
-    // Llamar al nuevo endpoint API interno
+    let vectorStoreId: string | undefined
+    let useFiles = false
+
+    // Si hay archivos, subirlos primero a OpenAI
+    if (files && files.length > 0) {
+      const fileFormData = new FormData()
+      files.forEach((file) => fileFormData.append('files', file))
+
+      const uploadResponse = await fetch('/api/upload-files', {
+        method: 'POST',
+        body: fileFormData,
+      })
+
+      const uploadResult = await uploadResponse.json()
+
+      if (!uploadResult.success) {
+        return {
+          success: false,
+          errorMessage:
+            uploadResult.errorMessage || 'Error al subir los archivos',
+        }
+      }
+
+      vectorStoreId = uploadResult.data.vectorStoreId
+      useFiles = true
+    }
+
+    // Llamar al endpoint de generación de quiz
     const response = await fetch('/api/generate-quiz', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        ...formData,
+        useFiles,
+        vectorStoreId,
+      }),
     })
 
     const result = await response.json()

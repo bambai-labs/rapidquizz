@@ -73,7 +73,7 @@ export function QuizGeneratorFormComponent({
         success,
         data: quiz,
         errorMessage,
-      } = await generateQuiz(data, user.id)
+      } = await generateQuiz(data, user.id, uploadedFiles)
 
       if (!success && !quiz) {
         setError(errorMessage ?? 'Failed to generate quiz. Please try again.')

@@ -6,39 +6,32 @@ const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
 })
 
+interface QuizGeneratorFormWithFiles extends QuizGeneratorForm {
+  useFiles?: boolean
+  vectorStoreId?: string
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const formData: QuizGeneratorForm = await request.json()
+    const formData: QuizGeneratorFormWithFiles = await request.json()
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-5-mini',
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are a helpful assistant that generates quiz questions and answers for a given subject and topic.',
-        },
-        {
-          role: 'user',
-          content: `I want you to generate a quiz in JSON format.  
+    // Construir el prompt base
+    const basePrompt = `Generate a quiz in JSON format with the following specifications:
 
-Input parameters:  
-- Number of questions: ${formData.questionCount}  
-- Subject: ${formData.subject}  
-- Topics: ${formData.topics.join(', ')}  
-- Difficulty: ${formData.difficulty}  
+Parameters:
+- Number of questions: ${formData.questionCount}
+- Subject: ${formData.subject}
+- Topics: ${formData.topics.join(', ')}
+- Difficulty: ${formData.difficulty}
 
-Output requirements:  
-1. The JSON must contain an array called "questions".  
-2. Each element of the array should have the following structure:  
-   - "id": string (e.g., "q1", "q2", etc.)  
-   - "question": string (the question text).  
-   - "options": string[] (array of answer options).  
-   - "correctAnswer": number (index of the correct answer, starting from 0).  
-   - "explanation": string (optional, explanation of why the answer is correct).  
+The JSON must contain an array called "questions" with the following structure for each element:
+- "id": string (e.g., "q1", "q2", etc.)
+- "question": string (question text)
+- "options": string[] (array of answer options)
+- "correctAnswer": number (index of the correct answer, starting from 0)
+- "explanation": string (optional explanation of why the answer is correct)
 
-Example structure:  
-
+Example structure:
 {
   "questions": [
     {
@@ -51,27 +44,81 @@ Example structure:
   ]
 }
 
-Please generate the quiz now based on the provided parameters.
-`,
-        },
-      ],
-    })
+${
+  formData.useFiles && formData.vectorStoreId
+    ? 'IMPORTANT: Use the content of the provided documents as the primary reference for generating questions. Questions should be based on specific information from these documents.'
+    : 'Generate questions based on general knowledge about the specified topics.'
+}
 
-    const content = completion.choices[0].message.content
-    if (!content) {
-      throw new Error('No se recibió contenido de OpenAI')
-    }
+Generate the quiz now:`
 
-    const questions = (
-      JSON.parse(content) as {
-        questions: QuizQuestion[]
+    if (formData.useFiles && formData.vectorStoreId) {
+      // Usar Responses API con file_search
+      const response = await openai.responses.create({
+        model: 'gpt-5-mini',
+        input: basePrompt,
+        tools: [
+          {
+            type: 'file_search',
+            vector_store_ids: [formData.vectorStoreId],
+          },
+        ],
+      })
+
+      const responseContent = response.output_text
+      if (!responseContent) {
+        throw new Error('No se recibió respuesta del modelo')
       }
-    ).questions
 
-    return NextResponse.json({
-      success: true,
-      data: questions,
-    })
+      // Extraer JSON de la respuesta
+      const jsonMatch = responseContent.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) {
+        throw new Error('No se pudo extraer JSON de la respuesta del modelo')
+      }
+
+      const questions = JSON.parse(jsonMatch[0]).questions as QuizQuestion[]
+
+      return NextResponse.json({
+        success: true,
+        data: questions,
+      })
+    } else {
+      // Usar Chat Completions API sin archivos
+      const response = await openai.chat.completions.create({
+        model: 'gpt-5-mini',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are an assistant specialized in generating educational quizzes. Generate clear, precise questions appropriate for the specified difficulty level.',
+          },
+          {
+            role: 'user',
+            content: basePrompt,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 4000,
+      })
+
+      const responseContent = response.choices[0].message.content
+      if (!responseContent) {
+        throw new Error('No se recibió respuesta del modelo')
+      }
+
+      // Extraer JSON de la respuesta
+      const jsonMatch = responseContent.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) {
+        throw new Error('No se pudo extraer JSON de la respuesta')
+      }
+
+      const questions = JSON.parse(jsonMatch[0]).questions as QuizQuestion[]
+
+      return NextResponse.json({
+        success: true,
+        data: questions,
+      })
+    }
   } catch (error: any) {
     console.error('Error generando quiz:', error)
     return NextResponse.json(
