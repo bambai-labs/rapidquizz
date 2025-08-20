@@ -351,6 +351,109 @@ export async function loadQuizResults(
 }
 
 /**
+ * Actualiza un quiz existente en la base de datos
+ */
+export async function updateQuiz(
+  quiz: Quiz,
+  userId: string,
+): Promise<Result<void>> {
+  const supabase = createClient()
+
+  try {
+    // Verificar que el usuario es el propietario del quiz
+    const { data: quizData, error: checkError } = await supabase
+      .from('quizzes')
+      .select('created_by')
+      .eq('id', quiz.id)
+      .single()
+
+    if (checkError) {
+      return {
+        success: false,
+        errorMessage: `Error al verificar propietario: ${checkError.message}`,
+      }
+    }
+
+    if (quizData.created_by !== userId) {
+      return {
+        success: false,
+        errorMessage: 'No tienes permisos para editar este quiz',
+      }
+    }
+
+    // Actualizar datos del quiz principal
+    const { error: updateQuizError } = await supabase
+      .from('quizzes')
+      .update({
+        title: quiz.title,
+        subject: quiz.subject,
+        topics: quiz.topics,
+        difficulty: quiz.difficulty,
+        time_limit: quiz.timeLimit,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', quiz.id)
+
+    if (updateQuizError) {
+      console.error('Error al actualizar quiz:', updateQuizError)
+      return {
+        success: false,
+        errorMessage: `Error al actualizar el quiz: ${updateQuizError.message}`,
+      }
+    }
+
+    // Eliminar preguntas existentes
+    const { error: deleteQuestionsError } = await supabase
+      .from('quiz_questions')
+      .delete()
+      .eq('quiz_id', quiz.id)
+
+    if (deleteQuestionsError) {
+      console.error(
+        'Error al eliminar preguntas existentes:',
+        deleteQuestionsError,
+      )
+      return {
+        success: false,
+        errorMessage: `Error al eliminar preguntas existentes: ${deleteQuestionsError.message}`,
+      }
+    }
+
+    // Insertar nuevas preguntas
+    const questionsToInsert = quiz.questions.map((question, index) => ({
+      quiz_id: quiz.id,
+      question_text: question.question,
+      options: question.options,
+      correct_answer: question.correctAnswer,
+      explanation: question.explanation,
+      question_order: index,
+    }))
+
+    const { error: insertQuestionsError } = await supabase
+      .from('quiz_questions')
+      .insert(questionsToInsert)
+
+    if (insertQuestionsError) {
+      console.error('Error al insertar nuevas preguntas:', insertQuestionsError)
+      return {
+        success: false,
+        errorMessage: `Error al actualizar las preguntas: ${insertQuestionsError.message}`,
+      }
+    }
+
+    return {
+      success: true,
+    }
+  } catch (error: any) {
+    console.error('Error inesperado al actualizar quiz:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
  * Elimina un quiz y todos sus datos relacionados
  */
 export async function deleteQuiz(

@@ -58,8 +58,6 @@ export function QuizGeneratorFormComponent({
     name: 'topics' as never,
   })
 
-  const difficulty = watch('difficulty')
-
   const onSubmit = async (data: any) => {
     setIsGenerating(true)
     setError(null)

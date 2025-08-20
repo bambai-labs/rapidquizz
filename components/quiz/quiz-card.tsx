@@ -12,14 +12,15 @@ import {
 import { Quiz } from '@/types/quiz'
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
-import { BookOpen, Calendar, Clock } from 'lucide-react'
+import { BookOpen, Calendar, Clock, Edit } from 'lucide-react'
 
 interface QuizCardProps {
   quiz: Quiz
   onStartQuiz: (quiz: Quiz) => void
+  onEditQuiz: (quiz: Quiz) => void
 }
 
-export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
+export function QuizCard({ quiz, onStartQuiz, onEditQuiz }: QuizCardProps) {
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 border-green-200',
     medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -71,13 +72,22 @@ export function QuizCard({ quiz, onStartQuiz }: QuizCardProps) {
           </div>
         </CardContent>
 
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-2">
           <Button
             onClick={() => onStartQuiz(quiz)}
             className="w-full"
             size="sm"
           >
             Start Quiz
+          </Button>
+          <Button
+            onClick={() => onEditQuiz(quiz)}
+            variant="outline"
+            className="w-full"
+            size="sm"
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Editar Quiz
           </Button>
         </CardFooter>
       </Card>
