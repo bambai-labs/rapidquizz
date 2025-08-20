@@ -17,7 +17,8 @@ import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
 import { QuizGeneratorSchema } from '@/types/quiz'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Plus, Sparkles, Trash2, X } from 'lucide-react'
+import { FileText, Plus, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 
 interface QuizGeneratorFormProps {
@@ -31,6 +32,7 @@ export function QuizGeneratorFormComponent({
 }: QuizGeneratorFormProps) {
   const { isGenerating, addGeneratedQuiz, setIsGenerating, setError } =
     useQuizGeneratorStore()
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const { user } = useAuthStore()
 
   const {
@@ -99,6 +101,51 @@ export function QuizGeneratorFormComponent({
     if (fields.length > 1) {
       remove(index)
     }
+  }
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files) return
+
+    const validFiles: File[] = []
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+      if (fileExtension === 'pdf' || fileExtension === 'docx') {
+        // Check if file is not already added
+        if (
+          !uploadedFiles.some(
+            (existingFile: File) =>
+              existingFile.name === file.name &&
+              existingFile.size === file.size,
+          )
+        ) {
+          validFiles.push(file)
+        }
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setUploadedFiles((prev: File[]) => [...prev, ...validFiles])
+    }
+
+    // Reset input value to allow selecting the same file again
+    event.target.value = ''
+  }
+
+  const removeFile = (indexToRemove: number) => {
+    setUploadedFiles((prev: File[]) =>
+      prev.filter((_: File, index: number) => index !== indexToRemove),
+    )
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
   return (
@@ -185,6 +232,82 @@ export function QuizGeneratorFormComponent({
                 {errors.topics.message}
               </p>
             )}
+          </motion.div>
+
+          {/* File Upload Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="space-y-3"
+          >
+            <Label>Archivos de referencia (opcional)</Label>
+            <div className="space-y-3">
+              <div className="flex items-center justify-center w-full">
+                <label
+                  htmlFor="file-upload"
+                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <Upload className="w-8 h-8 mb-4 text-gray-500" />
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Haz clic para subir</span>{' '}
+                      o arrastra archivos
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      PDF o DOCX (Máximo 10MB por archivo)
+                    </p>
+                  </div>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    accept=".pdf,.docx"
+                    multiple
+                    onChange={handleFileUpload}
+                  />
+                </label>
+              </div>
+
+              {/* Lista de archivos subidos */}
+              {uploadedFiles.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Archivos seleccionados:</p>
+                  <AnimatePresence>
+                    {uploadedFiles.map((file: File, index: number) => (
+                      <motion.div
+                        key={`${file.name}-${index}`}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-5 h-5 text-blue-500" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {formatFileSize(file.size)}
+                            </p>
+                          </div>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFile(index)}
+                          className="text-gray-500 hover:text-red-500"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
           </motion.div>
 
           {/* Difficulty and Question Count */}
