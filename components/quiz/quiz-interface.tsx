@@ -1,4 +1,15 @@
 'use client'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -7,7 +18,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { CheckCircle, ChevronLeft, ChevronRight, Clock, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HashLoader } from 'react-spinners'
@@ -31,6 +42,7 @@ export function QuizInterface() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   const [questionStartTime, setQuestionStartTime] = useState<Date>(new Date())
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null) // Total seconds remaining
+  const [showCancelDialog, setShowCancelDialog] = useState(false)
   const currentQuestion = currentQuiz?.questions[currentQuestionIndex]
   const isLastQuestion =
     currentQuiz && currentQuestionIndex === currentQuiz.questions.length - 1
@@ -130,6 +142,10 @@ export function QuizInterface() {
     }
   }
 
+  const handleCancelQuiz = () => {
+    router.push('/dashboard')
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Header */}
@@ -147,17 +163,52 @@ export function QuizInterface() {
             </p>
           </div>
 
-          {timeRemaining !== null && (
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-muted-foreground" />
-              <Badge
-                variant={timeRemaining <= 60 ? 'destructive' : 'secondary'}
-              >
-                {Math.floor(timeRemaining / 60)}:
-                {String(timeRemaining % 60).padStart(2, '0')}
-              </Badge>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {timeRemaining !== null && (
+              <div className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-muted-foreground" />
+                <Badge
+                  variant={timeRemaining <= 60 ? 'destructive' : 'secondary'}
+                >
+                  {Math.floor(timeRemaining / 60)}:
+                  {String(timeRemaining % 60).padStart(2, '0')}
+                </Badge>
+              </div>
+            )}
+
+            <AlertDialog
+              open={showCancelDialog}
+              onOpenChange={setShowCancelDialog}
+            >
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-destructive"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>¿Cancelar quiz?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    ¿Estás seguro de que quieres cancelar el quiz? Se perderá
+                    todo el progreso realizado hasta ahora.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Continuar quiz</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleCancelQuiz}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Sí, cancelar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
 
         <Progress value={progress} className="h-2" />
