@@ -14,6 +14,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
@@ -180,15 +186,24 @@ export function QuizInterface() {
               open={showCancelDialog}
               onOpenChange={setShowCancelDialog}
             >
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-destructive"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </AlertDialogTrigger>
+              <TooltipProvider>
+                <Tooltip>
+                  <AlertDialogTrigger asChild>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground hover:text-destructive"
+                      >
+                        <X className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger>
+                  </AlertDialogTrigger>
+                  <TooltipContent>
+                    <p>Cancel Quiz</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>¿Cancelar quiz?</AlertDialogTitle>
