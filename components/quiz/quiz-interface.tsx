@@ -30,7 +30,7 @@ export function QuizInterface() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
   const [questionStartTime, setQuestionStartTime] = useState<Date>(new Date())
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null) // Total seconds remaining
   const currentQuestion = currentQuiz?.questions[currentQuestionIndex]
   const isLastQuestion =
     currentQuiz && currentQuestionIndex === currentQuiz.questions.length - 1
@@ -43,14 +43,15 @@ export function QuizInterface() {
     if (!currentQuiz?.timeLimit || !startTime) return
 
     const interval = setInterval(() => {
-      const elapsed = (Date.now() - startTime.getTime()) / 1000 / 60 // minutes
-      const remaining = currentQuiz.timeLimit! - elapsed
+      const elapsedSeconds = (Date.now() - startTime.getTime()) / 1000
+      const totalTimeInSeconds = currentQuiz.timeLimit! * 60 // Convert minutes to seconds
+      const remainingSeconds = totalTimeInSeconds - elapsedSeconds
 
-      if (remaining <= 0) {
+      if (remainingSeconds <= 0) {
         finishQuiz()
         setTimeRemaining(0)
       } else {
-        setTimeRemaining(Math.ceil(remaining))
+        setTimeRemaining(Math.ceil(remainingSeconds))
       }
     }, 1000)
 
@@ -149,8 +150,11 @@ export function QuizInterface() {
           {timeRemaining !== null && (
             <div className="flex items-center gap-2">
               <Clock className="w-5 h-5 text-muted-foreground" />
-              <Badge variant={timeRemaining <= 5 ? 'destructive' : 'secondary'}>
-                {timeRemaining} min left
+              <Badge
+                variant={timeRemaining <= 60 ? 'destructive' : 'secondary'}
+              >
+                {Math.floor(timeRemaining / 60)}:
+                {String(timeRemaining % 60).padStart(2, '0')}
               </Badge>
             </div>
           )}
