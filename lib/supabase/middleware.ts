@@ -39,7 +39,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const protectedRoutes = ['/dashboard']
+  const protectedRoutes = ['/dashboard', '/quiz', '/quiz/edit/*']
   const publicRoutes = ['/login', '/register', '/error', '/']
   const currentPath = new URL(request.url).pathname
 
@@ -50,18 +50,6 @@ export async function updateSession(request: NextRequest) {
   if (publicRoutes.includes(currentPath) && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
-
-  // if (
-  //   !user &&
-  //   !request.nextUrl.pathname.startsWith('/login') &&
-  //   !request.nextUrl.pathname.startsWith('/register') &&
-  //   !request.nextUrl.pathname.startsWith('/error')
-  // ) {
-  //   // no user, potentially respond by redirecting the user to the login page
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url)
-  // }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
