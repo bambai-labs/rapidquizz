@@ -1,4 +1,8 @@
-import { loadQuiz, saveQuizResult } from '@/lib/quiz-database'
+import {
+  loadQuiz,
+  loadQuizForSharing,
+  saveQuizResult,
+} from '@/lib/quiz-database'
 import { Quiz, QuizAnswer, QuizResult } from '@/types/quiz'
 import { Result } from '@/types/result.type'
 import { create } from 'zustand'
@@ -16,6 +20,7 @@ interface QuizState {
   // Actions
   setCurrentQuiz: (quiz: Quiz) => void
   loadQuizById: (quizId: string) => Promise<Result<Quiz>>
+  loadQuizForSharing: (quizId: string, userId?: string) => Promise<Result<Quiz>>
   startQuiz: () => void
   nextQuestion: () => void
   previousQuestion: () => void
@@ -43,6 +48,27 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       const result = await loadQuiz(quizId)
+      if (result.success && result.data) {
+        set({ currentQuiz: result.data, isLoading: false })
+        return result
+      } else {
+        set({
+          error: result.errorMessage || 'Error al cargar el quiz',
+          isLoading: false,
+        })
+        return result
+      }
+    } catch (error: any) {
+      const errorMessage = `Error inesperado: ${error.message}`
+      set({ error: errorMessage, isLoading: false })
+      return { success: false, errorMessage }
+    }
+  },
+
+  loadQuizForSharing: async (quizId: string, userId?: string) => {
+    set({ isLoading: true, error: null })
+    try {
+      const result = await loadQuizForSharing(quizId, userId)
       if (result.success && result.data) {
         set({ currentQuiz: result.data, isLoading: false })
         return result

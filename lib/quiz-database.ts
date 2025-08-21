@@ -143,6 +143,89 @@ export async function loadQuiz(quizId: string): Promise<Result<Quiz>> {
 }
 
 /**
+ * Carga un quiz que puede ser público o del usuario actual
+ * Esta función permite cargar quizzes públicos sin restricciones de usuario
+ */
+export async function loadQuizForSharing(
+  quizId: string,
+  userId?: string,
+): Promise<Result<Quiz>> {
+  const supabase = createClient()
+
+  try {
+    // Cargar datos del quiz
+    const { data: quizData, error: quizError } = await supabase
+      .from('quizzes')
+      .select('*')
+      .eq('id', quizId)
+      .single()
+
+    if (quizError) {
+      return {
+        success: false,
+        errorMessage: `Error al cargar quiz: ${quizError.message}`,
+      }
+    }
+
+    // Verificar si el usuario tiene acceso al quiz
+    const isOwner = userId && quizData.created_by === userId
+    const isPublic = quizData.is_public
+
+    if (!isPublic && !isOwner) {
+      return {
+        success: false,
+        errorMessage: 'No tienes permisos para acceder a este quiz',
+      }
+    }
+
+    // Cargar preguntas del quiz
+    const { data: questionsData, error: questionsError } = await supabase
+      .from('quiz_questions')
+      .select('*')
+      .eq('quiz_id', quizId)
+      .order('question_order')
+
+    if (questionsError) {
+      return {
+        success: false,
+        errorMessage: `Error al cargar preguntas: ${questionsError.message}`,
+      }
+    }
+
+    // Convertir datos de base de datos a tipos de la aplicación
+    const quiz: Quiz = {
+      id: quizData.id,
+      title: quizData.title,
+      subject: quizData.subject,
+      topics: quizData.topics,
+      difficulty: quizData.difficulty,
+      timeLimit: quizData.time_limit,
+      createdAt: new Date(quizData.created_at),
+      createdBy: quizData.created_by,
+      isPublic: quizData.is_public || false,
+      questions: questionsData.map((q) => ({
+        id: q.id,
+        question: q.question_text,
+        options: q.options,
+        correctAnswer: q.correct_answer,
+        explanation: q.explanation,
+      })),
+    }
+
+    return {
+      success: true,
+      data: quiz,
+    }
+  } catch (error: any) {
+    console.error('Error inesperado al cargar quiz:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
  * Carga todos los quizzes del usuario actual
  */
 export async function loadUserQuizzes(userId: string): Promise<Result<Quiz[]>> {
