@@ -1,4 +1,8 @@
-import { deleteQuiz, loadUserQuizzes } from '@/lib/quiz-database'
+import {
+  deleteQuiz,
+  loadUserQuizzes,
+  updateQuizVisibility,
+} from '@/lib/quiz-database'
 import { Quiz } from '@/types/quiz'
 import { Result } from '@/types/result.type'
 import { create } from 'zustand'
@@ -11,6 +15,11 @@ interface UserQuizzesState {
   // Actions
   loadUserQuizzes: (userId: string) => Promise<Result<Quiz[]>>
   deleteUserQuiz: (quizId: string, userId: string) => Promise<Result<void>>
+  updateQuizVisibility: (
+    quizId: string,
+    isPublic: boolean,
+    userId: string,
+  ) => Promise<Result<void>>
   addQuiz: (quiz: Quiz) => void
   updateQuiz: (quiz: Quiz) => void
   setLoading: (loading: boolean) => void
@@ -64,6 +73,29 @@ export const useUserQuizzesStore = create<UserQuizzesState>((set, get) => ({
     } catch (error: any) {
       const errorMessage = `Error inesperado: ${error.message}`
       set({ error: errorMessage, isLoading: false })
+      return { success: false, errorMessage }
+    }
+  },
+
+  updateQuizVisibility: async (
+    quizId: string,
+    isPublic: boolean,
+    userId: string,
+  ) => {
+    try {
+      const result = await updateQuizVisibility(quizId, isPublic, userId)
+      if (result.success) {
+        // Actualizar el quiz en la lista local
+        const currentQuizzes = get().userQuizzes
+        set({
+          userQuizzes: currentQuizzes.map((quiz) =>
+            quiz.id === quizId ? { ...quiz, isPublic } : quiz,
+          ),
+        })
+      }
+      return result
+    } catch (error: any) {
+      const errorMessage = `Error inesperado: ${error.message}`
       return { success: false, errorMessage }
     }
   },

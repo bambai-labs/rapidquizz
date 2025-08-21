@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
     topics TEXT[] NOT NULL,
     difficulty TEXT NOT NULL CHECK (difficulty IN ('easy', 'medium', 'hard')),
     time_limit INTEGER, -- en minutos
+    is_public BOOLEAN DEFAULT FALSE, -- columna para visibilidad pública/privada
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -176,5 +177,49 @@ CREATE POLICY "Quiz creators can view answers to their quizzes" ON quiz_answers
             SELECT 1 FROM quiz_results qr
             JOIN quizzes q ON qr.quiz_id = q.id
             WHERE qr.id = quiz_result_id AND q.created_by = auth.uid()
+        )
+    );
+
+-- =============================================================================
+-- MIGRACIÓN PARA BASES DE DATOS EXISTENTES
+-- Ejecutar este bloque solo si ya tienes la tabla quizzes creada sin is_public
+-- =============================================================================
+
+-- Añadir columna is_public a tabla existente
+ALTER TABLE quizzes ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE;
+
+-- Crear índice para optimizar búsquedas por quizzes públicos
+CREATE INDEX IF NOT EXISTS idx_quizzes_is_public ON quizzes(is_public);
+
+-- Actualizar políticas RLS para permitir acceso a quizzes públicos
+-- Eliminar política existente si existe
+DROP POLICY IF EXISTS "Users can view their own quizzes" ON quizzes;
+
+-- Nueva política: Los usuarios pueden ver sus propios quizzes Y los quizzes públicos
+CREATE POLICY "Users can view own and public quizzes" ON quizzes
+    FOR SELECT USING (auth.uid() = created_by OR is_public = true);
+
+-- Eliminar política existente para quiz_questions
+DROP POLICY IF EXISTS "Users can view questions from their own quizzes" ON quiz_questions;
+
+-- Nueva política: Los usuarios pueden ver preguntas de sus propios quizzes Y de quizzes públicos
+CREATE POLICY "Users can view questions from own and public quizzes" ON quiz_questions
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM quizzes 
+            WHERE id = quiz_id AND (created_by = auth.uid() OR is_public = true)
+        )
+    );
+
+-- Política adicional: Cualquier usuario autenticado puede ver quizzes públicos
+CREATE POLICY "Anyone can view public quizzes" ON quizzes
+    FOR SELECT USING (is_public = true);
+
+-- Política adicional: Cualquier usuario autenticado puede ver preguntas de quizzes públicos
+CREATE POLICY "Anyone can view public quiz questions" ON quiz_questions
+    FOR SELECT USING (
+        EXISTS (
+            SELECT 1 FROM quizzes 
+            WHERE id = quiz_id AND is_public = true
         )
     );

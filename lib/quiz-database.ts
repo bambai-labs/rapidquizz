@@ -22,6 +22,7 @@ export async function saveQuiz(
         difficulty: quiz.difficulty,
         time_limit: quiz.timeLimit,
         created_by: userId,
+        is_public: quiz.isPublic || false,
       })
       .select('id')
       .single()
@@ -118,6 +119,7 @@ export async function loadQuiz(quizId: string): Promise<Result<Quiz>> {
       timeLimit: quizData.time_limit,
       createdAt: new Date(quizData.created_at),
       createdBy: quizData.created_by,
+      isPublic: quizData.is_public || false,
       questions: questionsData.map((q) => ({
         id: q.id,
         question: q.question_text,
@@ -174,6 +176,7 @@ export async function loadUserQuizzes(userId: string): Promise<Result<Quiz[]>> {
       timeLimit: quizData.time_limit,
       createdAt: new Date(quizData.created_at),
       createdBy: quizData.created_by,
+      isPublic: quizData.is_public || false,
       questions: quizData.quiz_questions
         .sort((a: any, b: any) => a.question_order - b.question_order)
         .map((q: any) => ({
@@ -390,6 +393,7 @@ export async function updateQuiz(
         topics: quiz.topics,
         difficulty: quiz.difficulty,
         time_limit: quiz.timeLimit,
+        is_public: quiz.isPublic || false,
         updated_at: new Date().toISOString(),
       })
       .eq('id', quiz.id)
@@ -446,6 +450,67 @@ export async function updateQuiz(
     }
   } catch (error: any) {
     console.error('Error inesperado al actualizar quiz:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
+ * Actualiza la visibilidad de un quiz (público/privado)
+ */
+export async function updateQuizVisibility(
+  quizId: string,
+  isPublic: boolean,
+  userId: string,
+): Promise<Result<void>> {
+  const supabase = createClient()
+
+  try {
+    // Verificar que el usuario es el propietario del quiz
+    const { data: quizData, error: checkError } = await supabase
+      .from('quizzes')
+      .select('created_by')
+      .eq('id', quizId)
+      .single()
+
+    if (checkError) {
+      return {
+        success: false,
+        errorMessage: `Error al verificar propietario: ${checkError.message}`,
+      }
+    }
+
+    if (quizData.created_by !== userId) {
+      return {
+        success: false,
+        errorMessage: 'No tienes permisos para modificar este quiz',
+      }
+    }
+
+    // Actualizar la visibilidad del quiz
+    const { error: updateError } = await supabase
+      .from('quizzes')
+      .update({
+        is_public: isPublic,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', quizId)
+
+    if (updateError) {
+      console.error('Error al actualizar visibilidad:', updateError)
+      return {
+        success: false,
+        errorMessage: `Error al actualizar la visibilidad: ${updateError.message}`,
+      }
+    }
+
+    return {
+      success: true,
+    }
+  } catch (error: any) {
+    console.error('Error inesperado al actualizar visibilidad:', error)
     return {
       success: false,
       errorMessage: `Error inesperado: ${error.message}`,

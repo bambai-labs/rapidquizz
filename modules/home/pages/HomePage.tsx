@@ -12,7 +12,8 @@ import { useEffect, useState } from 'react'
 export const HomePage = () => {
   const router = useRouter()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
-  const { userQuizzes, isLoading, loadUserQuizzes } = useUserQuizzesStore()
+  const { userQuizzes, isLoading, loadUserQuizzes, updateQuizVisibility } =
+    useUserQuizzesStore()
   const [showGenerator, setShowGenerator] = useState(false)
   const { user } = useAuthStore()
 
@@ -32,6 +33,14 @@ export const HomePage = () => {
     if (user) {
       loadUserQuizzes(user.id)
     }
+  }
+
+  const handleUpdateQuizVisibility = async (
+    quizId: string,
+    isPublic: boolean,
+  ) => {
+    if (!user) return
+    await updateQuizVisibility(quizId, isPublic, user.id)
   }
 
   useEffect(() => {
@@ -99,6 +108,7 @@ export const HomePage = () => {
                         quiz={quiz}
                         onStartQuiz={handleStartQuiz}
                         onEditQuiz={handleEditQuiz}
+                        onUpdateQuizVisibility={handleUpdateQuizVisibility}
                       />
                     ))}
                   </div>

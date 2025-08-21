@@ -25,6 +25,7 @@ export const QuizSchema = z.object({
   createdBy: z.string(),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   timeLimit: z.number().optional(),
+  isPublic: z.boolean().default(false),
 })
 
 export const QuizGeneratorSchema = z.object({
@@ -75,6 +76,7 @@ export interface DatabaseQuiz {
   created_at: string
   created_by: string
   updated_at: string
+  is_public: boolean
 }
 
 export interface DatabaseQuizQuestion {

@@ -12,19 +12,33 @@ import {
 import { Quiz } from '@/types/quiz'
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
-import { BookOpen, Calendar, Clock, Edit } from 'lucide-react'
+import { BookOpen, Calendar, Clock, Edit, Share } from 'lucide-react'
+import { useState } from 'react'
+import { ShareQuizDialog } from './share-quiz-dialog'
 
 interface QuizCardProps {
   quiz: Quiz
   onStartQuiz: (quiz: Quiz) => void
   onEditQuiz: (quiz: Quiz) => void
+  onUpdateQuizVisibility?: (quizId: string, isPublic: boolean) => Promise<void>
 }
 
-export function QuizCard({ quiz, onStartQuiz, onEditQuiz }: QuizCardProps) {
+export function QuizCard({
+  quiz,
+  onStartQuiz,
+  onEditQuiz,
+  onUpdateQuizVisibility,
+}: QuizCardProps) {
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 border-green-200',
     medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     hard: 'bg-red-100 text-red-800 border-red-200',
+  }
+
+  const handleShare = () => {
+    setIsShareDialogOpen(true)
   }
 
   return (
@@ -78,19 +92,37 @@ export function QuizCard({ quiz, onStartQuiz, onEditQuiz }: QuizCardProps) {
             className="w-full"
             size="sm"
           >
-            Start Quiz
+            Comenzar Quiz
           </Button>
-          <Button
-            onClick={() => onEditQuiz(quiz)}
-            variant="outline"
-            className="w-full"
-            size="sm"
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            Editar Quiz
-          </Button>
+          <div className="flex gap-2 w-full">
+            <Button
+              onClick={() => onEditQuiz(quiz)}
+              variant="outline"
+              className="flex-1"
+              size="sm"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Editar
+            </Button>
+            <Button
+              onClick={handleShare}
+              variant="outline"
+              className="flex-1"
+              size="sm"
+            >
+              <Share className="w-4 h-4 mr-2" />
+              Compartir
+            </Button>
+          </div>
         </CardFooter>
       </Card>
+
+      <ShareQuizDialog
+        quiz={quiz}
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        onUpdateQuizVisibility={onUpdateQuizVisibility}
+      />
     </motion.div>
   )
 }
