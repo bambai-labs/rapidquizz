@@ -27,6 +27,7 @@ import {
   Lightbulb,
   Plus,
   Puzzle,
+  RefreshCw,
   Rocket,
   Sparkles,
   Star,
@@ -40,6 +41,7 @@ import {
 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 interface QuizGeneratorFormProps {
   onQuizGenerated?: () => void
@@ -54,6 +56,8 @@ export function QuizGeneratorFormComponent({
     useQuizGeneratorStore()
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [currentMessage, setCurrentMessage] = useState(0)
+  const [hasError, setHasError] = useState(false)
+  const [lastFormData, setLastFormData] = useState<any>(null)
   const { user } = useAuthStore()
 
   const loadingMessages = [
@@ -125,10 +129,17 @@ export function QuizGeneratorFormComponent({
   const onSubmit = async (data: any) => {
     setIsGenerating(true)
     setError(null)
+    setHasError(false)
+    setLastFormData(data)
 
     try {
       if (!user) {
-        setError('Debes estar autenticado para generar un quiz')
+        const errorMsg = 'Debes estar autenticado para generar un quiz'
+        setError(errorMsg)
+        setHasError(true)
+        toast.error('Error de autenticación', {
+          description: errorMsg,
+        })
         setIsGenerating(false)
         return
       }
@@ -140,18 +151,49 @@ export function QuizGeneratorFormComponent({
       } = await generateQuiz(data, user!.id, uploadedFiles)
 
       if (!success && !quiz) {
-        setError(errorMessage ?? 'Failed to generate quiz. Please try again.')
+        const errorMsg =
+          errorMessage ??
+          'Error al generar el quiz. Por favor intenta de nuevo.'
+        setError(errorMsg)
+        setHasError(true)
+        toast.error('Error al generar quiz', {
+          description: errorMsg,
+          action: {
+            label: 'Reintentar',
+            onClick: () => handleRetry(),
+          },
+        })
         setIsGenerating(false)
         return
       }
 
       addGeneratedQuiz(quiz!)
+      setHasError(false)
+      toast.success('¡Quiz generado exitosamente!', {
+        description: 'Tu quiz está listo para usar.',
+      })
       onQuizGenerated?.()
     } catch (error) {
-      setError('Failed to generate quiz. Please try again.')
+      const errorMsg =
+        'Error inesperado al generar el quiz. Por favor intenta de nuevo.'
+      setError(errorMsg)
+      setHasError(true)
       console.error('Quiz generation error:', error)
+      toast.error('Error inesperado', {
+        description: errorMsg,
+        action: {
+          label: 'Reintentar',
+          onClick: () => handleRetry(),
+        },
+      })
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleRetry = async () => {
+    if (lastFormData) {
+      await onSubmit(lastFormData)
     }
   }
 
@@ -548,6 +590,7 @@ export function QuizGeneratorFormComponent({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
+              className="space-y-3"
             >
               <Button
                 type="submit"
@@ -560,6 +603,32 @@ export function QuizGeneratorFormComponent({
                   Generar Quiz
                 </div>
               </Button>
+
+              {/* Retry Button - Solo se muestra cuando hay error */}
+              <AnimatePresence>
+                {hasError && !isGenerating && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleRetry}
+                      disabled={isGenerating}
+                      className="w-full border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-800"
+                      size="lg"
+                    >
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="w-5 h-5" />
+                        Reintentar Generación
+                      </div>
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
 
             {/* Cancel Button */}

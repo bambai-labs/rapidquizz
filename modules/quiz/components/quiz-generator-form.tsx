@@ -1,24 +1,37 @@
-"use client";
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { generateQuiz } from '@/lib/quiz-generator';
-import { useQuizGeneratorStore } from '@/stores/quiz-generator-store';
-import { QuizGeneratorSchema } from '@/types/quiz';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, Sparkles, Trash2 } from 'lucide-react';
-import { useFieldArray, useForm } from 'react-hook-form';
+'use client'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { LoadingSpinner } from '@/components/ui/loading-spinner'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { generateQuiz } from '@/lib/quiz-generator'
+import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
+import { QuizGeneratorSchema } from '@/types/quiz'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Plus, RefreshCw, Sparkles, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { useFieldArray, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 interface QuizGeneratorFormProps {
-  onQuizGenerated?: () => void;
+  onQuizGenerated?: () => void
 }
 
-export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFormProps) {
-  const { isGenerating, addGeneratedQuiz, setIsGenerating, setError } = useQuizGeneratorStore();
+export function QuizGeneratorFormComponent({
+  onQuizGenerated,
+}: QuizGeneratorFormProps) {
+  const { isGenerating, addGeneratedQuiz, setIsGenerating, setError } =
+    useQuizGeneratorStore()
+  const [hasError, setHasError] = useState(false)
+  const [lastFormData, setLastFormData] = useState<any>(null)
 
   const {
     register,
@@ -36,41 +49,77 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
       questionCount: 5,
       timeLimit: 30,
     },
-  });
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'topics' as never,
-  });
+  })
 
-  const difficulty = watch('difficulty');
+  const difficulty = watch('difficulty')
 
   const onSubmit = async (data: any) => {
-    
-    setIsGenerating(true);
-    setError(null);
+    setIsGenerating(true)
+    setError(null)
+    setHasError(false)
+    setLastFormData(data)
 
     try {
-      const quiz = await generateQuiz(data, "1");
-      addGeneratedQuiz(quiz);
-      onQuizGenerated?.();
+      const result = await generateQuiz(data, '1')
+      if (!result.success || !result.data) {
+        const errorMsg =
+          result.errorMessage ??
+          'Error al generar el quiz. Por favor intenta de nuevo.'
+        setError(errorMsg)
+        setHasError(true)
+        toast.error('Error al generar quiz', {
+          description: errorMsg,
+          action: {
+            label: 'Reintentar',
+            onClick: () => handleRetry(),
+          },
+        })
+        return
+      }
+      addGeneratedQuiz(result.data)
+      setHasError(false)
+      toast.success('¡Quiz generado exitosamente!', {
+        description: 'Tu quiz está listo para usar.',
+      })
+      onQuizGenerated?.()
     } catch (error) {
-      setError('Failed to generate quiz. Please try again.');
-      console.error('Quiz generation error:', error);
+      const errorMsg =
+        'Error inesperado al generar el quiz. Por favor intenta de nuevo.'
+      setError(errorMsg)
+      setHasError(true)
+      console.error('Quiz generation error:', error)
+      toast.error('Error inesperado', {
+        description: errorMsg,
+        action: {
+          label: 'Reintentar',
+          onClick: () => handleRetry(),
+        },
+      })
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
+
+  const handleRetry = async () => {
+    if (lastFormData) {
+      await onSubmit(lastFormData)
+    }
+  }
 
   const addTopic = () => {
-    append('');
-  };
+    append('')
+  }
 
   const removeTopic = (index: number) => {
     if (fields.length > 1) {
-      remove(index);
+      remove(index)
     }
-  };
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
@@ -96,7 +145,9 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
               className={errors.subject ? 'border-destructive' : ''}
             />
             {errors.subject && (
-              <p className="text-sm text-destructive mt-1">{errors.subject.message}</p>
+              <p className="text-sm text-destructive mt-1">
+                {errors.subject.message}
+              </p>
             )}
           </motion.div>
 
@@ -120,7 +171,9 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
                   <Input
                     placeholder={`Topic ${index + 1}`}
                     {...register(`topics.${index}` as const)}
-                    className={errors.topics?.[index] ? 'border-destructive' : ''}
+                    className={
+                      errors.topics?.[index] ? 'border-destructive' : ''
+                    }
                   />
                   {fields.length > 1 && (
                     <Button
@@ -136,7 +189,7 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
                 </motion.div>
               ))}
             </AnimatePresence>
-            
+
             <Button
               type="button"
               variant="outline"
@@ -146,9 +199,11 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
               <Plus className="w-4 h-4 mr-2" />
               Add Topic
             </Button>
-            
+
             {errors.topics && (
-              <p className="text-sm text-destructive">{errors.topics.message}</p>
+              <p className="text-sm text-destructive">
+                {errors.topics.message}
+              </p>
             )}
           </motion.div>
 
@@ -161,7 +216,10 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
           >
             <div>
               <Label htmlFor="difficulty">Difficulty</Label>
-              <Select onValueChange={(value: any) => setValue('difficulty', value)} defaultValue="medium">
+              <Select
+                onValueChange={(value: any) => setValue('difficulty', value)}
+                defaultValue="medium"
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -184,7 +242,9 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
                 className={errors.questionCount ? 'border-destructive' : ''}
               />
               {errors.questionCount && (
-                <p className="text-sm text-destructive mt-1">{errors.questionCount.message}</p>
+                <p className="text-sm text-destructive mt-1">
+                  {errors.questionCount.message}
+                </p>
               )}
             </div>
           </motion.div>
@@ -206,7 +266,9 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
               className={errors.timeLimit ? 'border-destructive' : ''}
             />
             {errors.timeLimit && (
-              <p className="text-sm text-destructive mt-1">{errors.timeLimit.message}</p>
+              <p className="text-sm text-destructive mt-1">
+                {errors.timeLimit.message}
+              </p>
             )}
           </motion.div>
 
@@ -215,6 +277,7 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            className="space-y-3"
           >
             <Button
               type="submit"
@@ -225,18 +288,44 @@ export function QuizGeneratorFormComponent({ onQuizGenerated }: QuizGeneratorFor
               {isGenerating ? (
                 <div className="flex items-center gap-2">
                   <LoadingSpinner size="sm" />
-                  Generating Quiz...
+                  Generando Quiz...
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
-                  Generate Quiz
+                  Generar Quiz
                 </div>
               )}
             </Button>
+
+            {/* Retry Button - Solo se muestra cuando hay error */}
+            <AnimatePresence>
+              {hasError && !isGenerating && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleRetry}
+                    disabled={isGenerating}
+                    className="w-full border-orange-200 bg-orange-50 text-orange-700 hover:bg-orange-100 hover:text-orange-800"
+                    size="lg"
+                  >
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-5 h-5" />
+                      Reintentar Generación
+                    </div>
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </form>
       </CardContent>
     </Card>
-  );
+  )
 }
