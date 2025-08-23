@@ -1,5 +1,5 @@
 'use client'
-import { QuizCard } from '@/components/quiz/quiz-card'
+import { ExportFormat, ExportType, QuizCard } from '@/components/quiz/quiz-card'
 import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
@@ -60,6 +60,22 @@ export const HomePage = () => {
       // El error se mostrará en el componente QuizCard
       throw new Error(result.errorMessage || 'Error al eliminar el quiz')
     }
+  }
+
+  const handleExportQuiz = async (
+    quiz: Quiz,
+    format: ExportFormat,
+    type: ExportType,
+  ) => {
+    if (!user) return
+
+    // TODO: Implementar lógica de exportación
+    console.log(`Exportando quiz "${quiz.title}" como ${format} (${type})`)
+
+    // Placeholder para futuro desarrollo
+    alert(
+      `Exportando quiz "${quiz.title}" como ${format} (${type}). Esta funcionalidad será implementada pronto.`,
+    )
   }
 
   useEffect(() => {
@@ -130,6 +146,7 @@ export const HomePage = () => {
                         onViewResponses={handleViewResponses}
                         onDeleteQuiz={handleDeleteQuiz}
                         onUpdateQuizVisibility={handleUpdateQuizVisibility}
+                        onExportQuiz={handleExportQuiz}
                       />
                     ))}
                   </div>

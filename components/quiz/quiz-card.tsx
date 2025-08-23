@@ -14,6 +14,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Quiz } from '@/types/quiz'
@@ -23,6 +26,7 @@ import {
   BookOpen,
   Calendar,
   Clock,
+  Download,
   Edit,
   FileText,
   MoreVertical,
@@ -33,6 +37,9 @@ import { useState } from 'react'
 import { DeleteQuizDialog } from './delete-quiz-dialog'
 import { ShareQuizDialog } from './share-quiz-dialog'
 
+type ExportFormat = 'pdf' | 'docx'
+type ExportType = 'questions' | 'answers' | 'both'
+
 interface QuizCardProps {
   quiz: Quiz
   onStartQuiz: (quiz: Quiz) => void
@@ -40,6 +47,11 @@ interface QuizCardProps {
   onViewResponses?: (quiz: Quiz) => void
   onDeleteQuiz?: (quiz: Quiz) => Promise<void>
   onUpdateQuizVisibility?: (quizId: string, isPublic: boolean) => Promise<void>
+  onExportQuiz?: (
+    quiz: Quiz,
+    format: ExportFormat,
+    type: ExportType,
+  ) => Promise<void>
 }
 
 export function QuizCard({
@@ -49,6 +61,7 @@ export function QuizCard({
   onViewResponses,
   onDeleteQuiz,
   onUpdateQuizVisibility,
+  onExportQuiz,
 }: QuizCardProps) {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
@@ -71,6 +84,12 @@ export function QuizCard({
   const handleViewResponses = () => {
     if (onViewResponses) {
       onViewResponses(quiz)
+    }
+  }
+
+  const handleExport = async (format: ExportFormat, type: ExportType) => {
+    if (onExportQuiz) {
+      await onExportQuiz(quiz, format, type)
     }
   }
 
@@ -167,6 +186,64 @@ export function QuizCard({
                   <FileText className="w-4 h-4 mr-2" />
                   Ver respuestas
                 </DropdownMenuItem>
+
+                {/* Submenu de Exportación */}
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar como
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent className="w-56">
+                    {/* Opciones PDF */}
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">
+                      PDF
+                    </div>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('pdf', 'questions')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Solo preguntas
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('pdf', 'answers')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Solo respuestas
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('pdf', 'both')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Preguntas y respuestas
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Opciones DOCX */}
+                    <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">
+                      DOCX
+                    </div>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('docx', 'questions')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Solo preguntas
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('docx', 'answers')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Solo respuestas
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => handleExport('docx', 'both')}
+                    >
+                      <FileText className="w-4 h-4 mr-2" />
+                      Preguntas y respuestas
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleDeleteClick}
@@ -198,3 +275,6 @@ export function QuizCard({
     </motion.div>
   )
 }
+
+// Exportar tipos para uso en otros componentes
+export type { ExportFormat, ExportType }
