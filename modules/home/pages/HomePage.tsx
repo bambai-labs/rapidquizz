@@ -69,13 +69,46 @@ export const HomePage = () => {
   ) => {
     if (!user) return
 
-    // TODO: Implementar lógica de exportación
-    console.log(`Exportando quiz "${quiz.title}" como ${format} (${type})`)
+    try {
+      const response = await fetch('/api/export-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizId: quiz.id,
+          format,
+          type,
+          userId: user.id,
+        }),
+      })
 
-    // Placeholder para futuro desarrollo
-    alert(
-      `Exportando quiz "${quiz.title}" como ${format} (${type}). Esta funcionalidad será implementada pronto.`,
-    )
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Error al exportar el quiz')
+      }
+
+      // Obtener el nombre del archivo del header
+      const contentDisposition = response.headers.get('Content-Disposition')
+      const fileNameMatch = contentDisposition?.match(/filename="(.+)"/)
+      const fileName = fileNameMatch
+        ? fileNameMatch[1]
+        : `quiz_${format}.${format}`
+
+      // Crear blob y descargar
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+    } catch (error: any) {
+      console.error('Error al exportar quiz:', error)
+      throw error
+    }
   }
 
   useEffect(() => {

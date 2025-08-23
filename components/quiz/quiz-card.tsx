@@ -35,6 +35,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { DeleteQuizDialog } from './delete-quiz-dialog'
+import { ExportProgressDialog } from './export-progress-dialog'
 import { ShareQuizDialog } from './share-quiz-dialog'
 
 type ExportFormat = 'pdf' | 'docx'
@@ -66,6 +67,14 @@ export function QuizCard({
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
+  const [exportProgress, setExportProgress] = useState(0)
+  const [exportStatus, setExportStatus] = useState<
+    'preparing' | 'exporting' | 'completed' | 'error'
+  >('preparing')
+  const [exportFormat, setExportFormat] = useState<ExportFormat | null>(null)
+  const [exportType, setExportType] = useState<ExportType | null>(null)
+  const [exportError, setExportError] = useState<string | undefined>(undefined)
 
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 border-green-200',
@@ -88,8 +97,33 @@ export function QuizCard({
   }
 
   const handleExport = async (format: ExportFormat, type: ExportType) => {
-    if (onExportQuiz) {
-      await onExportQuiz(quiz, format, type)
+    // Configurar estado inicial
+    setExportFormat(format)
+    setExportType(type)
+    setExportProgress(0)
+    setExportStatus('preparing')
+    setExportError(undefined)
+    setIsExportDialogOpen(true)
+
+    try {
+      // Simulación de progreso para preparación
+      setExportProgress(20)
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Cambiar a estado de exportación
+      setExportStatus('exporting')
+      setExportProgress(50)
+
+      if (onExportQuiz) {
+        await onExportQuiz(quiz, format, type)
+      }
+
+      // Completar
+      setExportProgress(100)
+      setExportStatus('completed')
+    } catch (error: any) {
+      setExportStatus('error')
+      setExportError(error.message || 'Error al exportar el quiz')
     }
   }
 
@@ -271,6 +305,17 @@ export function QuizCard({
         isDeleting={isDeleting}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDeleteConfirm}
+      />
+
+      <ExportProgressDialog
+        isOpen={isExportDialogOpen}
+        quiz={quiz}
+        format={exportFormat}
+        type={exportType}
+        progress={exportProgress}
+        status={exportStatus}
+        error={exportError}
+        onClose={() => setIsExportDialogOpen(false)}
       />
     </motion.div>
   )
