@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useAuthStore } from '@/stores/auth-store'
 import { initializePaddle, Paddle } from '@paddle/paddle-js'
 import { motion } from 'framer-motion'
 import { Check, Crown, Sparkles, Star, Zap } from 'lucide-react'
@@ -16,6 +17,7 @@ import { useEffect, useState } from 'react'
 
 export default function PricingPage() {
   const [paddleInstance, setPaddleInstance] = useState<Paddle | undefined>()
+  const { user } = useAuthStore()
 
   const initiPaddleClient = async () => {
     const paddle = await initializePaddle({
@@ -42,6 +44,9 @@ export default function PricingPage() {
         displayMode: 'overlay',
         theme: 'dark',
         successUrl: `${window.location.origin}/success`,
+      },
+      customer: {
+        email: user!.email,
       },
     })
   }
