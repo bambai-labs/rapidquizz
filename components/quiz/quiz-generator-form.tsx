@@ -212,9 +212,30 @@ export function QuizGeneratorFormComponent({
     if (!files) return
 
     const validFiles: File[] = []
+    const rejectedFiles: string[] = []
+    const maxFileSize = 10 * 1024 * 1024 // 10 MB en bytes
+    const maxTotalSize = 50 * 1024 * 1024 // 50 MB total en bytes
+    const currentTotalSize = getTotalFileSize()
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       const fileExtension = file.name.split('.').pop()?.toLowerCase()
+
+      // Verificar tamaño del archivo
+      if (file.size > maxFileSize) {
+        rejectedFiles.push(`${file.name} (excede 10 MB)`)
+        continue
+      }
+
+      // Verificar si agregar este archivo excedería el límite total
+      const newTotalSize =
+        currentTotalSize +
+        validFiles.reduce((sum, f) => sum + f.size, 0) +
+        file.size
+      if (newTotalSize > maxTotalSize) {
+        rejectedFiles.push(`${file.name} (excedería límite total de 50 MB)`)
+        continue
+      }
 
       if (fileExtension === 'pdf' || fileExtension === 'docx') {
         // Check if file is not already added
@@ -226,12 +247,25 @@ export function QuizGeneratorFormComponent({
           )
         ) {
           validFiles.push(file)
+        } else {
+          rejectedFiles.push(`${file.name} (ya está agregado)`)
         }
+      } else {
+        rejectedFiles.push(`${file.name} (formato no soportado)`)
       }
     }
 
     if (validFiles.length > 0) {
       setUploadedFiles((prev: File[]) => [...prev, ...validFiles])
+      toast.success('Archivos agregados', {
+        description: `${validFiles.length} archivo(s) agregado(s) exitosamente.`,
+      })
+    }
+
+    if (rejectedFiles.length > 0) {
+      toast.error('Algunos archivos no se pudieron agregar', {
+        description: rejectedFiles.join(', '),
+      })
     }
 
     // Reset input value to allow selecting the same file again
@@ -250,6 +284,10 @@ export function QuizGeneratorFormComponent({
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  const getTotalFileSize = () => {
+    return uploadedFiles.reduce((total, file) => total + file.size, 0)
   }
 
   return (
@@ -448,6 +486,10 @@ export function QuizGeneratorFormComponent({
               className="space-y-3"
             >
               <Label>Archivos de referencia (opcional)</Label>
+              <p className="text-xs text-gray-600 mb-2">
+                Los archivos te ayudan a generar quizzes más precisos basados en
+                tu contenido específico.
+              </p>
               <div className="space-y-3">
                 <div className="flex items-center justify-center w-full">
                   <label
@@ -463,7 +505,7 @@ export function QuizGeneratorFormComponent({
                         o arrastra archivos
                       </p>
                       <p className="text-xs text-gray-500">
-                        PDF o DOCX (Máximo 10MB por archivo)
+                        PDF o DOCX (Máximo 10 MB por archivo, 50 MB total)
                       </p>
                     </div>
                     <input
@@ -479,10 +521,49 @@ export function QuizGeneratorFormComponent({
 
                 {/* Lista de archivos subidos */}
                 {uploadedFiles.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      Archivos seleccionados:
-                    </p>
+                  <div className="space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">
+                          Archivos seleccionados:
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {formatFileSize(getTotalFileSize())} / 50 MB
+                        </p>
+                      </div>
+
+                      {/* Barra de progreso del límite total */}
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            getTotalFileSize() > 40 * 1024 * 1024
+                              ? 'bg-red-500'
+                              : getTotalFileSize() > 30 * 1024 * 1024
+                                ? 'bg-yellow-500'
+                                : 'bg-green-500'
+                          }`}
+                          style={{
+                            width: `${Math.min((getTotalFileSize() / (50 * 1024 * 1024)) * 100, 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Advertencia si hay muchos archivos o tamaño grande */}
+                    {(uploadedFiles.length > 5 ||
+                      getTotalFileSize() > 30 * 1024 * 1024) && (
+                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p className="text-sm text-amber-800">
+                          ⚠️{' '}
+                          {uploadedFiles.length > 5
+                            ? 'Muchos archivos pueden aumentar el tiempo de procesamiento.'
+                            : getTotalFileSize() > 40 * 1024 * 1024
+                              ? 'Te estás acercando al límite de 50 MB. Considera optimizar tus archivos.'
+                              : 'Archivos grandes pueden aumentar el tiempo de procesamiento.'}
+                        </p>
+                      </div>
+                    )}
+
                     <AnimatePresence>
                       {uploadedFiles.map((file: File, index: number) => (
                         <motion.div
