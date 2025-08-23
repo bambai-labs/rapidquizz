@@ -9,17 +9,34 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Quiz } from '@/types/quiz'
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
-import { BookOpen, Calendar, Clock, Edit, Share } from 'lucide-react'
+import {
+  BookOpen,
+  Calendar,
+  Clock,
+  Edit,
+  MoreVertical,
+  Share,
+  Trash2,
+} from 'lucide-react'
 import { useState } from 'react'
+import { DeleteQuizDialog } from './delete-quiz-dialog'
 import { ShareQuizDialog } from './share-quiz-dialog'
 
 interface QuizCardProps {
   quiz: Quiz
   onStartQuiz: (quiz: Quiz) => void
   onEditQuiz: (quiz: Quiz) => void
+  onDeleteQuiz?: (quiz: Quiz) => Promise<void>
   onUpdateQuizVisibility?: (quizId: string, isPublic: boolean) => Promise<void>
 }
 
@@ -27,9 +44,12 @@ export function QuizCard({
   quiz,
   onStartQuiz,
   onEditQuiz,
+  onDeleteQuiz,
   onUpdateQuizVisibility,
 }: QuizCardProps) {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const difficultyColors = {
     easy: 'bg-green-100 text-green-800 border-green-200',
@@ -39,6 +59,24 @@ export function QuizCard({
 
   const handleShare = () => {
     setIsShareDialogOpen(true)
+  }
+
+  const handleDeleteClick = () => {
+    setIsDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (onDeleteQuiz) {
+      setIsDeleting(true)
+      try {
+        await onDeleteQuiz(quiz)
+        setIsDeleteDialogOpen(false)
+      } catch (error) {
+        console.error('Error al eliminar quiz:', error)
+      } finally {
+        setIsDeleting(false)
+      }
+    }
   }
 
   return (
@@ -104,15 +142,28 @@ export function QuizCard({
               <Edit className="w-4 h-4 mr-2" />
               Editar
             </Button>
-            <Button
-              onClick={handleShare}
-              variant="outline"
-              className="flex-1"
-              size="sm"
-            >
-              <Share className="w-4 h-4 mr-2" />
-              Compartir
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex-1" size="sm">
+                  <MoreVertical className="w-4 h-4 mr-2" />
+                  Más opciones
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={handleShare}>
+                  <Share className="w-4 h-4 mr-2" />
+                  Compartir
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleDeleteClick}
+                  className="text-red-600 focus:text-red-600"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Eliminar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardFooter>
       </Card>
@@ -122,6 +173,14 @@ export function QuizCard({
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
         onUpdateQuizVisibility={onUpdateQuizVisibility}
+      />
+
+      <DeleteQuizDialog
+        quiz={quiz}
+        isOpen={isDeleteDialogOpen}
+        isDeleting={isDeleting}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDeleteConfirm}
       />
     </motion.div>
   )

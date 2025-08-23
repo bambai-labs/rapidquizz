@@ -12,8 +12,13 @@ import { useEffect, useState } from 'react'
 export const HomePage = () => {
   const router = useRouter()
   const { setCurrentQuiz, startQuiz } = useQuizStore()
-  const { userQuizzes, isLoading, loadUserQuizzes, updateQuizVisibility } =
-    useUserQuizzesStore()
+  const {
+    userQuizzes,
+    isLoading,
+    loadUserQuizzes,
+    updateQuizVisibility,
+    deleteUserQuiz,
+  } = useUserQuizzesStore()
   const [showGenerator, setShowGenerator] = useState(false)
   const { user } = useAuthStore()
 
@@ -41,6 +46,16 @@ export const HomePage = () => {
   ) => {
     if (!user) return
     await updateQuizVisibility(quizId, isPublic, user.id)
+  }
+
+  const handleDeleteQuiz = async (quiz: Quiz) => {
+    if (!user) return
+
+    const result = await deleteUserQuiz(quiz.id, user.id)
+    if (!result.success) {
+      // El error se mostrará en el componente QuizCard
+      throw new Error(result.errorMessage || 'Error al eliminar el quiz')
+    }
   }
 
   useEffect(() => {
@@ -108,6 +123,7 @@ export const HomePage = () => {
                         quiz={quiz}
                         onStartQuiz={handleStartQuiz}
                         onEditQuiz={handleEditQuiz}
+                        onDeleteQuiz={handleDeleteQuiz}
                         onUpdateQuizVisibility={handleUpdateQuizVisibility}
                       />
                     ))}
