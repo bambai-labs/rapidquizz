@@ -8,11 +8,48 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { initializePaddle, Paddle } from '@paddle/paddle-js'
 import { motion } from 'framer-motion'
 import { Check, Crown, Sparkles, Star, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export default function PricingPage() {
+  const [paddleInstance, setPaddleInstance] = useState<Paddle | undefined>()
+
+  const initiPaddleClient = async () => {
+    const paddle = await initializePaddle({
+      environment: 'sandbox',
+      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
+    })
+    setPaddleInstance(paddle)
+  }
+
+  const handlePaddleCheckout = async () => {
+    if (!paddleInstance) {
+      console.error('Paddle instance not initialized')
+      return
+    }
+
+    paddleInstance.Checkout.open({
+      items: [
+        {
+          priceId: 'pri_01k3aq0naqwwsj59d0gknbp5mg',
+          quantity: 1,
+        },
+      ],
+      settings: {
+        displayMode: 'overlay',
+        theme: 'dark',
+        successUrl: `${window.location.origin}/success`,
+      },
+    })
+  }
+
+  useEffect(() => {
+    initiPaddleClient()
+  }, [])
+
   const plans = [
     {
       name: 'Free',
@@ -170,6 +207,7 @@ export default function PricingPage() {
                           ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg'
                           : ''
                       }`}
+                      onClick={handlePaddleCheckout}
                     >
                       {plan.buttonText}
                     </Button>
