@@ -384,6 +384,11 @@
   resolved "https://registry.yarnpkg.com/@paddle/paddle-js/-/paddle-js-1.4.2.tgz#be9ce6fa3061abb3ab46652fdef9dc601d87da27"
   integrity sha512-pY9jYS+g3vk6ecc7GbCsVSuBEo1Yh+hxYE4i2XoY5/ZBAZLuCkQi/80hOmSBkFoaETohOpDmurILlQdgUHUcvw==
 
+"@paddle/paddle-node-sdk@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@paddle/paddle-node-sdk/-/paddle-node-sdk-3.2.0.tgz#ad5a3e5c71141465bdc2514267738d8e235aea49"
+  integrity sha512-g4GBXoMIpwg2nZdwKrFuvH/pCYXKoqrYOa04yaFgo9Lb8VYI6TRf3q3Z89qS4ktaWBFX09Ai4usbazuGHoNJ7g==
+
 "@panva/hkdf@^1.0.2":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@panva/hkdf/-/hkdf-1.2.1.tgz#cb0d111ef700136f4580349ff0226bf25c853f23"
