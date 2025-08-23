@@ -3,7 +3,7 @@ import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 import { Button } from '@/components/ui/button'
 import { LoginButton } from '@/modules/auth/components/LoginButton'
 import { motion } from 'framer-motion'
-import { GraduationCap } from 'lucide-react'
+import { Crown, GraduationCap, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useNavBar } from '../hooks/useNavBar'
 
@@ -27,7 +27,46 @@ export const NavBar = () => {
           </motion.div>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          {/* Botón Become Pro - visible para todos los usuarios */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="relative"
+          >
+            <Link href="/pricing">
+              <Button className="relative bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 hover:from-purple-700 hover:via-purple-800 hover:to-indigo-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-0 px-6 py-2.5 rounded-full group overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-purple-400/20 to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  animate={{
+                    x: ['-100%', '100%'],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'linear',
+                  }}
+                />
+                <div className="relative flex items-center gap-2 z-10">
+                  <Crown className="w-4 h-4" />
+                  <span>Become Pro</span>
+                  <motion.div
+                    animate={{
+                      rotate: [0, 10, -10, 0],
+                    }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  >
+                    <Sparkles className="w-4 h-4 text-yellow-300" />
+                  </motion.div>
+                </div>
+              </Button>
+            </Link>
+          </motion.div>
+
           {isAuthenticated ? (
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
