@@ -1,0 +1,308 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getQuizResponses } from '@/lib/quiz-database'
+import { useAuthStore } from '@/stores/auth-store'
+import { Result } from '@/types/result.type'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { ArrowLeft, Calendar, Clock, Trophy, User } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { use, useEffect, useState } from 'react'
+
+// Tipo específico para las respuestas de la base de datos
+interface DatabaseQuizResult {
+  id: string
+  user_id: string
+  score: number
+  total_questions: number
+  time_spent: number
+  completed_at: string
+  created_at: string
+  // Información del usuario
+  user_profile?: {
+    email: string
+    raw_user_meta_data?: {
+      name?: string
+      username?: string
+    }
+  }
+}
+
+interface QuizResponsesPageProps {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
+  const resolvedParams = use(params)
+  const router = useRouter()
+  const { user } = useAuthStore()
+  const [responses, setResponses] = useState<DatabaseQuizResult[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [quizTitle, setQuizTitle] = useState<string>('')
+
+  useEffect(() => {
+    const loadResponses = async () => {
+      if (!user) {
+        router.push('/login')
+        return
+      }
+
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const result: Result<DatabaseQuizResult[]> = await getQuizResponses(
+          resolvedParams.id,
+          user.id,
+        )
+
+        if (result.success && result.data) {
+          setResponses(result.data)
+        } else {
+          setError(result.errorMessage || 'Error al cargar las respuestas')
+        }
+      } catch (err: any) {
+        setError('Error inesperado al cargar las respuestas')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadResponses()
+  }, [user, resolvedParams.id, router])
+
+  const handleBackToQuiz = () => {
+    router.push('/dashboard')
+  }
+
+  const handleViewDetails = (resultId: string) => {
+    router.push(`/quiz/${resolvedParams.id}/responses/${resultId}`)
+  }
+
+  const getUserDisplayName = (response: DatabaseQuizResult): string => {
+    // Si es el usuario actual, mostrar su información
+    if (user && response.user_id === user.id) {
+      return user.name || user.username || user.email?.split('@')[0] || 'Tú'
+    }
+
+    // Para otros usuarios, mostrar información limitada por privacidad
+    const metadata = response.user_profile?.raw_user_meta_data
+    return (
+      metadata?.name ||
+      metadata?.username ||
+      response.user_profile?.email?.split('@')[0] ||
+      'Usuario Anónimo'
+    )
+  }
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}m ${remainingSeconds}s`
+  }
+
+  const getScoreColor = (score: number, total: number) => {
+    const percentage = (score / total) * 100
+    if (percentage >= 80) return 'text-green-600'
+    if (percentage >= 60) return 'text-yellow-600'
+    return 'text-red-600'
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <div className="container mx-auto px-4 py-8">
+          <Card className="max-w-2xl mx-auto">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-destructive mb-2">
+                  Error
+                </h3>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <Button onClick={handleBackToQuiz}>Volver al Dashboard</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-6">
+          <Button variant="ghost" onClick={handleBackToQuiz} className="mb-4">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver al Dashboard
+          </Button>
+
+          <h1 className="text-3xl font-bold mb-2">Respuestas del Quiz</h1>
+          <p className="text-muted-foreground">
+            Todos los intentos realizados en este quiz
+          </p>
+        </div>
+
+        {/* Estadísticas generales */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5" />
+              Estadísticas Generales
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">
+                  {responses.length}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Total de intentos
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {responses.length > 0
+                    ? Math.round(
+                        (responses.reduce((sum, r) => sum + r.score, 0) /
+                          responses.reduce(
+                            (sum, r) => sum + r.total_questions,
+                            0,
+                          )) *
+                          100,
+                      )
+                    : 0}
+                  %
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Promedio de aciertos
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {responses.length > 0
+                    ? formatTime(
+                        Math.round(
+                          responses.reduce((sum, r) => sum + r.time_spent, 0) /
+                            responses.length,
+                        ),
+                      )
+                    : '0m 0s'}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Tiempo promedio
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Lista de respuestas */}
+        {responses.length === 0 ? (
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2">
+                  No hay intentos aún
+                </h3>
+                <p className="text-muted-foreground">
+                  Nadie ha realizado este quiz todavía.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {responses.map((response, index) => (
+              <Card
+                key={response.id}
+                className="hover:shadow-md transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-4 mb-2">
+                        <h3 className="font-semibold">
+                          Intento #{responses.length - index}
+                        </h3>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4" />
+                          {format(new Date(response.completed_at), 'PPp', {
+                            locale: es,
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="flex items-center gap-2">
+                          <Trophy className="w-4 h-4" />
+                          <span
+                            className={`font-semibold ${getScoreColor(
+                              response.score,
+                              response.total_questions,
+                            )}`}
+                          >
+                            {response.score}/{response.total_questions}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            (
+                            {Math.round(
+                              (response.score / response.total_questions) * 100,
+                            )}
+                            %)
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">
+                            {formatTime(response.time_spent)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <User className="w-4 h-4" />
+                          <span className="text-sm">
+                            Usuario: {getUserDisplayName(response)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewDetails(response.id)}
+                    >
+                      Ver detalles
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

@@ -24,6 +24,7 @@ import {
   Calendar,
   Clock,
   Edit,
+  FileText,
   MoreVertical,
   Share,
   Trash2,
@@ -36,6 +37,7 @@ interface QuizCardProps {
   quiz: Quiz
   onStartQuiz: (quiz: Quiz) => void
   onEditQuiz: (quiz: Quiz) => void
+  onViewResponses?: (quiz: Quiz) => void
   onDeleteQuiz?: (quiz: Quiz) => Promise<void>
   onUpdateQuizVisibility?: (quizId: string, isPublic: boolean) => Promise<void>
 }
@@ -44,6 +46,7 @@ export function QuizCard({
   quiz,
   onStartQuiz,
   onEditQuiz,
+  onViewResponses,
   onDeleteQuiz,
   onUpdateQuizVisibility,
 }: QuizCardProps) {
@@ -63,6 +66,12 @@ export function QuizCard({
 
   const handleDeleteClick = () => {
     setIsDeleteDialogOpen(true)
+  }
+
+  const handleViewResponses = () => {
+    if (onViewResponses) {
+      onViewResponses(quiz)
+    }
   }
 
   const handleDeleteConfirm = async () => {
@@ -153,6 +162,10 @@ export function QuizCard({
                 <DropdownMenuItem onClick={handleShare}>
                   <Share className="w-4 h-4 mr-2" />
                   Compartir
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleViewResponses}>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Ver respuestas
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

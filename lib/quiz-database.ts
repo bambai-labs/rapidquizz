@@ -2,6 +2,25 @@ import { createClient } from '@/lib/supabase/client'
 import { Quiz, QuizAnswer, QuizResult } from '@/types/quiz'
 import { Result } from '@/types/result.type'
 
+// Tipo específico para las respuestas de la base de datos
+interface DatabaseQuizResult {
+  id: string
+  user_id: string
+  score: number
+  total_questions: number
+  time_spent: number
+  completed_at: string
+  created_at: string
+  // Información del usuario
+  user_profile?: {
+    email: string
+    raw_user_meta_data?: {
+      name?: string
+      username?: string
+    }
+  }
+}
+
 /**
  * Guarda un quiz completo en la base de datos
  */
@@ -650,6 +669,228 @@ export async function deleteQuiz(
     }
   } catch (error: any) {
     console.error('Error inesperado al eliminar quiz:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
+ * Obtiene todos los resultados/intentos de un quiz específico
+ */
+export async function getQuizResponses(
+  quizId: string,
+  userId: string,
+): Promise<Result<DatabaseQuizResult[]>> {
+  const supabase = createClient()
+
+  try {
+    // Verificar que el usuario es el propietario del quiz
+    const { data: quizData, error: checkError } = await supabase
+      .from('quizzes')
+      .select('created_by')
+      .eq('id', quizId)
+      .single()
+
+    if (checkError) {
+      return {
+        success: false,
+        errorMessage: `Error al verificar propietario: ${checkError.message}`,
+      }
+    }
+
+    if (quizData.created_by !== userId) {
+      return {
+        success: false,
+        errorMessage: 'No tienes permisos para ver las respuestas de este quiz',
+      }
+    }
+
+    // Obtener todos los resultados del quiz
+    const { data: results, error: resultsError } = await supabase
+      .from('quiz_results')
+      .select(
+        `
+        id,
+        user_id,
+        score,
+        total_questions,
+        time_spent,
+        completed_at,
+        created_at
+      `,
+      )
+      .eq('quiz_id', quizId)
+      .order('completed_at', { ascending: false })
+
+    if (resultsError) {
+      return {
+        success: false,
+        errorMessage: `Error al obtener resultados: ${resultsError.message}`,
+      }
+    }
+
+    // Obtener IDs únicos de usuarios para consultar su información
+    const userIds = (results || []).map((r) => r.user_id)
+    const uniqueUserIds = Array.from(new Set(userIds))
+
+    // Obtener información de usuarios desde la tabla de perfiles de usuario
+    // En lugar de auth.users, usaremos la información disponible del usuario actual
+    // o una tabla de perfiles personalizada si existe
+    const enrichedResults = (results || []).map((result) => ({
+      ...result,
+      user_profile: {
+        email: '', // Placeholder - será llenado por el frontend
+        raw_user_meta_data: {
+          name: '', // Placeholder - será llenado por el frontend
+          username: '', // Placeholder - será llenado por el frontend
+        },
+      },
+    }))
+
+    return {
+      success: true,
+      data: enrichedResults,
+    }
+  } catch (error: any) {
+    console.error('Error inesperado al obtener respuestas:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
+ * Obtiene las respuestas detalladas de un intento específico
+ */
+export async function getQuizAttemptDetails(
+  quizResultId: string,
+  userId: string,
+): Promise<Result<any>> {
+  const supabase = createClient()
+
+  try {
+    // Primero, obtener la información del resultado
+    const { data: resultData, error: resultError } = await supabase
+      .from('quiz_results')
+      .select(
+        `
+        id,
+        quiz_id,
+        user_id,
+        score,
+        total_questions,
+        time_spent,
+        completed_at
+      `,
+      )
+      .eq('id', quizResultId)
+      .single()
+
+    if (resultError) {
+      return {
+        success: false,
+        errorMessage: `Error al obtener resultado: ${resultError.message}`,
+      }
+    }
+
+    if (!resultData) {
+      return {
+        success: false,
+        errorMessage: 'No se encontró el resultado del quiz',
+      }
+    }
+
+    // Luego, verificar que el usuario es el propietario del quiz
+    const { data: quizData, error: quizError } = await supabase
+      .from('quizzes')
+      .select('created_by, title')
+      .eq('id', resultData.quiz_id)
+      .single()
+
+    if (quizError) {
+      return {
+        success: false,
+        errorMessage: `Error al obtener información del quiz: ${quizError.message}`,
+      }
+    }
+
+    if (!quizData) {
+      return {
+        success: false,
+        errorMessage: 'No se encontró el quiz asociado',
+      }
+    }
+
+    if (quizData.created_by !== userId) {
+      return {
+        success: false,
+        errorMessage: 'No tienes permisos para ver este resultado',
+      }
+    }
+
+    // Obtener las respuestas detalladas con las preguntas
+    const { data: answers, error: answersError } = await supabase
+      .from('quiz_answers')
+      .select(
+        `
+        id,
+        selected_answer,
+        time_spent,
+        question_id,
+        quiz_questions!inner(
+          id,
+          question_text,
+          options,
+          correct_answer,
+          explanation,
+          question_order
+        )
+      `,
+      )
+      .eq('quiz_result_id', quizResultId)
+
+    if (answersError) {
+      return {
+        success: false,
+        errorMessage: `Error al obtener respuestas: ${answersError.message}`,
+      }
+    }
+
+    // Ordenar las respuestas por question_order
+    const sortedAnswers = (answers || []).sort((a, b) => {
+      const questionA = Array.isArray(a.quiz_questions)
+        ? a.quiz_questions[0]
+        : a.quiz_questions
+      const questionB = Array.isArray(b.quiz_questions)
+        ? b.quiz_questions[0]
+        : b.quiz_questions
+      const orderA = questionA?.question_order || 0
+      const orderB = questionB?.question_order || 0
+      return orderA - orderB
+    })
+
+    return {
+      success: true,
+      data: {
+        result: {
+          ...resultData,
+          user_profile: {
+            email: '', // Placeholder - será llenado por el frontend
+            raw_user_meta_data: {
+              name: '', // Placeholder - será llenado por el frontend
+              username: '', // Placeholder - será llenado por el frontend
+            },
+          },
+          quizzes: quizData,
+        },
+        answers: sortedAnswers,
+      },
+    }
+  } catch (error: any) {
+    console.error('Error inesperado al obtener detalles del intento:', error)
     return {
       success: false,
       errorMessage: `Error inesperado: ${error.message}`,

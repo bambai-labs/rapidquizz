@@ -33,6 +33,10 @@ export const HomePage = () => {
     router.push(`/quiz/edit/${quiz.id}`)
   }
 
+  const handleViewResponses = (quiz: Quiz) => {
+    router.push(`/quiz/${quiz.id}/responses`)
+  }
+
   const handleQuizGenerated = () => {
     setShowGenerator(false)
     if (user) {
@@ -123,6 +127,7 @@ export const HomePage = () => {
                         quiz={quiz}
                         onStartQuiz={handleStartQuiz}
                         onEditQuiz={handleEditQuiz}
+                        onViewResponses={handleViewResponses}
                         onDeleteQuiz={handleDeleteQuiz}
                         onUpdateQuizVisibility={handleUpdateQuizVisibility}
                       />
