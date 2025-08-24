@@ -36,7 +36,7 @@ export default function PricingPage() {
     paddleInstance.Checkout.open({
       items: [
         {
-          priceId: 'pri_01k3aq0naqwwsj59d0gknbp5mg',
+          priceId: process.env.NEXT_PUBLIC_PADDLE_PRO_PLAN_ID!,
           quantity: 1,
         },
       ],

@@ -61,14 +61,29 @@ export default function SettingsPage() {
 
     setCancelLoading(true)
     try {
-      // Aquí iría la lógica para cancelar la suscripción
-      // Por ahora solo mostramos un toast de ejemplo
-      toast.success('Suscripción cancelada exitosamente')
+      const response = await fetch('/api/subscription/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-      // Simular un pequeño delay para mostrar el loading
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    } catch (error) {
-      toast.error('Error al cancelar la suscripción')
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al obtener URL de gestión')
+      }
+
+      // Redirigir al usuario al panel de gestión de Paddle
+      if (data.manageUrl) {
+        toast.success('Redirigiendo al panel de gestión...')
+        window.open(data.manageUrl, '_blank')
+      } else {
+        throw new Error('URL de gestión no disponible')
+      }
+    } catch (error: any) {
+      console.error('Error getting manage URL:', error)
+      toast.error(error.message || 'Error al acceder al panel de gestión')
     } finally {
       setCancelLoading(false)
     }
@@ -271,64 +286,56 @@ export default function SettingsPage() {
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button
-                                  variant="destructive"
+                                  variant="outline"
                                   disabled={cancelLoading}
                                   className="flex items-center gap-2"
                                 >
-                                  <AlertTriangle className="w-4 h-4" />
-                                  Cancelar suscripción
+                                  <Settings className="w-4 h-4" />
+                                  Gestionar suscripción
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle className="flex items-center gap-2">
-                                    <AlertTriangle className="w-5 h-5 text-destructive" />
-                                    ¿Cancelar suscripción?
+                                    <Settings className="w-5 h-5 text-primary" />
+                                    Gestionar suscripción
                                   </AlertDialogTitle>
                                   <AlertDialogDescription className="space-y-2">
                                     <p>
-                                      Estás a punto de cancelar tu suscripción
-                                      Pro. Una vez cancelada:
+                                      Serás redirigido al panel de gestión de
+                                      Paddle donde podrás:
                                     </p>
                                     <ul className="list-disc list-inside space-y-1 text-sm">
-                                      <li>
-                                        Perderás el acceso a todas las funciones
-                                        premium
-                                      </li>
-                                      <li>
-                                        Tu cuenta volverá al plan gratuito
-                                      </li>
-                                      <li>
-                                        Podrás reactivar tu suscripción en
-                                        cualquier momento
-                                      </li>
+                                      <li>Cancelar tu suscripción</li>
+                                      <li>Modificar tu método de pago</li>
+                                      <li>Ver tu historial de facturación</li>
+                                      <li>Descargar facturas</li>
                                     </ul>
                                     <p className="text-sm text-muted-foreground mt-3">
-                                      {endDate && (
-                                        <>
-                                          Tu suscripción actual se mantendrá
-                                          activa hasta el {formatDate(endDate)}.
-                                        </>
-                                      )}
+                                      El panel se abrirá en una nueva pestaña
+                                      para tu seguridad.
                                     </p>
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>
-                                    Mantener suscripción
+                                    Cancelar
                                   </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={handleConfirmCancelSubscription}
                                     disabled={cancelLoading}
-                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                    className="bg-primary text-primary-foreground hover:bg-primary/90"
                                   >
                                     {cancelLoading ? (
                                       <div className="flex items-center gap-2">
                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        Cancelando...
+                                        Obteniendo enlace...
                                       </div>
                                     ) : (
-                                      'Sí, cancelar suscripción'
+                                      <div className="flex items-center gap-2">
+                                        <Settings className="w-4 h-4" />
+                                        Ir al panel de gestión
+                                      </div>
                                     )}
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
