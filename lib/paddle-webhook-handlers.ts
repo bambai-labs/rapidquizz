@@ -2,6 +2,7 @@ import { Result } from '@/types/result.type'
 import {
   cancelSubscription,
   createSubscription,
+  expireSubscription,
   pauseSubscription,
   resumeSubscription,
   updateSubscription,
@@ -42,6 +43,12 @@ export interface PaddleSubscriptionResumedData {
   id: string // subscription ID
   customerId: string // paddle customer ID
   resumedAt: string
+}
+
+export interface PaddleSubscriptionPastDueData {
+  id: string // subscription ID
+  customerId: string // paddle customer ID
+  pastDueAt?: string
 }
 
 /**
@@ -211,6 +218,41 @@ export async function handleSubscriptionResumed(
     return result
   } catch (error: any) {
     console.error('💥 Error inesperado en handleSubscriptionResumed:', error)
+    return {
+      success: false,
+      errorMessage: `Error inesperado: ${error.message}`,
+    }
+  }
+}
+
+/**
+ * Maneja el evento SubscriptionPastDue de Paddle
+ * Actualiza el estado de la suscripción a 'expired'
+ */
+export async function handleSubscriptionPastDue(
+  eventData: PaddleSubscriptionPastDueData,
+): Promise<Result<void>> {
+  try {
+    console.log('⚠️ Procesando SubscriptionPastDue:', {
+      subscriptionId: eventData.id,
+      customerId: eventData.customerId,
+      pastDueAt: eventData.pastDueAt,
+    })
+
+    const result = await expireSubscription(eventData.customerId)
+
+    if (result.success) {
+      console.log('✅ Suscripción marcada como expirada exitosamente')
+    } else {
+      console.error(
+        '❌ Error al marcar suscripción como expirada:',
+        result.errorMessage,
+      )
+    }
+
+    return result
+  } catch (error: any) {
+    console.error('💥 Error inesperado en handleSubscriptionPastDue:', error)
     return {
       success: false,
       errorMessage: `Error inesperado: ${error.message}`,

@@ -232,6 +232,19 @@ export async function resumeSubscription(
 }
 
 /**
+ * Actualiza el estado de una suscripción a 'expired'
+ * Usado para el evento SubscriptionPastDue
+ */
+export async function expireSubscription(
+  paddleUserId: string,
+): Promise<Result<void>> {
+  return updateSubscription({
+    paddleUserId,
+    status: 'expired',
+  })
+}
+
+/**
  * Obtiene la suscripción de un usuario por su ID
  */
 export async function getUserSubscription(

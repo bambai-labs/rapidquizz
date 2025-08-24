@@ -2,6 +2,7 @@ import {
   handleCustomerCreated,
   handleSubscriptionActivated,
   handleSubscriptionCanceled,
+  handleSubscriptionPastDue,
   handleSubscriptionPaused,
   handleSubscriptionResumed,
 } from '@/lib/paddle-webhook-handlers'
@@ -153,6 +154,19 @@ export async function POST(request: NextRequest) {
 
         case EventName.SubscriptionPastDue:
           // past due subscription in database
+          const pastDueResult = await handleSubscriptionPastDue({
+            id: eventData.data.id,
+            customerId: eventData.data.customerId,
+            pastDueAt: new Date().toISOString(),
+          })
+
+          if (!pastDueResult.success) {
+            console.error(
+              'Failed to handle SubscriptionPastDue:',
+              pastDueResult.errorMessage,
+            )
+          }
+
           console.log(
             `Subscription ${eventData.data.id} was past due for user ${eventData.data.customerId}`,
           )
