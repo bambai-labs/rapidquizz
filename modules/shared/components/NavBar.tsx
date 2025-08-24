@@ -1,5 +1,6 @@
 'use client'
 import { GoogleAuthButton } from '@/components/auth/google-auth-button'
+import { UserAvatar } from '@/components/auth/user-avatar'
 import { Button } from '@/components/ui/button'
 import { useSubscription } from '@/hooks/use-subscription'
 import { LoginButton } from '@/modules/auth/components/LoginButton'
@@ -9,7 +10,7 @@ import Link from 'next/link'
 import { useNavBar } from '../hooks/useNavBar'
 
 export const NavBar = () => {
-  const { isAuthenticated, loading, handleLogout } = useNavBar()
+  const { user, isAuthenticated, loading, handleLogout } = useNavBar()
   const { hasActiveSubscription } = useSubscription()
   return (
     <motion.header
@@ -70,16 +71,23 @@ export const NavBar = () => {
             </motion.div>
           )}
 
-          {isAuthenticated ? (
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                variant="outline"
-                onClick={handleLogout}
-                disabled={loading}
+          {isAuthenticated && user ? (
+            <div className="flex items-center gap-3">
+              <UserAvatar user={user} size="sm" showName={true} />
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                Logout
-              </Button>
-            </motion.div>
+                <Button
+                  variant="outline"
+                  onClick={handleLogout}
+                  disabled={loading}
+                  size="sm"
+                >
+                  Logout
+                </Button>
+              </motion.div>
+            </div>
           ) : (
             <>
               <LoginButton />
