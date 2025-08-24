@@ -37,7 +37,6 @@ export async function createSubscription(
   data: CreateSubscriptionData,
 ): Promise<Result<string>> {
   const supabaseAdmin = createAdminClient()
-  const supabase = await createClient()
 
   try {
     // Buscar el usuario por email usando el cliente administrativo
@@ -167,6 +166,11 @@ export async function updateSubscription(
     if (data.status) updateData.status = data.status
 
     // Actualizar la suscripción
+    console.log(
+      `🔄 Actualizando suscripción ${subscription.id} para usuario ${subscription.user_id}:`,
+      updateData,
+    )
+
     const { error: updateError } = await supabaseAdmin
       .from('subscriptions')
       .update(updateData)
@@ -179,6 +183,8 @@ export async function updateSubscription(
         errorMessage: `Error al actualizar la suscripción: ${updateError.message}`,
       }
     }
+
+    console.log(`✅ Suscripción ${subscription.id} actualizada exitosamente`)
 
     return {
       success: true,

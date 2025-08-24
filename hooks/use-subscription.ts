@@ -85,15 +85,21 @@ export function useSubscription(): UseSubscriptionReturn {
     } finally {
       setIsLoading(false)
     }
-  }, [user])
+  }, [user?.id])
 
   // Función para manejar cambios en tiempo real
   const handleRealtimeChange = useCallback((payload: any) => {
-    console.log('🔄 Cambio en suscripción en tiempo real:', payload)
+    console.log('🔄 Cambio en suscripción en tiempo real:', {
+      eventType: payload.eventType,
+      timestamp: new Date().toISOString(),
+      old: payload.old,
+      new: payload.new,
+    })
 
     setLastUpdate(new Date())
 
     if (payload.eventType === 'DELETE') {
+      console.log('🗑️ Suscripción eliminada en tiempo real')
       setSubscription(null)
       setHasActiveSubscription(false)
     } else if (
@@ -101,6 +107,14 @@ export function useSubscription(): UseSubscriptionReturn {
       payload.eventType === 'UPDATE'
     ) {
       const newSubscription = payload.new as SubscriptionData
+      console.log(
+        `📝 Suscripción ${payload.eventType.toLowerCase()} en tiempo real:`,
+        {
+          id: newSubscription.id,
+          status: newSubscription.status,
+          user_id: newSubscription.user_id,
+        },
+      )
       setSubscription(newSubscription)
       setHasActiveSubscription(newSubscription.status === 'active')
     }
@@ -108,12 +122,13 @@ export function useSubscription(): UseSubscriptionReturn {
 
   // Función para configurar la suscripción en tiempo real
   const setupRealtimeSubscription = useCallback(() => {
-    if (!user) return null
+    if (!user?.id) return null
 
+    console.log(`🔌 Configurando canal Realtime para usuario: ${user.id}`)
     const supabase = createClient()
 
     const newChannel = supabase
-      .channel(`subscription_${user.id}`)
+      .channel(`subscription_${user.id}_${Date.now()}`) // Agregar timestamp para evitar conflictos
       .on(
         'postgres_changes',
         {
@@ -130,23 +145,32 @@ export function useSubscription(): UseSubscriptionReturn {
         if (status === 'SUBSCRIBED') {
           setIsConnected(true)
           setError(null)
+          console.log('✅ Canal Realtime suscrito exitosamente')
         } else if (status === 'CHANNEL_ERROR') {
           setIsConnected(false)
           setError('Error en la conexión en tiempo real')
+          console.error('❌ Error en el canal Realtime')
         } else if (status === 'TIMED_OUT') {
           setIsConnected(false)
           setError('Timeout en la conexión en tiempo real')
+          console.error('⏰ Timeout en el canal Realtime')
         } else if (status === 'CLOSED') {
           setIsConnected(false)
+          console.log('🔒 Canal Realtime cerrado')
         }
       })
 
     return newChannel
-  }, [user, handleRealtimeChange])
+  }, [user?.id, handleRealtimeChange])
 
-  // Efecto principal para gestionar la suscripción
+  // Efecto para cargar datos iniciales
   useEffect(() => {
-    if (!user) {
+    loadInitialData()
+  }, [loadInitialData])
+
+  // Efecto principal para gestionar la suscripción en tiempo real
+  useEffect(() => {
+    if (!user?.id) {
       // Limpiar estado cuando no hay usuario
       setSubscription(null)
       setHasActiveSubscription(false)
@@ -155,18 +179,18 @@ export function useSubscription(): UseSubscriptionReturn {
 
       // Limpiar canal existente
       if (channel) {
+        console.log('🧹 Limpiando canal por falta de usuario')
         channel.unsubscribe()
         setChannel(null)
       }
       return
     }
 
-    // Cargar datos iniciales
-    loadInitialData()
-
     // Configurar suscripción en tiempo real
     const newChannel = setupRealtimeSubscription()
-    setChannel(newChannel)
+    if (newChannel) {
+      setChannel(newChannel)
+    }
 
     // Cleanup function
     return () => {
@@ -175,23 +199,31 @@ export function useSubscription(): UseSubscriptionReturn {
         newChannel.unsubscribe()
       }
     }
-  }, [user, loadInitialData, setupRealtimeSubscription])
+  }, [user?.id, setupRealtimeSubscription]) // Incluir setupRealtimeSubscription aquí ya que es estable
 
   // Efecto para manejar reconexión automática
   useEffect(() => {
-    if (!isConnected && user && !isLoading) {
+    if (!isConnected && user?.id && !isLoading && channel) {
+      console.log('🔄 Detectada desconexión, reintentando en 5 segundos...')
+
       const reconnectTimer = setTimeout(() => {
         console.log('🔄 Intentando reconectar...')
+
+        // Limpiar canal anterior
         if (channel) {
           channel.unsubscribe()
         }
+
+        // Crear nuevo canal
         const newChannel = setupRealtimeSubscription()
-        setChannel(newChannel)
+        if (newChannel) {
+          setChannel(newChannel)
+        }
       }, 5000) // Reintentar después de 5 segundos
 
       return () => clearTimeout(reconnectTimer)
     }
-  }, [isConnected, user, isLoading, setupRealtimeSubscription, channel])
+  }, [isConnected, user?.id, isLoading])
 
   return {
     subscription,
