@@ -8,16 +8,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { useSubscription } from '@/hooks/use-subscription'
 import { useAuthStore } from '@/stores/auth-store'
 import { initializePaddle, Paddle } from '@paddle/paddle-js'
 import { motion } from 'framer-motion'
 import { Check, Crown, Sparkles, Star, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 export default function PricingPage() {
   const [paddleInstance, setPaddleInstance] = useState<Paddle | undefined>()
   const { user } = useAuthStore()
+  const { hasActiveSubscription } = useSubscription()
+  const router = useRouter()
 
   const initiPaddleClient = async () => {
     const paddle = await initializePaddle({
@@ -28,6 +33,16 @@ export default function PricingPage() {
   }
 
   const handlePaddleCheckout = async () => {
+    if (!user) {
+      router.push('/login')
+      return
+    }
+
+    if (hasActiveSubscription) {
+      toast.error('Ya tienes un plan activo')
+      return
+    }
+
     if (!paddleInstance) {
       console.error('Paddle instance not initialized')
       return
@@ -66,9 +81,9 @@ export default function PricingPage() {
         'Resultados básicos',
       ],
       popular: false,
-      buttonText: 'Plan Actual',
+      buttonText: hasActiveSubscription ? 'Plan Disponible' : 'Plan Actual',
       buttonVariant: 'outline' as const,
-      disabled: true,
+      disabled: hasActiveSubscription ? false : true,
     },
     {
       name: 'Pro',
@@ -82,10 +97,12 @@ export default function PricingPage() {
         'IA mejorada para generar preguntas',
         'Admite archivos PDF o DOCX',
       ],
-      popular: true,
-      buttonText: '¡Actualizar a Pro!',
-      buttonVariant: 'default' as const,
-      disabled: false,
+      popular: !hasActiveSubscription,
+      buttonText: hasActiveSubscription ? 'Plan Actual' : '¡Actualizar a Pro!',
+      buttonVariant: hasActiveSubscription
+        ? ('outline' as const)
+        : ('default' as const),
+      disabled: hasActiveSubscription,
     },
   ]
 
@@ -128,7 +145,7 @@ export default function PricingPage() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto pt-6"
         >
           {plans.map((plan, index) => (
             <motion.div
@@ -136,7 +153,21 @@ export default function PricingPage() {
               variants={cardVariants}
               className="relative"
             >
-              {plan.popular && (
+              {hasActiveSubscription && plan.name === 'Pro' && (
+                <motion.div
+                  animate={{
+                    x: [-100, 300],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    repeatDelay: 3,
+                  }}
+                  className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 z-20 pointer-events-none"
+                />
+              )}
+              {plan.popular && !hasActiveSubscription && (
                 <motion.div
                   animate={{
                     rotate: [0, 2, -2, 0],
@@ -146,9 +177,9 @@ export default function PricingPage() {
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
-                  className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10"
+                  className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10"
                 >
-                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
+                  <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg whitespace-nowrap">
                     <Star className="w-4 h-4" />
                     Más Popular
                     <Sparkles className="w-4 h-4" />
@@ -156,17 +187,42 @@ export default function PricingPage() {
                 </motion.div>
               )}
 
+              {hasActiveSubscription && plan.name === 'Pro' && (
+                <motion.div
+                  animate={{
+                    scale: [1, 1.05, 1],
+                    rotate: [0, 1, -1, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10"
+                >
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg whitespace-nowrap">
+                    <Check className="w-4 h-4" />
+                    Plan Activo
+                    <Crown className="w-4 h-4" />
+                  </div>
+                </motion.div>
+              )}
+
               <Card
                 className={`relative h-full transition-all duration-300 hover:shadow-2xl ${
-                  plan.popular
+                  plan.popular && !hasActiveSubscription
                     ? 'border-purple-200 shadow-purple-100 shadow-xl scale-105'
-                    : 'hover:scale-105'
+                    : hasActiveSubscription && plan.name === 'Pro'
+                      ? 'border-green-200 shadow-green-100 shadow-xl scale-105 bg-gradient-to-br from-green-50 to-emerald-50 ring-2 ring-green-200'
+                      : 'hover:scale-105'
                 }`}
               >
                 <CardHeader className="text-center pb-8">
                   <CardTitle className="text-2xl flex items-center justify-center gap-2">
                     {plan.name === 'Pro' && (
-                      <Crown className="w-6 h-6 text-purple-600" />
+                      <Crown
+                        className={`w-6 h-6 ${hasActiveSubscription ? 'text-green-600' : 'text-purple-600'}`}
+                      />
                     )}
                     {plan.name}
                   </CardTitle>
@@ -207,14 +263,26 @@ export default function PricingPage() {
                       variant={plan.buttonVariant}
                       size="lg"
                       disabled={plan.disabled}
-                      className={`w-full font-semibold ${
-                        plan.popular
+                      className={`w-full font-semibold transition-all duration-300 ${
+                        plan.popular && !hasActiveSubscription
                           ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg'
-                          : ''
+                          : hasActiveSubscription && plan.name === 'Pro'
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg hover:from-green-600 hover:to-emerald-700 ring-2 ring-green-200 ring-offset-2'
+                            : hasActiveSubscription && plan.name === 'Free'
+                              ? 'border-2 border-dashed border-gray-300 text-gray-500 hover:border-gray-400 hover:text-gray-600'
+                              : ''
                       }`}
                       onClick={handlePaddleCheckout}
                     >
-                      {plan.buttonText}
+                      <div className="flex items-center justify-center gap-2">
+                        {hasActiveSubscription && plan.name === 'Pro' && (
+                          <Check className="w-5 h-5" />
+                        )}
+                        {plan.buttonText}
+                        {hasActiveSubscription && plan.name === 'Pro' && (
+                          <Crown className="w-5 h-5" />
+                        )}
+                      </div>
                     </Button>
                   </motion.div>
                 </CardFooter>
