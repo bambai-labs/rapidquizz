@@ -21,12 +21,6 @@ export default function SuccessPage() {
 
   useEffect(() => {
     setShowConfetti(true)
-    // Auto-redirect después de 10 segundos si el usuario no hace nada
-    // const timer = setTimeout(() => {
-    //   window.location.href = '/dashboard'
-    // }, 15000)
-
-    // return () => clearTimeout(timer)
   }, [])
 
   const proFeatures = [
