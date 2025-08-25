@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger/server'
 import {
   handleCustomerCreated,
   handleSubscriptionActivated,
@@ -15,47 +16,36 @@ const paddle = new Paddle(process.env.PADDLE_SECRET_TOKEN!, {
 
 export async function POST(request: NextRequest) {
   const signature = (request.headers.get('paddle-signature') as string) || ''
-  // req.body should be of type `buffer`, convert to string before passing it to `unmarshal`.
-  // If express returned a JSON, remove any other middleware that might have processed raw request to object
   const rawRequestBody = (await request.text()) || ''
-  // Replace `WEBHOOK_SECRET_KEY` with the secret key in notifications from vendor dashboard
   const secretKey = process.env.WEBHOOK_SECRET_KEY || ''
 
   try {
     if (signature && rawRequestBody) {
-      // The `unmarshal` function will validate the integrity of the webhook and return an entity
       const eventData = await paddle.webhooks.unmarshal(
         rawRequestBody,
         secretKey,
         signature,
       )
 
-      // database operations
       switch (eventData.eventType) {
         case EventName.CustomerCreated:
-          // create customer in database
-
           const customerResult = await handleCustomerCreated({
             id: eventData.data.id,
             email: eventData.data.email,
           })
 
           if (!customerResult.success) {
-            console.log(
-              'Failed to handle CustomerCreated:',
-              customerResult.errorMessage,
+            logger.error(
+              {
+                event: eventData.eventType,
+                error: customerResult.errorMessage,
+              },
+              'Failed to handle CustomerCreated',
             )
           }
-          console.log(
-            `Customer ${eventData.data.id} was created using email ${eventData.data.email}`,
-          )
           break
 
         case EventName.CustomerUpdated:
-          // update customer in database
-          console.log(
-            `Customer ${eventData.data.id} was updated using email ${eventData.data.email}`,
-          )
           break
 
         case EventName.SubscriptionActivated:
@@ -69,21 +59,20 @@ export async function POST(request: NextRequest) {
           })
 
           if (!activatedResult.success) {
-            console.error(
-              'Failed to handle SubscriptionActivated:',
-              activatedResult.errorMessage,
-            )
+            break
           }
 
-          // activate subscription in database
-          console.log(
-            `Subscription ${eventData.data.id} was activated for customer ${eventData.data.customerId}`,
+          logger.info(
+            {
+              event: eventData.eventType,
+              data: eventData.data,
+            },
+            'Someone has activated a subscription',
           )
 
           break
 
         case EventName.SubscriptionCanceled:
-          // deactivate subscription in database
           const canceledResult = await handleSubscriptionCanceled({
             id: eventData.data.id,
             customerId: eventData.data.customerId,
@@ -91,28 +80,21 @@ export async function POST(request: NextRequest) {
           })
 
           if (!canceledResult.success) {
-            console.error(
-              'Failed to handle SubscriptionCanceled:',
-              canceledResult.errorMessage,
+            logger.error(
+              {
+                event: eventData.eventType,
+                error: canceledResult.errorMessage,
+              },
+              'Failed to handle SubscriptionCanceled',
             )
           }
 
-          console.log(
-            `Subscription ${eventData.data.id} was canceled for user ${eventData.data.customerId}`,
-          )
           break
 
         case EventName.SubscriptionUpdated:
-          // update subscription in database
-          console.log(
-            `Subscription ${eventData.data.id} was updated`,
-            eventData.data,
-          )
           break
 
         case EventName.SubscriptionPaused:
-          // pause subscription in database
-
           const pausedResult = await handleSubscriptionPaused({
             id: eventData.data.id,
             customerId: eventData.data.customerId,
@@ -120,40 +102,35 @@ export async function POST(request: NextRequest) {
           })
 
           if (!pausedResult.success) {
-            console.error(
-              'Failed to handle SubscriptionPaused:',
-              pausedResult.errorMessage,
+            logger.error(
+              {
+                event: eventData.eventType,
+                error: pausedResult.errorMessage,
+              },
+              'Failed to handle SubscriptionPaused',
             )
           }
-
-          console.log(
-            `Subscription ${eventData.data.id} was paused for user ${eventData.data.customerId}`,
-          )
           break
 
         case EventName.SubscriptionResumed:
-          // resume subscription in database
-
           const resumedResult = await handleSubscriptionResumed({
             id: eventData.data.id,
             customerId: eventData.data.customerId,
-            resumedAt: new Date().toISOString(), // Paddle no siempre envía resumedAt
+            resumedAt: new Date().toISOString(),
           })
 
           if (!resumedResult.success) {
-            console.error(
-              'Failed to handle SubscriptionResumed:',
-              resumedResult.errorMessage,
+            logger.error(
+              {
+                event: eventData.eventType,
+                error: resumedResult.errorMessage,
+              },
+              'Failed to handle SubscriptionResumed',
             )
           }
-
-          console.log(
-            `Subscription ${eventData.data.id} was resumed for user ${eventData.data.customerId}`,
-          )
           break
 
         case EventName.SubscriptionPastDue:
-          // past due subscription in database
           const pastDueResult = await handleSubscriptionPastDue({
             id: eventData.data.id,
             customerId: eventData.data.customerId,
@@ -161,28 +138,31 @@ export async function POST(request: NextRequest) {
           })
 
           if (!pastDueResult.success) {
-            console.error(
-              'Failed to handle SubscriptionPastDue:',
-              pastDueResult.errorMessage,
+            logger.error(
+              {
+                event: eventData.eventType,
+                error: pastDueResult.errorMessage,
+              },
+              'Failed to handle SubscriptionPastDue',
             )
           }
-
-          console.log(
-            `Subscription ${eventData.data.id} was past due for user ${eventData.data.customerId}`,
-          )
           break
 
         default:
-          console.log('Unhandled event type:', eventData.eventType)
+          logger.info(
+            {
+              event: eventData.eventType,
+            },
+            'Unhandled event type',
+          )
       }
     } else {
-      console.log('Signature missing in header')
+      logger.error('Signature missing in header')
     }
   } catch (e) {
-    // Handle signature mismatch or other runtime errors
-    console.log(e)
+    logger.error(e)
   }
-  // Return a response to acknowledge
+
   return NextResponse.json({
     ok: true,
   })

@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Subir archivos a OpenAI
     const uploadedFileIds: string[] = []
 
     for (const file of files) {
