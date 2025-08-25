@@ -24,7 +24,17 @@ import { Separator } from '@/components/ui/separator'
 import { useSubscriptionStatus } from '@/hooks/use-subscription'
 import { useAuthStore } from '@/stores/auth-store'
 import { motion } from 'framer-motion'
-import { AlertTriangle, CreditCard, Crown, Settings, User } from 'lucide-react'
+import {
+  AlertTriangle,
+  CreditCard,
+  Crown,
+  ExternalLink,
+  FileText,
+  Settings,
+  Shield,
+  User,
+} from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -373,6 +383,71 @@ export default function SettingsPage() {
                     )}
                   </>
                 )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Sección de políticas y privacidad */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Políticas y privacidad
+                </CardTitle>
+                <CardDescription>
+                  Información legal y sobre el manejo de tus datos
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-5 h-5 text-primary" />
+                      <div>
+                        <h3 className="font-medium">Política de Privacidad</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Conoce cómo recopilamos, utilizamos y protegemos tu
+                          información
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href="/privacy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2"
+                      >
+                        Ver política
+                        <ExternalLink className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-1">
+                        <h4 className="font-medium text-blue-900">
+                          Tu privacidad es importante
+                        </h4>
+                        <p className="text-sm text-blue-700">
+                          Solo recopilamos tu email y nombre. No compartimos tus
+                          datos con terceros y utilizamos Supabase y Paddle bajo
+                          estrictos acuerdos de seguridad.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
