@@ -1,4 +1,3 @@
-import { logger } from '@/lib/logger/server'
 import {
   handleCustomerCreated,
   handleSubscriptionActivated,
@@ -35,12 +34,9 @@ export async function POST(request: NextRequest) {
           })
 
           if (!customerResult.success) {
-            logger.error(
-              {
-                event: eventData.eventType,
-                error: customerResult.errorMessage,
-              },
-              'Failed to handle CustomerCreated',
+            console.log(
+              'failed to handle CustomerCreated',
+              customerResult.errorMessage,
             )
           }
           break
@@ -62,13 +58,7 @@ export async function POST(request: NextRequest) {
             break
           }
 
-          logger.info(
-            {
-              event: eventData.eventType,
-              data: eventData.data,
-            },
-            'Someone has activated a subscription',
-          )
+          console.log('Someone has activated a subscription')
 
           break
 
@@ -80,12 +70,9 @@ export async function POST(request: NextRequest) {
           })
 
           if (!canceledResult.success) {
-            logger.error(
-              {
-                event: eventData.eventType,
-                error: canceledResult.errorMessage,
-              },
-              'Failed to handle SubscriptionCanceled',
+            console.log(
+              'failed to handle SubscriptionCanceled',
+              canceledResult.errorMessage,
             )
           }
 
@@ -102,12 +89,9 @@ export async function POST(request: NextRequest) {
           })
 
           if (!pausedResult.success) {
-            logger.error(
-              {
-                event: eventData.eventType,
-                error: pausedResult.errorMessage,
-              },
-              'Failed to handle SubscriptionPaused',
+            console.log(
+              'failed to handle SubscriptionPaused',
+              pausedResult.errorMessage,
             )
           }
           break
@@ -120,12 +104,9 @@ export async function POST(request: NextRequest) {
           })
 
           if (!resumedResult.success) {
-            logger.error(
-              {
-                event: eventData.eventType,
-                error: resumedResult.errorMessage,
-              },
-              'Failed to handle SubscriptionResumed',
+            console.log(
+              'failed to handle SubscriptionResumed',
+              resumedResult.errorMessage,
             )
           }
           break
@@ -138,29 +119,21 @@ export async function POST(request: NextRequest) {
           })
 
           if (!pastDueResult.success) {
-            logger.error(
-              {
-                event: eventData.eventType,
-                error: pastDueResult.errorMessage,
-              },
-              'Failed to handle SubscriptionPastDue',
+            console.log(
+              'failed to handle SubscriptionPastDue',
+              pastDueResult.errorMessage,
             )
           }
           break
 
         default:
-          logger.info(
-            {
-              event: eventData.eventType,
-            },
-            'Unhandled event type',
-          )
+          console.log('Unhandled event type', eventData.eventType)
       }
     } else {
-      logger.error('Signature missing in header')
+      console.log('Signature missing in header')
     }
   } catch (e) {
-    logger.error(e)
+    console.log(e)
   }
 
   return NextResponse.json({
