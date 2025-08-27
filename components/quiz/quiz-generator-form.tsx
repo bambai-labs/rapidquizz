@@ -1,8 +1,10 @@
 'use client'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Progress } from '@/components/ui/progress'
 import {
   Select,
   SelectContent,
@@ -10,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useQuizLimits } from '@/hooks/use-quiz-limits'
 import { generateQuiz } from '@/lib/quiz-generator'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizGeneratorStore } from '@/stores/quiz-generator-store'
@@ -17,13 +20,16 @@ import { QuizGeneratorSchema } from '@/types/quiz'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  AlertTriangle,
   BookOpen,
   Brain,
   CheckCircle,
   Clock,
   Coffee,
+  Crown,
   FileText,
   Heart,
+  Info,
   Lightbulb,
   Plus,
   Puzzle,
@@ -59,6 +65,12 @@ export function QuizGeneratorFormComponent({
   const [hasError, setHasError] = useState(false)
   const [lastFormData, setLastFormData] = useState<any>(null)
   const { user } = useAuthStore()
+  const {
+    limits,
+    isLoading: limitsLoading,
+    canCreateQuiz,
+    getLimitMessage,
+  } = useQuizLimits()
 
   const loadingMessages = [
     { text: '🧠 Analizando el contenido...', icon: Brain },
@@ -127,6 +139,16 @@ export function QuizGeneratorFormComponent({
   })
 
   const onSubmit = async (data: any) => {
+    const hasFiles = uploadedFiles.length > 0
+    if (!canCreateQuiz(hasFiles)) {
+      const limitType = hasFiles ? 'con archivos' : 'sin archivos'
+      const errorMsg = `Has alcanzado el límite de quizzes ${limitType} para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.`
+      toast.error('Límite alcanzado', {
+        description: errorMsg,
+      })
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
     setHasError(false)
@@ -299,6 +321,198 @@ export function QuizGeneratorFormComponent({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {!limitsLoading &&
+          limits &&
+          !limits.hasActiveSubscription &&
+          !isGenerating && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              <Alert className="border-blue-200 bg-blue-50">
+                <Info className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">
+                        Límites de capa gratuita
+                      </span>
+                      <Crown className="h-4 w-4 text-yellow-600" />
+                    </div>
+
+                    {/* Quizzes sin archivos */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Quizzes sin archivos</span>
+                        <span className="font-medium">
+                          {limits.withoutFiles.used}/{limits.withoutFiles.limit}
+                        </span>
+                      </div>
+                      <Progress
+                        value={
+                          (limits.withoutFiles.used /
+                            limits.withoutFiles.limit) *
+                          100
+                        }
+                        className="h-2"
+                      />
+                    </div>
+
+                    {/* Quizzes con archivos */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Quizzes con archivos</span>
+                        <span className="font-medium">
+                          {limits.withFiles.used}/{limits.withFiles.limit}
+                        </span>
+                      </div>
+                      <Progress
+                        value={
+                          (limits.withFiles.used / limits.withFiles.limit) * 100
+                        }
+                        className="h-2"
+                      />
+                    </div>
+
+                    <p className="text-xs text-blue-700">
+                      {uploadedFiles.length > 0
+                        ? getLimitMessage(true)
+                        : getLimitMessage(false)}
+                    </p>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+
+        {/* Dynamic Subscription Indicator */}
+        {!limitsLoading &&
+          limits?.hasActiveSubscription &&
+          limits.subscriptionInfo &&
+          !isGenerating && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6"
+            >
+              {limits.subscriptionInfo.status === 'active' && (
+                <Alert className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+                  <Crown className="h-4 w-4 text-green-600" />
+                  <AlertDescription className="text-green-800">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        Suscripción Pro Activa
+                      </span>
+                      <Sparkles className="h-4 w-4" />
+                    </div>
+                    <p className="text-sm mt-1">
+                      Disfruta de quizzes ilimitados y todas las funciones
+                      premium
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {limits.subscriptionInfo.status === 'canceled' && (
+                <Alert className="border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
+                  <Crown className="h-4 w-4 text-orange-600" />
+                  <AlertDescription className="text-orange-800">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">
+                            Suscripción Cancelada
+                          </span>
+                          <AlertTriangle className="h-4 w-4" />
+                        </div>
+                        <p className="text-sm mt-1">
+                          Aún tienes acceso premium hasta el{' '}
+                          {new Date(
+                            limits.subscriptionInfo.endsAt,
+                          ).toLocaleDateString('es-ES')}
+                        </p>
+                        <p className="text-xs mt-1 text-orange-700">
+                          {limits.subscriptionInfo.daysRemaining} días restantes
+                        </p>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {limits.subscriptionInfo.status === 'paused' && (
+                <Alert className="border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50">
+                  <Crown className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">
+                            Suscripción Pausada
+                          </span>
+                          <Clock className="h-4 w-4" />
+                        </div>
+                        <p className="text-sm mt-1">
+                          Mantienes acceso premium hasta el{' '}
+                          {new Date(
+                            limits.subscriptionInfo.endsAt,
+                          ).toLocaleDateString('es-ES')}
+                        </p>
+                        <p className="text-xs mt-1 text-blue-700">
+                          {limits.subscriptionInfo.daysRemaining} días restantes
+                        </p>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+            </motion.div>
+          )}
+
+        {/* Warning when approaching limits - Only for non-premium users */}
+        {!limitsLoading &&
+          limits &&
+          !limits.hasActiveSubscription &&
+          !isGenerating && (
+            <>
+              {uploadedFiles.length > 0 && limits.withFiles.remaining <= 1 && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4"
+                >
+                  <Alert className="border-orange-200 bg-orange-50">
+                    <AlertTriangle className="h-4 w-4 text-orange-600" />
+                    <AlertDescription className="text-orange-800">
+                      <span className="font-medium">¡Atención!</span> Te quedan
+                      solo {limits.withFiles.remaining} quizzes con archivos
+                      este mes.
+                    </AlertDescription>
+                  </Alert>
+                </motion.div>
+              )}
+
+              {uploadedFiles.length === 0 &&
+                limits.withoutFiles.remaining <= 3 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4"
+                  >
+                    <Alert className="border-orange-200 bg-orange-50">
+                      <AlertTriangle className="h-4 w-4 text-orange-600" />
+                      <AlertDescription className="text-orange-800">
+                        <span className="font-medium">¡Atención!</span> Te
+                        quedan solo {limits.withoutFiles.remaining} quizzes sin
+                        archivos este mes.
+                      </AlertDescription>
+                    </Alert>
+                  </motion.div>
+                )}
+            </>
+          )}
+
         {isGenerating ? (
           // Vista de carga - oculta el formulario
           <div className="flex items-center justify-center min-h-[400px]">
@@ -490,115 +704,165 @@ export function QuizGeneratorFormComponent({
                 Los archivos te ayudan a generar quizzes más precisos basados en
                 tu contenido específico.
               </p>
-              <div className="space-y-3">
-                <div className="flex items-center justify-center w-full">
-                  <label
-                    htmlFor="file-upload"
-                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
-                  >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 mb-4 text-gray-500" />
-                      <p className="mb-2 text-sm text-gray-500">
-                        <span className="font-semibold">
-                          Haz clic para subir
-                        </span>{' '}
-                        o arrastra archivos
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        PDF o DOCX (Máximo 10 MB por archivo, 50 MB total)
-                      </p>
-                    </div>
-                    <input
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                      accept=".pdf,.docx"
-                      multiple
-                      onChange={handleFileUpload}
-                    />
-                  </label>
-                </div>
 
-                {/* Lista de archivos subidos */}
-                {uploadedFiles.length > 0 && (
-                  <div className="space-y-3">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium">
-                          Archivos seleccionados:
+              {/* File Upload Block - Only when limits reached */}
+              {!limitsLoading &&
+                limits &&
+                !limits.hasActiveSubscription &&
+                limits.withFiles.remaining <= 0 && (
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gray-100/80 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center">
+                      <div className="text-center p-4">
+                        <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-red-600" />
+                        <p className="font-medium text-gray-800 mb-1">
+                          Límite Alcanzado
                         </p>
-                        <p className="text-xs text-gray-500">
-                          {formatFileSize(getTotalFileSize())} / 50 MB
+                        <p className="text-sm text-gray-600">
+                          Has alcanzado tu límite de {limits.withFiles.limit}{' '}
+                          quizzes con archivos este mes
                         </p>
-                      </div>
-
-                      {/* Barra de progreso del límite total */}
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className={`h-2 rounded-full transition-all duration-300 ${
-                            getTotalFileSize() > 40 * 1024 * 1024
-                              ? 'bg-red-500'
-                              : getTotalFileSize() > 30 * 1024 * 1024
-                                ? 'bg-yellow-500'
-                                : 'bg-green-500'
-                          }`}
-                          style={{
-                            width: `${Math.min((getTotalFileSize() / (50 * 1024 * 1024)) * 100, 100)}%`,
-                          }}
-                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Actualiza a Pro para quizzes ilimitados
+                        </p>
                       </div>
                     </div>
-
-                    {/* Advertencia si hay muchos archivos o tamaño grande */}
-                    {(uploadedFiles.length > 5 ||
-                      getTotalFileSize() > 30 * 1024 * 1024) && (
-                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                        <p className="text-sm text-amber-800">
-                          ⚠️{' '}
-                          {uploadedFiles.length > 5
-                            ? 'Muchos archivos pueden aumentar el tiempo de procesamiento.'
-                            : getTotalFileSize() > 40 * 1024 * 1024
-                              ? 'Te estás acercando al límite de 50 MB. Considera optimizar tus archivos.'
-                              : 'Archivos grandes pueden aumentar el tiempo de procesamiento.'}
-                        </p>
-                      </div>
-                    )}
-
-                    <AnimatePresence>
-                      {uploadedFiles.map((file: File, index: number) => (
-                        <motion.div
-                          key={`${file.name}-${index}`}
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                        >
-                          <div className="flex items-center gap-3">
-                            <FileText className="w-5 h-5 text-blue-500" />
-                            <div>
-                              <p className="text-sm font-medium text-gray-900">
-                                {file.name}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                {formatFileSize(file.size)}
-                              </p>
-                            </div>
+                    <div className="opacity-30 pointer-events-none">
+                      <div className="flex items-center justify-center w-full">
+                        <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg bg-gray-50">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-4 text-gray-500" />
+                            <p className="mb-2 text-sm text-gray-500">
+                              <span className="font-semibold">
+                                Haz clic para subir
+                              </span>{' '}
+                              o arrastra archivos
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              PDF o DOCX (Máximo 10 MB por archivo, 50 MB total)
+                            </p>
                           </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeFile(index)}
-                            className="text-gray-500 hover:text-red-500"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
-              </div>
+
+              {/* Active File Upload - Available when limits not reached or premium */}
+              {!limitsLoading &&
+                limits &&
+                (limits.hasActiveSubscription ||
+                  (!limits.hasActiveSubscription &&
+                    limits.withFiles.remaining > 0)) && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center w-full">
+                      <label
+                        htmlFor="file-upload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                      >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <Upload className="w-8 h-8 mb-4 text-gray-500" />
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">
+                              Haz clic para subir
+                            </span>{' '}
+                            o arrastra archivos
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            PDF o DOCX (Máximo 10 MB por archivo, 50 MB total)
+                          </p>
+                        </div>
+                        <input
+                          id="file-upload"
+                          type="file"
+                          className="hidden"
+                          accept=".pdf,.docx"
+                          multiple
+                          onChange={handleFileUpload}
+                        />
+                      </label>
+                    </div>
+
+                    {/* Lista de archivos subidos */}
+                    {uploadedFiles.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-medium">
+                              Archivos seleccionados:
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {formatFileSize(getTotalFileSize())} / 50 MB
+                            </p>
+                          </div>
+
+                          {/* Barra de progreso del límite total */}
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all duration-300 ${
+                                getTotalFileSize() > 40 * 1024 * 1024
+                                  ? 'bg-red-500'
+                                  : getTotalFileSize() > 30 * 1024 * 1024
+                                    ? 'bg-yellow-500'
+                                    : 'bg-green-500'
+                              }`}
+                              style={{
+                                width: `${Math.min((getTotalFileSize() / (50 * 1024 * 1024)) * 100, 100)}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Advertencia si hay muchos archivos o tamaño grande */}
+                        {(uploadedFiles.length > 5 ||
+                          getTotalFileSize() > 30 * 1024 * 1024) && (
+                          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                            <p className="text-sm text-amber-800">
+                              ⚠️{' '}
+                              {uploadedFiles.length > 5
+                                ? 'Muchos archivos pueden aumentar el tiempo de procesamiento.'
+                                : getTotalFileSize() > 40 * 1024 * 1024
+                                  ? 'Te estás acercando al límite de 50 MB. Considera optimizar tus archivos.'
+                                  : 'Archivos grandes pueden aumentar el tiempo de procesamiento.'}
+                            </p>
+                          </div>
+                        )}
+
+                        <AnimatePresence>
+                          {uploadedFiles.map((file: File, index: number) => (
+                            <motion.div
+                              key={`${file.name}-${index}`}
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              exit={{ opacity: 0, height: 0 }}
+                              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                            >
+                              <div className="flex items-center gap-3">
+                                <FileText className="w-5 h-5 text-blue-500" />
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {file.name}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {formatFileSize(file.size)}
+                                  </p>
+                                </div>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeFile(index)}
+                                className="text-gray-500 hover:text-red-500"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    )}
+                  </div>
+                )}
             </motion.div>
 
             {/* Difficulty and Question Count */}
@@ -675,13 +939,17 @@ export function QuizGeneratorFormComponent({
             >
               <Button
                 type="submit"
-                disabled={isGenerating}
+                disabled={
+                  isGenerating || !canCreateQuiz(uploadedFiles.length > 0)
+                }
                 className="w-full"
                 size="lg"
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
-                  Generar Quiz
+                  {!canCreateQuiz(uploadedFiles.length > 0)
+                    ? 'Límite alcanzado'
+                    : 'Generar Quiz'}
                 </div>
               </Button>
 

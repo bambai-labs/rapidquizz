@@ -69,10 +69,11 @@ export async function generateQuiz(
       createdBy: userId,
       difficulty: formData.difficulty,
       timeLimit: formData.timeLimit,
+      isPublic: false,
     }
 
     // Guardar el quiz en la base de datos
-    const saveResult = await saveQuiz(quiz, userId)
+    const saveResult = await saveQuiz(quiz, userId, useFiles)
     if (!saveResult.success) {
       console.error(
         'Error al guardar quiz en la base de datos:',

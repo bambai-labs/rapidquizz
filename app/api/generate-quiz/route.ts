@@ -1,5 +1,6 @@
 import { QuizGeneratorForm, QuizQuestion } from '@/types/quiz'
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
 import OpenAI from 'openai'
 
 const openai = new OpenAI({
@@ -14,6 +15,90 @@ interface QuizGeneratorFormWithFiles extends QuizGeneratorForm {
 export async function POST(request: NextRequest) {
   try {
     const formData: QuizGeneratorFormWithFiles = await request.json()
+    
+    // Verificar autenticación
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, errorMessage: 'Usuario no autenticado' },
+        { status: 401 },
+      )
+    }
+
+    // Verificar límites para usuarios gratuitos
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+
+    // Verificar si la suscripción permite acceso premium
+    const now = new Date()
+    const isWithinDateLimits = subscription &&
+      subscription.starts_at &&
+      subscription.ends_at &&
+      new Date(subscription.starts_at) <= now &&
+      new Date(subscription.ends_at) > now
+
+    const hasActiveSubscription =
+      subscription &&
+      subscription.status !== 'expired' &&
+      isWithinDateLimits
+
+    if (!hasActiveSubscription) {
+      // Contar quizzes del mes actual
+      const startOfMonth = new Date()
+      startOfMonth.setDate(1)
+      startOfMonth.setHours(0, 0, 0, 0)
+
+      const endOfMonth = new Date(startOfMonth)
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1)
+
+      const { data: monthlyQuizzes, error: countError } = await supabase
+        .from('quizzes')
+        .select('has_files')
+        .eq('created_by', user.id)
+        .gte('created_at', startOfMonth.toISOString())
+        .lt('created_at', endOfMonth.toISOString())
+
+      if (countError) {
+        return NextResponse.json(
+          { success: false, errorMessage: 'Error al verificar límites' },
+          { status: 500 },
+        )
+      }
+
+      const quizzesWithFiles = monthlyQuizzes?.filter(q => q.has_files === true) || []
+      const quizzesWithoutFiles = monthlyQuizzes?.filter(q => q.has_files !== true) || []
+
+      // Verificar límites según si usa archivos o no
+      if (formData.useFiles) {
+        if (quizzesWithFiles.length >= 5) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              errorMessage: 'Has alcanzado el límite de 5 quizzes con archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.' 
+            },
+            { status: 403 },
+          )
+        }
+      } else {
+        if (quizzesWithoutFiles.length >= 20) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              errorMessage: 'Has alcanzado el límite de 20 quizzes sin archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.' 
+            },
+            { status: 403 },
+          )
+        }
+      }
+    }
 
     // Construir el prompt base
     const basePrompt = `Generate a quiz in JSON format with the following specifications:

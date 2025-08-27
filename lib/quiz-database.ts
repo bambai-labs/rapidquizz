@@ -27,6 +27,7 @@ interface DatabaseQuizResult {
 export async function saveQuiz(
   quiz: Quiz,
   userId: string,
+  hasFiles: boolean = false,
 ): Promise<Result<string>> {
   const supabase = createClient()
 
@@ -42,6 +43,7 @@ export async function saveQuiz(
         time_limit: quiz.timeLimit,
         created_by: userId,
         is_public: quiz.isPublic || false,
+        has_files: hasFiles,
       })
       .select('id')
       .single()
