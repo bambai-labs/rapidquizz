@@ -31,7 +31,6 @@ import {
   FileText,
   MoreVertical,
   Share,
-  Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
 import { DeleteQuizDialog } from './delete-quiz-dialog'
@@ -277,7 +276,7 @@ export function QuizCard({
                     </DropdownMenuItem>
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
-
+                {/*
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleDeleteClick}
@@ -285,7 +284,7 @@ export function QuizCard({
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Eliminar
-                </DropdownMenuItem>
+                </DropdownMenuItem>  */}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
