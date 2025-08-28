@@ -170,7 +170,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="what-includes" className="py-20">
+      <section id="what-includes" className="py-20 scroll-mt-72 md:scroll-mt-8">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -290,7 +290,7 @@ export const LandingPage = () => {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="py-20 bg-gradient-to-br from-purple-50 via-white to-indigo-50"
+        className="py-20 bg-gradient-to-br from-purple-50 via-white to-indigo-50 scroll-mt-72 md:scroll-mt-8"
       >
         <div className="container mx-auto px-4">
           <motion.div
@@ -479,7 +479,7 @@ export const LandingPage = () => {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20">
+      <section id="faq" className="py-20 scroll-mt-72 md:scroll-mt-8">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
