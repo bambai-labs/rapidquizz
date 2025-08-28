@@ -1,6 +1,7 @@
 'use client'
 import { ExportFormat, ExportType, QuizCard } from '@/components/quiz/quiz-card'
 import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
+import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { useUserQuizzesStore } from '@/stores/user-quizzes-store'
@@ -119,6 +120,7 @@ export const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <NavBar />
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

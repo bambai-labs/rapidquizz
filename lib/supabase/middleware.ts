@@ -39,7 +39,14 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const protectedRoutes = ['/dashboard', '/quiz', '/quiz/edit/*']
+  const protectedRoutes = [
+    '/dashboard',
+    '/quiz',
+    '/quiz/edit/*',
+    '/settings',
+    '/pricing',
+    '/success',
+  ]
   const publicRoutes = ['/login', '/register', '/error', '/']
   const currentPath = new URL(request.url).pathname
 
