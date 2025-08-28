@@ -1,6 +1,6 @@
-"use client";
-import { GoogleAuthButton } from "@/components/auth/google-auth-button";
-import { motion } from "framer-motion";
+'use client'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
+import { motion } from 'framer-motion'
 
 export const LandingPage = () => {
   return (
@@ -17,7 +17,7 @@ export const LandingPage = () => {
             transition={{ delay: 0.1 }}
             className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
           >
-            QuizCraft
+            RapidQuiz
           </motion.h1>
 
           <motion.p
@@ -68,5 +68,5 @@ export const LandingPage = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}

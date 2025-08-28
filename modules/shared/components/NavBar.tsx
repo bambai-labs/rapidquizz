@@ -25,7 +25,7 @@ export const NavBar = () => {
             className="flex items-center gap-2"
           >
             <GraduationCap className="w-8 h-8 text-primary" />
-            <h1 className="text-2xl font-bold">QuizCraft</h1>
+            <h1 className="text-2xl font-bold">RapidQuiz</h1>
           </motion.div>
         </Link>
 
