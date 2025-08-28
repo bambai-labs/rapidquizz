@@ -9,6 +9,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRegister } from '../hooks/useRegister'
@@ -225,6 +232,59 @@ export const RegisterPage = () => {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name="userRole"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>What type of person are you?</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                            <SelectValue placeholder="Select your role" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="teacher">Teacher</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <AnimatePresence>
+                  {form.watch('userRole') === 'other' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <FormField
+                        control={form.control}
+                        name="customRole"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Please specify your role</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="text"
+                                placeholder="e.g., Parent, Tutor, Administrator"
+                                {...field}
+                                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 {/* <AnimatePresence>
                   {form.formState.errors.root && (

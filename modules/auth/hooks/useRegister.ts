@@ -27,10 +27,18 @@ const registerSchema = z
         'Password must contain at least one uppercase, one lowercase and one number',
       ),
     confirmPassword: z.string().min(1, 'Confirm your password'),
+    userRole: z.enum(['student', 'teacher', 'other'], {
+      message: 'Please select your role',
+    }),
+    customRole: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
+  })
+  .refine((data) => data.userRole !== 'other' || (data.customRole && data.customRole.trim().length > 0), {
+    message: 'Please specify your role',
+    path: ['customRole'],
   })
 
 type RegisterFormData = z.infer<typeof registerSchema>
@@ -48,13 +56,21 @@ export const useRegister = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      userRole: undefined,
+      customRole: '',
     },
   })
 
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true)
     try {
-      const result = await signup(data.email, data.password, data.username)
+      const result = await signup(
+        data.email, 
+        data.password, 
+        data.username,
+        data.userRole,
+        data.customRole
+      )
 
       if (result.success) {
         toast.success(
