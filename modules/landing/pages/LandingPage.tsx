@@ -1,11 +1,40 @@
 'use client'
-import { GoogleAuthButton } from '@/components/auth/google-auth-button'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { motion } from 'framer-motion'
-import { BarChart3, Play, Sparkles, Star, Users, Zap } from 'lucide-react'
+import {
+  BarChart3,
+  Check,
+  Crown,
+  Play,
+  Sparkles,
+  Star,
+  Users,
+  Zap,
+} from 'lucide-react'
+import Link from 'next/link'
+import { LandingNavBar } from '../components/landing-navbar'
+import { StartNowCta } from '../components/start-now-cta'
 
 export const LandingPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+        <LandingNavBar />
+      </div>
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20">
         <motion.div
@@ -49,10 +78,12 @@ export const LandingPage = () => {
             transition={{ delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <GoogleAuthButton />
+            <StartNowCta />
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span>Free tier available • No credit card required</span>
+              <span>
+                Free tier available • No credit or debit card required
+              </span>
             </div>
           </motion.div>
 
@@ -139,7 +170,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
+      <section id="what-includes" className="py-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -256,6 +287,323 @@ export const LandingPage = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section
+        id="pricing"
+        className="py-20 bg-gradient-to-br from-purple-50 via-white to-indigo-50"
+      >
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <h2 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+              Simple, Transparent Pricing
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Choose the perfect plan for your needs and start creating amazing
+              quizzes today
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          >
+            {/* Free Plan */}
+            <motion.div whileHover={{ y: -5 }} className="relative">
+              <Card className="h-full transition-all duration-300 hover:shadow-xl">
+                <CardHeader className="text-center pb-8">
+                  <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                    Free
+                  </CardTitle>
+                  <div className="text-4xl font-bold">
+                    <span className="text-3xl">$</span>0
+                    <span className="text-base font-normal text-muted-foreground">
+                      /month
+                    </span>
+                  </div>
+                  <CardDescription className="text-base">
+                    Perfect for getting started
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">
+                      20 quizzes without files per month
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">
+                      5 quizzes with files per month
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Basic quiz results</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Pro Plan */}
+            <motion.div whileHover={{ y: -5 }} className="relative">
+              <motion.div
+                animate={{
+                  rotate: [0, 2, -2, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10"
+              >
+                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg whitespace-nowrap">
+                  <Star className="w-4 h-4" />
+                  Most Popular
+                  <Sparkles className="w-4 h-4" />
+                </div>
+              </motion.div>
+
+              <Card className="h-full transition-all duration-300 hover:shadow-xl border-purple-200 shadow-purple-100 shadow-xl scale-105">
+                <CardHeader className="text-center pb-8">
+                  <CardTitle className="text-2xl flex items-center justify-center gap-2">
+                    <Crown className="w-6 h-6 text-purple-600" />
+                    Pro
+                  </CardTitle>
+                  <div className="text-4xl font-bold">
+                    <span className="text-3xl">$</span>9.99
+                    <span className="text-base font-normal text-gray-500">
+                      /month
+                    </span>
+                  </div>
+                  <CardDescription className="text-base">
+                    Ideal for educators and professionals
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Unlimited quizzes</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">
+                      Unlimited questions per quiz
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">Priority support</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">
+                      Enhanced AI for better questions
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">
+                      PDF & DOCX file support
+                    </span>
+                  </div>
+                </CardContent>
+
+                <CardFooter className="pt-8">
+                  <Link href="/login" className="w-full">
+                    <Button className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white border-0 shadow-lg font-semibold transition-all duration-300">
+                      Upgrade to Pro
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            </motion.div>
+          </motion.div>
+
+          {/* Why Choose Pro Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="mt-20 text-center"
+          >
+            <h3 className="text-3xl font-bold mb-12">
+              Why Choose RapidQuiz Pro?
+            </h3>
+            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
+                  <Zap className="w-6 h-6 text-purple-600" />
+                </div>
+                <h4 className="font-semibold text-lg">Advanced AI</h4>
+                <p className="text-gray-600">
+                  Generate smarter and more precise questions with our enhanced
+                  AI technology
+                </p>
+              </div>
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
+                  <Crown className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h4 className="font-semibold text-lg">No Limits</h4>
+                <p className="text-gray-600">
+                  Create as many quizzes as you need without any restrictions
+                </p>
+              </div>
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                  <Star className="w-6 h-6 text-green-600" />
+                </div>
+                <h4 className="font-semibold text-lg">Premium Support</h4>
+                <p className="text-gray-600">
+                  Get priority help from our team of experts whenever you need
+                  it
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Everything you need to know about RapidQuiz
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="max-w-4xl mx-auto"
+          >
+            <Accordion type="single" collapsible className="space-y-4">
+              <AccordionItem value="item-1" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  What is RapidQuiz and how does it work?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  RapidQuiz is an AI-powered quiz generation platform that
+                  transforms your content into engaging, interactive quizzes.
+                  Simply provide text, upload PDF or DOCX files, or describe a
+                  topic, and our advanced AI will generate comprehensive
+                  multiple-choice questions with instant feedback and beautiful
+                  animations.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  What's included in the free plan?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  The free plan includes 20 quizzes without files and 5 quizzes
+                  with files per month, basic quiz results, and community
+                  support. It's perfect for getting started and trying out
+                  RapidQuiz's core features.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  What additional features do I get with Pro?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Pro users get unlimited quizzes, unlimited questions per quiz,
+                  priority support, enhanced AI for better question generation,
+                  and full PDF & DOCX file support. You can also access advanced
+                  analytics and export options.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  What file formats are supported?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  RapidQuiz supports PDF and DOCX file uploads for Pro users.
+                  Free users can create quizzes from text input. Our AI can
+                  extract content from these files and generate relevant
+                  questions automatically.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  Can I export my quizzes?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Yes! You can export your quizzes in multiple formats and share
+                  them easily with students, colleagues, or embed them in your
+                  learning management system or website.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-6" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  How accurate is the AI-generated content?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Our AI is trained on vast educational datasets and
+                  continuously improved. Pro users get access to our enhanced AI
+                  model that generates more precise and contextually relevant
+                  questions. You can always review and edit questions before
+                  publishing.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-7" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  Is there a limit on quiz length?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Free users can create quizzes with up to 10 questions. Pro
+                  users have no limits and can create quizzes with as many
+                  questions as needed, perfect for comprehensive assessments and
+                  detailed learning materials.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-8" className="border rounded-lg px-6">
+                <AccordionTrigger className="text-left font-semibold">
+                  Can I cancel my Pro subscription anytime?
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  Yes, you can cancel your Pro subscription at any time. Your
+                  Pro features will remain active until the end of your current
+                  billing period, after which you'll be moved to the free plan.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-secondary">
         <div className="container mx-auto px-4">
@@ -272,7 +620,7 @@ export const LandingPage = () => {
               Join thousands of educators and content creators who are already
               using RapidQuiz to engage their audience.
             </p>
-            <GoogleAuthButton />
+            <StartNowCta />
           </motion.div>
         </div>
       </section>
