@@ -387,7 +387,7 @@ export const LandingPage = () => {
                     </span>
                   </div>
                   <CardDescription className="text-base">
-                    Ideal for educators and professionals
+                    Ideal for students, educators and professionals
                   </CardDescription>
                 </CardHeader>
 
