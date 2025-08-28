@@ -9,6 +9,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useLogin } from '../hooks/useLogin'
@@ -185,6 +186,27 @@ export const LoginPage = () => {
                       )}
                     </AnimatePresence>
                   </Button>
+                </motion.div>
+
+                {/* Divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                      Or
+                    </span>
+                  </div>
+                </div>
+
+                {/* Google Sign-in Button */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <GoogleAuthButton />
                 </motion.div>
 
                 <motion.div

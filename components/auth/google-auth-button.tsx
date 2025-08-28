@@ -1,17 +1,32 @@
 'use client'
+import { signInWithGoogle } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { Chrome } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
-export function GoogleAuthButton() {
-  const handleAuth = () => {
-    // Mock Google OAuth - In a real app, use NextAuth or similar
-    const mockUser = {
-      id: 'user-123',
-      name: 'John Educator',
-      email: 'john@example.com',
-      image:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+interface GoogleAuthButtonProps {
+  className?: string
+}
+
+export function GoogleAuthButton({ className }: GoogleAuthButtonProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleAuth = async () => {
+    setIsLoading(true)
+    try {
+      const result = await signInWithGoogle()
+      
+      if (!result.success) {
+        toast.error(result.errorMessage || 'Failed to sign in with Google')
+      }
+      // Success case is handled by redirect to callback
+    } catch (error) {
+      console.error('Google sign-in error:', error)
+      toast.error('Something went wrong. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -19,13 +34,21 @@ export function GoogleAuthButton() {
     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
       <Button
         onClick={handleAuth}
-        variant="default"
-        className="flex items-center gap-2 min-w-[200px]"
+        disabled={isLoading}
+        variant="outline"
+        className={`flex items-center gap-2 w-full ${className}`}
       >
-        <>
-          <Chrome className="w-5 h-5" />
-          Sign in with Google
-        </>
+        {isLoading ? (
+          <>
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+            Signing in...
+          </>
+        ) : (
+          <>
+            <Chrome className="w-5 h-5" />
+            Sign in with Google
+          </>
+        )}
       </Button>
     </motion.div>
   )

@@ -83,6 +83,28 @@ export async function signup(
   }
 }
 
+export async function signInWithGoogle(): Promise<Result<void>> {
+  const supabase = createClient()
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/auth/confirm/google`,
+    },
+  })
+
+  if (error) {
+    return {
+      success: false,
+      errorMessage: error.message,
+    }
+  }
+
+  return {
+    success: true,
+  }
+}
+
 export async function logout(): Promise<Result<void>> {
   const supabase = createClient()
   const { error } = await supabase.auth.signOut()

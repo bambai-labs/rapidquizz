@@ -1,4 +1,4 @@
-import { login } from '@/actions/auth'
+import { login, signInWithGoogle } from '@/actions/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -52,11 +52,29 @@ export const useLogin = () => {
     }
   }
 
+  const onGoogleSignIn = async () => {
+    setIsLoading(true)
+    try {
+      const result = await signInWithGoogle()
+      
+      if (!result.success) {
+        toast.error(result.errorMessage || 'Failed to sign in with Google')
+      }
+      // Success case is handled by redirect to callback
+    } catch (error) {
+      console.error('Google sign-in error:', error)
+      toast.error('Something went wrong. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     form,
     isLoading,
     showPassword,
     onSubmit,
+    onGoogleSignIn,
     setShowPassword,
   }
 }
