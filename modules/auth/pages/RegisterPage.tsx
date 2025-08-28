@@ -39,7 +39,7 @@ export const RegisterPage = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl font-bold mb-2"
             >
-              Crear Cuenta
+              Create Account
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: -20 }}
@@ -47,7 +47,7 @@ export const RegisterPage = () => {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground"
             >
-              Completa los datos para crear tu cuenta
+              Fill in the details to create your account
             </motion.p>
           </div>
 
@@ -67,11 +67,11 @@ export const RegisterPage = () => {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nombre de Usuario</FormLabel>
+                      <FormLabel>Username</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="mi_usuario"
+                          placeholder="my_username"
                           {...field}
                           className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
@@ -90,7 +90,7 @@ export const RegisterPage = () => {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="tu@email.com"
+                          placeholder="your@email.com"
                           {...field}
                           className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
@@ -105,7 +105,7 @@ export const RegisterPage = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contraseña</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -167,7 +167,7 @@ export const RegisterPage = () => {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirmar Contraseña</FormLabel>
+                      <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -261,7 +261,7 @@ export const RegisterPage = () => {
                           className="flex items-center space-x-2"
                         >
                           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                          <span>Creando cuenta...</span>
+                          <span>Creating account...</span>
                         </motion.div>
                       ) : (
                         <motion.span
@@ -270,7 +270,7 @@ export const RegisterPage = () => {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          Crear Cuenta
+                          Create Account
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -284,12 +284,12 @@ export const RegisterPage = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-muted-foreground">
-                    ¿Ya tienes una cuenta?{' '}
+                    Already have an account?{' '}
                     <Link
                       href="/login"
                       className="text-primary hover:underline transition-colors"
                     >
-                      Inicia sesión aquí
+                      Sign in here
                     </Link>
                   </p>
                 </motion.div>

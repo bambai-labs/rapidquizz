@@ -7,11 +7,11 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'El email es requerido').email(),
+  email: z.string().min(1, 'Email is required').email(),
   password: z
     .string()
-    .min(1, 'La contraseña es requerida')
-    .min(6, 'La contraseña debe tener al menos 6 caracteres'),
+    .min(1, 'Password is required')
+    .min(6, 'Password must be at least 6 characters'),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -42,10 +42,10 @@ export const useLogin = () => {
 
       toast.error(result.errorMessage || 'Something went wrong')
     } catch (error) {
-      console.error('Error al iniciar sesión:', error)
+      console.error('Login error:', error)
       /*form.setError('root', {
         type: 'manual',
-        message: 'Credenciales inválidas. Intenta de nuevo.',
+        message: 'Invalid credentials. Please try again.',
       })*/
     } finally {
       setIsLoading(false)

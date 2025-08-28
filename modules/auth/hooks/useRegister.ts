@@ -10,26 +10,26 @@ const registerSchema = z
   .object({
     username: z
       .string()
-      .min(1, 'El nombre de usuario es requerido')
-      .min(3, 'El nombre de usuario debe tener al menos 3 caracteres')
-      .max(20, 'El nombre de usuario no puede tener más de 20 caracteres')
+      .min(1, 'Username is required')
+      .min(3, 'Username must be at least 3 characters')
+      .max(20, 'Username cannot be more than 20 characters')
       .regex(
         /^[a-zA-Z0-9_]+$/,
-        'El nombre de usuario solo puede contener letras, números y guiones bajos',
+        'Username can only contain letters, numbers and underscores',
       ),
-    email: z.string().min(1, 'El email es requerido').email(),
+    email: z.string().min(1, 'Email is required').email(),
     password: z
       .string()
-      .min(1, 'La contraseña es requerida')
-      .min(6, 'La contraseña debe tener al menos 6 caracteres')
+      .min(1, 'Password is required')
+      .min(6, 'Password must be at least 6 characters')
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-        'La contraseña debe contener al menos una mayúscula, una minúscula y un número',
+        'Password must contain at least one uppercase, one lowercase and one number',
       ),
-    confirmPassword: z.string().min(1, 'Confirma tu contraseña'),
+    confirmPassword: z.string().min(1, 'Confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 
@@ -66,7 +66,7 @@ export const useRegister = () => {
 
       toast.error(result.errorMessage || 'Something went wrong')
     } catch (error) {
-      console.error('Error al registrarse:', error)
+      console.error('Registration error:', error)
       form.setError('root', {
         type: 'manual',
         message: 'Something went wrong. Please try again.',

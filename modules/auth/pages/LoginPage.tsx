@@ -32,7 +32,7 @@ export const LoginPage = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl font-bold mb-2"
             >
-              Iniciar Sesión
+              Sign In
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: -20 }}
@@ -40,7 +40,7 @@ export const LoginPage = () => {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground"
             >
-              Ingresa tus credenciales para acceder a tu cuenta
+              Enter your credentials to access your account
             </motion.p>
           </div>
 
@@ -64,7 +64,7 @@ export const LoginPage = () => {
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="tu@email.com"
+                          placeholder="your@email.com"
                           {...field}
                           className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                         />
@@ -79,7 +79,7 @@ export const LoginPage = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contraseña</FormLabel>
+                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
@@ -171,7 +171,7 @@ export const LoginPage = () => {
                           className="flex items-center space-x-2"
                         >
                           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                          <span>Iniciando sesión...</span>
+                          <span>Signing in...</span>
                         </motion.div>
                       ) : (
                         <motion.span
@@ -180,7 +180,7 @@ export const LoginPage = () => {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          Iniciar Sesión
+                          Sign In
                         </motion.span>
                       )}
                     </AnimatePresence>
@@ -194,12 +194,12 @@ export const LoginPage = () => {
                   className="text-center"
                 >
                   <p className="text-sm text-muted-foreground">
-                    ¿No tienes una cuenta?{' '}
+                    Don't have an account?{' '}
                     <Link
                       href="/register"
                       className="text-primary hover:underline transition-colors"
                     >
-                      Regístrate aquí
+                      Register here
                     </Link>
                   </p>
                 </motion.div>
