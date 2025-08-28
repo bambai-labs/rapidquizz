@@ -1,14 +1,13 @@
 import { logout } from '@/actions/auth'
 import { useAuthStore } from '@/stores/auth-store'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 export const useNavBar = () => {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const { user } = useAuthStore()
-  const isAuthenticated = useMemo(() => !!user, [user])
 
   const handleLogout = async () => {
     setLoading(true)
@@ -26,7 +25,6 @@ export const useNavBar = () => {
 
   return {
     user,
-    isAuthenticated,
     loading,
     handleLogout,
   }

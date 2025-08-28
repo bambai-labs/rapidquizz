@@ -1,16 +1,14 @@
 'use client'
-import { GoogleAuthButton } from '@/components/auth/google-auth-button'
 import { UserAvatar } from '@/components/auth/user-avatar'
 import { Button } from '@/components/ui/button'
 import { useSubscription } from '@/hooks/use-subscription'
-import { LoginButton } from '@/modules/auth/components/LoginButton'
 import { motion } from 'framer-motion'
 import { Crown, GraduationCap, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useNavBar } from '../hooks/useNavBar'
 
 export const NavBar = () => {
-  const { user, isAuthenticated, loading, handleLogout } = useNavBar()
+  const { user, loading, handleLogout } = useNavBar()
   const { hasActiveSubscription } = useSubscription()
   return (
     <motion.header
@@ -30,7 +28,6 @@ export const NavBar = () => {
         </Link>
 
         <div className="flex items-center gap-3">
-          {/* Botón Become Pro - visible para todos los usuarios */}
           {!hasActiveSubscription && (
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -71,7 +68,7 @@ export const NavBar = () => {
             </motion.div>
           )}
 
-          {isAuthenticated && user ? (
+          {user && (
             <div className="flex items-center gap-3">
               <UserAvatar user={user} size="sm" showName={true} />
               <motion.div
@@ -88,12 +85,6 @@ export const NavBar = () => {
                 </Button>
               </motion.div>
             </div>
-          ) : (
-            <>
-              <LoginButton />
-              <span className="text-sm text-muted-foreground">or</span>
-              <GoogleAuthButton />
-            </>
           )}
         </div>
       </div>
