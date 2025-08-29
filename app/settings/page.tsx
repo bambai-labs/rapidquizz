@@ -27,6 +27,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { motion } from 'framer-motion'
 import {
   AlertTriangle,
+  ArrowLeft,
   CreditCard,
   Crown,
   ExternalLink,
@@ -82,19 +83,19 @@ export default function SettingsPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error al obtener URL de gestión')
+        throw new Error(data.message || 'Error getting management URL')
       }
 
       // Redirigir al usuario al panel de gestión de Paddle
       if (data.manageUrl) {
-        toast.success('Redirigiendo al panel de gestión...')
+        toast.success('Redirecting to management panel...')
         window.open(data.manageUrl, '_blank')
       } else {
-        throw new Error('URL de gestión no disponible')
+        throw new Error('Management URL not available')
       }
     } catch (error: any) {
       console.error('Error getting manage URL:', error)
-      toast.error(error.message || 'Error al acceder al panel de gestión')
+      toast.error(error.message || 'Error accessing management panel')
     } finally {
       setCancelLoading(false)
     }
@@ -104,18 +105,20 @@ export default function SettingsPage() {
     if (isActive)
       return (
         <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-          Activa
+          Active
         </Badge>
       )
-    if (isCanceled) return <Badge variant="destructive">Cancelada</Badge>
-    if (isPaused) return <Badge variant="secondary">Pausada</Badge>
+    if (isCanceled) 
+      return <Badge variant="destructive">Cancelled</Badge>
+    if (isPaused) 
+      return <Badge variant="secondary">Paused</Badge>
     if (isExpired)
       return (
         <Badge variant="outline" className="border-orange-500 text-orange-700">
-          Expirada
+          Expired
         </Badge>
       )
-    return <Badge variant="outline">Sin suscripción</Badge>
+    return <Badge variant="outline">No subscription</Badge>
   }
 
   const formatDate = (date: Date) => {
@@ -134,18 +137,35 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background">
       <NavBar />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
+        {/* Go Back Button */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Go Back
+          </Button>
+        </motion.div>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
           className="mb-8"
         >
           <div className="flex items-center gap-3 mb-2">
             <Settings className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold">Ajustes de la cuenta</h1>
+            <h1 className="text-3xl font-bold">Account Settings</h1>
           </div>
           <p className="text-muted-foreground">
-            Gestiona tu cuenta y configuraciones de suscripción
+            Manage your account and subscription settings
           </p>
         </motion.div>
 
@@ -160,17 +180,17 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" />
-                  Información personal
+                  Personal Information
                 </CardTitle>
-                <CardDescription>Tu información de cuenta</CardDescription>
+                <CardDescription>Your account information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
-                      Nombre
+                      Name
                     </label>
-                    <p className="text-sm">{user.name || 'No especificado'}</p>
+                    <p className="text-sm">{user.name || 'Not specified'}</p>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
@@ -180,10 +200,10 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">
-                      Usuario
+                      Username
                     </label>
                     <p className="text-sm">
-                      {user.username || 'No especificado'}
+                      {user.username || 'Not specified'}
                     </p>
                   </div>
                 </div>
@@ -201,10 +221,10 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="w-5 h-5" />
-                  Suscripciones
+                  Subscriptions
                 </CardTitle>
                 <CardDescription>
-                  Gestiona tu plan de suscripción y facturación
+                  Manage your subscription plan and billing
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -216,7 +236,7 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-2 text-destructive py-4">
                     <AlertTriangle className="w-5 h-5" />
                     <span>
-                      Error al cargar información de suscripción: {error}
+                      Error loading subscription information: {error}
                     </span>
                   </div>
                 ) : (
@@ -227,12 +247,12 @@ export default function SettingsPage() {
                         <Crown className="w-6 h-6 text-yellow-500" />
                         <div>
                           <h3 className="font-semibold">
-                            Plan {hasActiveSubscription ? 'Pro' : 'Gratuito'}
+                            {hasActiveSubscription ? 'Pro' : 'Free'} Plan
                           </h3>
                           <p className="text-sm text-muted-foreground">
                             {hasActiveSubscription
-                              ? 'Acceso completo a todas las funciones'
-                              : 'Funciones limitadas'}
+                              ? 'Full access to all features'
+                              : 'Limited features'}
                           </p>
                         </div>
                       </div>
@@ -247,7 +267,7 @@ export default function SettingsPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="text-sm font-medium text-muted-foreground">
-                              Tipo de suscripción
+                              Subscription Type
                             </label>
                             <p className="text-sm font-medium capitalize">
                               {subscriptionType}
@@ -255,7 +275,7 @@ export default function SettingsPage() {
                           </div>
                           <div>
                             <label className="text-sm font-medium text-muted-foreground">
-                              Estado
+                              Status
                             </label>
                             <p className="text-sm font-medium capitalize">
                               {subscription.status}
@@ -264,7 +284,7 @@ export default function SettingsPage() {
                           {startDate && (
                             <div>
                               <label className="text-sm font-medium text-muted-foreground">
-                                Fecha de inicio
+                                Start Date
                               </label>
                               <p className="text-sm">{formatDate(startDate)}</p>
                             </div>
@@ -273,8 +293,8 @@ export default function SettingsPage() {
                             <div>
                               <label className="text-sm font-medium text-muted-foreground">
                                 {isActive
-                                  ? 'Próxima renovación'
-                                  : 'Fecha de fin'}
+                                  ? 'Next Renewal'
+                                  : 'End Date'}
                               </label>
                               <p className="text-sm">{formatDate(endDate)}</p>
                             </div>
@@ -286,8 +306,8 @@ export default function SettingsPage() {
                           <div className="flex items-center gap-2 p-3 bg-orange-50 border border-orange-200 rounded-md">
                             <AlertTriangle className="w-5 h-5 text-orange-600" />
                             <span className="text-sm text-orange-800">
-                              Tu suscripción expira en {daysRemaining}{' '}
-                              {daysRemaining === 1 ? 'día' : 'días'}
+                              Your subscription expires in {daysRemaining}{' '}
+                              {daysRemaining === 1 ? 'day' : 'days'}
                             </span>
                           </div>
                         )}
@@ -303,35 +323,35 @@ export default function SettingsPage() {
                                   className="flex items-center gap-2"
                                 >
                                   <Settings className="w-4 h-4" />
-                                  Gestionar suscripción
+                                  Manage Subscription
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle className="flex items-center gap-2">
                                     <Settings className="w-5 h-5 text-primary" />
-                                    Gestionar suscripción
+                                    Manage Subscription
                                   </AlertDialogTitle>
                                   <AlertDialogDescription className="space-y-2">
                                     <p>
-                                      Serás redirigido al panel de gestión de
-                                      Paddle donde podrás:
+                                      You will be redirected to Paddle's management
+                                      panel where you can:
                                     </p>
                                     <ul className="list-disc list-inside space-y-1 text-sm">
-                                      <li>Cancelar tu suscripción</li>
-                                      <li>Modificar tu método de pago</li>
-                                      <li>Ver tu historial de facturación</li>
-                                      <li>Descargar facturas</li>
+                                      <li>Cancel your subscription</li>
+                                      <li>Update your payment method</li>
+                                      <li>View your billing history</li>
+                                      <li>Download invoices</li>
                                     </ul>
                                     <p className="text-sm text-muted-foreground mt-3">
-                                      El panel se abrirá en una nueva pestaña
-                                      para tu seguridad.
+                                      The panel will open in a new tab
+                                      for your security.
                                     </p>
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel>
-                                    Cancelar
+                                    Cancel
                                   </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={handleConfirmCancelSubscription}
@@ -341,12 +361,12 @@ export default function SettingsPage() {
                                     {cancelLoading ? (
                                       <div className="flex items-center gap-2">
                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        Obteniendo enlace...
+                                        Getting link...
                                       </div>
                                     ) : (
                                       <div className="flex items-center gap-2">
                                         <Settings className="w-4 h-4" />
-                                        Ir al panel de gestión
+                                        Go to Management Panel
                                       </div>
                                     )}
                                   </AlertDialogAction>
@@ -360,7 +380,7 @@ export default function SettingsPage() {
                               className="flex items-center gap-2"
                             >
                               <Crown className="w-4 h-4" />
-                              Actualizar a Pro
+                              Upgrade to Pro
                             </Button>
                           )}
                         </div>
@@ -369,17 +389,17 @@ export default function SettingsPage() {
                       <div className="text-center py-8">
                         <Crown className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="font-semibold mb-2">
-                          Sin suscripción activa
+                          No Active Subscription
                         </h3>
                         <p className="text-sm text-muted-foreground mb-4">
-                          Actualiza a Pro para acceder a todas las funciones
+                          Upgrade to Pro to access all features
                         </p>
                         <Button
                           onClick={() => router.push('/pricing')}
                           className="flex items-center gap-2"
                         >
                           <Crown className="w-4 h-4" />
-                          Ver planes
+                          View Plans
                         </Button>
                       </div>
                     )}
@@ -399,10 +419,10 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="w-5 h-5" />
-                  Políticas y privacidad
+                  Policies and Privacy
                 </CardTitle>
                 <CardDescription>
-                  Información legal y sobre el manejo de tus datos
+                  Legal information and data handling
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -411,10 +431,10 @@ export default function SettingsPage() {
                     <div className="flex items-center gap-3">
                       <FileText className="w-5 h-5 text-primary" />
                       <div>
-                        <h3 className="font-medium">Política de Privacidad</h3>
+                        <h3 className="font-medium">Privacy Policy</h3>
                         <p className="text-sm text-muted-foreground">
-                          Conoce cómo recopilamos, utilizamos y protegemos tu
-                          información
+                          Learn how we collect, use and protect your
+                          information
                         </p>
                       </div>
                     </div>
@@ -428,7 +448,7 @@ export default function SettingsPage() {
                         size="sm"
                         className="flex items-center gap-2"
                       >
-                        Ver política
+                        View Policy
                         <ExternalLink className="w-4 h-4" />
                       </Button>
                     </Link>
@@ -439,12 +459,12 @@ export default function SettingsPage() {
                       <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                       <div className="space-y-1">
                         <h4 className="font-medium text-blue-900">
-                          Tu privacidad es importante
+                          Your privacy is important
                         </h4>
                         <p className="text-sm text-blue-700">
-                          Solo recopilamos tu email y nombre. No compartimos tus
-                          datos con terceros y utilizamos Supabase y Paddle bajo
-                          estrictos acuerdos de seguridad.
+                          We only collect your email and name. We don't share your
+                          data with third parties and use Supabase and Paddle under
+                          strict security agreements.
                         </p>
                       </div>
                     </div>
