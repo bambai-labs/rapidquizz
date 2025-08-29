@@ -28,7 +28,22 @@ interface QuizEditFormProps {
   onCancel: () => void
 }
 
-type FormData = Omit<Quiz, 'id' | 'createdAt' | 'createdBy'>
+// Definimos el tipo FormData para que coincida exactamente con el esquema omitido
+type FormData = {
+  title: string
+  subject: string
+  topics: string[]
+  questions: {
+    id: string
+    question: string
+    options: string[]
+    correctAnswer: number
+    explanation?: string
+  }[]
+  difficulty: 'easy' | 'medium' | 'hard'
+  timeLimit?: number
+  isPublic?: boolean
+}
 
 export const QuizEditForm = ({
   quiz,
@@ -59,6 +74,7 @@ export const QuizEditForm = ({
       difficulty: quiz.difficulty,
       timeLimit: quiz.timeLimit,
       questions: quiz.questions,
+      isPublic: quiz.isPublic,
     },
   })
 
@@ -137,6 +153,7 @@ export const QuizEditForm = ({
         createdAt: quiz.createdAt,
         createdBy: quiz.createdBy,
         topics,
+        isPublic: data.isPublic ?? false, // Aseguramos que isPublic sea boolean
       }
 
       const result = await updateQuiz(updatedQuiz, user.id)

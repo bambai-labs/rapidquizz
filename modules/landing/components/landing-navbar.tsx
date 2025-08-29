@@ -3,13 +3,13 @@ import { UserAvatar } from '@/components/auth/user-avatar'
 import { Button } from '@/components/ui/button'
 import { LoginButton } from '@/modules/auth/components/LoginButton'
 import { useNavBar } from '@/modules/shared/hooks/useNavBar'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { GraduationCap, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
 export const LandingNavBar = () => {
-  const { user, isAuthenticated, loading, handleLogout } = useNavBar()
+  const { user, loading, handleLogout } = useNavBar()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -54,7 +54,7 @@ export const LandingNavBar = () => {
         <div className="flex items-center gap-3">
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-3">
-            {isAuthenticated && user ? (
+            {user ? (
               <div className="flex items-center gap-3">
                 <UserAvatar user={user} size="sm" showName={true} />
                 <motion.div
@@ -131,7 +131,7 @@ export const LandingNavBar = () => {
 
               {/* Mobile Auth */}
               <div className="pt-4 border-t">
-                {isAuthenticated && user ? (
+                {user ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <UserAvatar user={user} size="sm" showName={true} />
