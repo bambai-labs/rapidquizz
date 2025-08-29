@@ -19,7 +19,6 @@ import {
   BarChart3,
   Check,
   Crown,
-  Play,
   Sparkles,
   Star,
   Users,
@@ -133,7 +132,7 @@ export const LandingPage = () => {
               your audience and boost learning outcomes.
             </p>
 
-            {/* Demo Video Placeholder */}
+            {/* Demo Video */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -142,23 +141,16 @@ export const LandingPage = () => {
               className="relative max-w-4xl mx-auto"
             >
               <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl border-2 border-primary/20 overflow-hidden shadow-2xl">
-                <div className="flex items-center justify-center h-full">
-                  <div className="text-center">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full cursor-pointer mb-4 shadow-lg"
-                    >
-                      <Play className="w-8 h-8 text-primary-foreground ml-1" />
-                    </motion.div>
-                    <h3 className="text-2xl font-semibold mb-2">
-                      Demo Video Coming Soon
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Get ready to see the magic of AI-powered quiz generation
-                    </p>
-                  </div>
-                </div>
+                <video
+                  className="w-full h-full object-cover"
+                  controls
+                  poster="/RapidQuizDemo.mp4"
+                  preload="metadata"
+                  autoPlay={true}
+                >
+                  <source src="/RapidQuizDemo.mp4" type="video/mp4" />
+                  Tu navegador no soporta el elemento de video.
+                </video>
               </div>
 
               {/* Decorative elements */}
