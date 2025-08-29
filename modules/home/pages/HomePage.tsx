@@ -1,6 +1,8 @@
 'use client'
+import { RoleSelectionDialog } from '@/components/auth/role-selection-dialog'
 import { ExportFormat, ExportType, QuizCard } from '@/components/quiz/quiz-card'
 import { QuizGeneratorFormComponent } from '@/components/quiz/quiz-generator-form'
+import { useUserProfile } from '@/hooks/use-user-profile'
 import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
@@ -21,7 +23,9 @@ export const HomePage = () => {
     deleteUserQuiz,
   } = useUserQuizzesStore()
   const [showGenerator, setShowGenerator] = useState(false)
+  const [showRoleDialog, setShowRoleDialog] = useState(false)
   const { user } = useAuthStore()
+  const { hasRole, isLoading: profileLoading } = useUserProfile()
 
   const handleStartQuiz = (quiz: Quiz) => {
     setCurrentQuiz(quiz)
@@ -118,6 +122,13 @@ export const HomePage = () => {
     }
   }, [user, loadUserQuizzes])
 
+  // Check if user needs to complete role information
+  useEffect(() => {
+    if (user && !profileLoading && hasRole === false) {
+      setShowRoleDialog(true)
+    }
+  }, [user, hasRole, profileLoading])
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <NavBar />
@@ -210,6 +221,12 @@ export const HomePage = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Role Selection Dialog */}
+      <RoleSelectionDialog
+        open={showRoleDialog}
+        onOpenChange={setShowRoleDialog}
+      />
     </div>
   )
 }
