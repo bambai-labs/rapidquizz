@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
@@ -153,178 +154,183 @@ export function QuizInterface() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-2xl font-bold">{currentQuiz!.title}</h1>
-            <p className="text-muted-foreground">
-              Question {currentQuestionIndex + 1} of{' '}
-              {currentQuiz!.questions.length}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {timeRemaining !== null && (
-              <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-muted-foreground" />
-                <Badge
-                  variant={timeRemaining <= 60 ? 'destructive' : 'secondary'}
-                >
-                  {Math.floor(timeRemaining / 60)}:
-                  {String(timeRemaining % 60).padStart(2, '0')}
-                </Badge>
-              </div>
-            )}
-
-            <AlertDialog
-              open={showCancelDialog}
-              onOpenChange={setShowCancelDialog}
-            >
-              <TooltipProvider>
-                <Tooltip>
-                  <AlertDialogTrigger asChild>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-muted-foreground hover:text-destructive"
-                      >
-                        <X className="w-5 h-5" />
-                      </Button>
-                    </TooltipTrigger>
-                  </AlertDialogTrigger>
-                  <TooltipContent>
-                    <p>Cancel Quiz</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>¿Cancelar quiz?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    ¿Estás seguro de que quieres cancelar el quiz? Se perderá
-                    todo el progreso realizado hasta ahora.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Continuar quiz</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleCancelQuiz}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Sí, cancelar
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-
-        <Progress value={progress} className="h-2" />
-      </motion.div>
-
-      {/* Question Card */}
-      <AnimatePresence mode="wait">
+    <div className="w-full">
+      <NavBar />
+      <div className="w-full max-w-4xl mx-auto mt-6">
+        {/* Header */}
         <motion.div
-          key={currentQuestionIndex}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl leading-relaxed">
-                {currentQuestion!.question}
-              </CardTitle>
-            </CardHeader>
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h1 className="text-2xl font-bold">{currentQuiz!.title}</h1>
+              <p className="text-muted-foreground">
+                Question {currentQuestionIndex + 1} of{' '}
+                {currentQuiz!.questions.length}
+              </p>
+            </div>
 
-            <CardContent>
-              <div className="space-y-3">
-                {currentQuestion!.options.map((option, index) => {
-                  const isSelected = selectedOption === index
+            <div className="flex items-center gap-3">
+              {timeRemaining !== null && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-muted-foreground" />
+                  <Badge
+                    variant={timeRemaining <= 60 ? 'destructive' : 'secondary'}
+                  >
+                    {Math.floor(timeRemaining / 60)}:
+                    {String(timeRemaining % 60).padStart(2, '0')}
+                  </Badge>
+                </div>
+              )}
 
-                  return (
-                    <motion.div
-                      key={index}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+              <AlertDialog
+                open={showCancelDialog}
+                onOpenChange={setShowCancelDialog}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <AlertDialogTrigger asChild>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="w-5 h-5" />
+                        </Button>
+                      </TooltipTrigger>
+                    </AlertDialogTrigger>
+                    <TooltipContent>
+                      <p>Cancel Quiz</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>¿Cancelar quiz?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      ¿Estás seguro de que quieres cancelar el quiz? Se perderá
+                      todo el progreso realizado hasta ahora.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Continuar quiz</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleCancelQuiz}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
-                      <button
-                        onClick={() => handleOptionSelect(index)}
-                        className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 ${
-                          isSelected
-                            ? 'border-primary bg-primary/10 shadow-md'
-                            : 'border-border hover:border-primary/50 hover:bg-muted/50'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                              isSelected
-                                ? 'border-primary bg-primary text-primary-foreground'
-                                : 'border-muted-foreground'
-                            }`}
-                          >
-                            {isSelected && <CheckCircle className="w-4 h-4" />}
-                          </div>
-                          <span className="font-medium">{option}</span>
-                        </div>
-                      </button>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
+                      Sí, cancelar
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+
+          <Progress value={progress} className="h-2" />
         </motion.div>
-      </AnimatePresence>
 
-      {/* Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex justify-between items-center mt-6"
-      >
-        <Button
-          variant="outline"
-          onClick={handlePrevious}
-          disabled={currentQuestionIndex === 0}
+        {/* Question Card */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestionIndex}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl leading-relaxed">
+                  {currentQuestion!.question}
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                <div className="space-y-3">
+                  {currentQuestion!.options.map((option, index) => {
+                    const isSelected = selectedOption === index
+
+                    return (
+                      <motion.div
+                        key={index}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <button
+                          onClick={() => handleOptionSelect(index)}
+                          className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 ${
+                            isSelected
+                              ? 'border-primary bg-primary/10 shadow-md'
+                              : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                isSelected
+                                  ? 'border-primary bg-primary text-primary-foreground'
+                                  : 'border-muted-foreground'
+                              }`}
+                            >
+                              {isSelected && (
+                                <CheckCircle className="w-4 h-4" />
+                              )}
+                            </div>
+                            <span className="font-medium">{option}</span>
+                          </div>
+                        </button>
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-between items-center mt-6"
         >
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          Previous
-        </Button>
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous
+          </Button>
 
-        <div className="flex gap-2">
-          {currentQuiz!.questions.map((_, index) => (
-            <div
-              key={index}
-              className={`w-3 h-3 rounded-full transition-colors ${
-                index < currentQuestionIndex
-                  ? 'bg-green-500'
-                  : index === currentQuestionIndex
-                    ? 'bg-primary'
-                    : 'bg-muted-foreground/30'
-              }`}
-            />
-          ))}
-        </div>
+          <div className="flex gap-2">
+            {currentQuiz!.questions.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  index < currentQuestionIndex
+                    ? 'bg-green-500'
+                    : index === currentQuestionIndex
+                      ? 'bg-primary'
+                      : 'bg-muted-foreground/30'
+                }`}
+              />
+            ))}
+          </div>
 
-        <Button
-          onClick={handleNext}
-          disabled={selectedOption === null}
-          className="min-w-[120px]"
-        >
-          {isLastQuestion ? 'Finish Quiz' : 'Next'}
-          {!isLastQuestion && <ChevronRight className="w-4 h-4 ml-2" />}
-        </Button>
-      </motion.div>
+          <Button
+            onClick={handleNext}
+            disabled={selectedOption === null}
+            className="min-w-[120px]"
+          >
+            {isLastQuestion ? 'Finish Quiz' : 'Next'}
+            {!isLastQuestion && <ChevronRight className="w-4 h-4 ml-2" />}
+          </Button>
+        </motion.div>
+      </div>
     </div>
   )
 }

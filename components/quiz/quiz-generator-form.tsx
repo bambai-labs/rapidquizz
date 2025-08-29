@@ -73,40 +73,40 @@ export function QuizGeneratorFormComponent({
   } = useQuizLimits()
 
   const loadingMessages = [
-    { text: '🧠 Analizando el contenido...', icon: Brain },
-    { text: '💡 Generando preguntas inteligentes...', icon: Lightbulb },
-    { text: '🎯 Ajustando la dificultad...', icon: Target },
-    { text: '✨ Puliendo los detalles finales...', icon: Sparkles },
-    { text: '✅ ¡Casi listo tu quiz perfecto!', icon: CheckCircle },
-    { text: '☕ Tomando un café mientras proceso...', icon: Coffee },
-    { text: '⚡ Cargando súper poderes de conocimiento...', icon: Zap },
-    { text: '⭐ Añadiendo un toque de magia...', icon: Star },
-    { text: '🚀 Preparando el despegue del quiz...', icon: Rocket },
-    { text: '🪄 Conjurando preguntas fascinantes...', icon: Wand2 },
-    { text: '📖 Hojeando bibliotecas de sabiduría...', icon: BookOpen },
-    { text: '🧩 Ensamblando las piezas del rompecabezas...', icon: Puzzle },
-    { text: '🏆 Creando un quiz digno de campeones...', icon: Trophy },
-    { text: '⏰ El tiempo vuela cuando creas conocimiento...', icon: Clock },
-    { text: '❤️ Poniendo amor en cada pregunta...', icon: Heart },
-    { text: '🎨 Dando los toques artísticos finales...', icon: Sparkles },
-    { text: '🔥 Encendiendo la chispa del aprendizaje...', icon: Zap },
-    { text: '🎪 Montando el circo del conocimiento...', icon: Star },
-    { text: '🎭 Ensayando el espectáculo educativo...', icon: Target },
-    { text: '🌟 Espolvoreando polvo de estrellas...', icon: Star },
-    { text: '🎵 Componiendo la sinfonía del saber...', icon: Heart },
-    { text: '🍀 Añadiendo un toque de buena suerte...', icon: CheckCircle },
-    { text: '🎈 Inflando globos de diversión...', icon: Rocket },
-    { text: '🎊 Preparando la fiesta del conocimiento...', icon: Trophy },
-    { text: '🌈 Pintando arcoíris de aprendizaje...', icon: Sparkles },
+    { text: '🧠 Analyzing content...', icon: Brain },
+    { text: '💡 Generating smart questions...', icon: Lightbulb },
+    { text: '🎯 Adjusting difficulty...', icon: Target },
+    { text: '✨ Polishing final details...', icon: Sparkles },
+    { text: '✅ Your perfect quiz is almost ready!', icon: CheckCircle },
+    { text: '☕ Having a coffee while processing...', icon: Coffee },
+    { text: '⚡ Loading knowledge superpowers...', icon: Zap },
+    { text: '⭐ Adding a touch of magic...', icon: Star },
+    { text: '🚀 Preparing quiz launch...', icon: Rocket },
+    { text: '🪄 Conjuring fascinating questions...', icon: Wand2 },
+    { text: '📖 Browsing libraries of wisdom...', icon: BookOpen },
+    { text: '🧩 Assembling puzzle pieces...', icon: Puzzle },
+    { text: '🏆 Creating a quiz worthy of champions...', icon: Trophy },
+    { text: '⏰ Time flies when creating knowledge...', icon: Clock },
+    { text: '❤️ Putting love into every question...', icon: Heart },
+    { text: '🎨 Adding final artistic touches...', icon: Sparkles },
+    { text: '🔥 Igniting the spark of learning...', icon: Zap },
+    { text: '🎪 Setting up the knowledge circus...', icon: Star },
+    { text: '🎭 Rehearsing the educational show...', icon: Target },
+    { text: '🌟 Sprinkling stardust...', icon: Star },
+    { text: '🎵 Composing the symphony of knowledge...', icon: Heart },
+    { text: '🍀 Adding a touch of good luck...', icon: CheckCircle },
+    { text: '🎈 Inflating fun balloons...', icon: Rocket },
+    { text: '🎊 Preparing the knowledge party...', icon: Trophy },
+    { text: '🌈 Painting rainbows of learning...', icon: Sparkles },
   ]
 
-  // Efecto para cambiar mensajes durante la carga
+  // Effect to change messages during loading
   useEffect(() => {
     let interval: NodeJS.Timeout
     if (isGenerating) {
       interval = setInterval(() => {
         setCurrentMessage((prev) => (prev + 1) % loadingMessages.length)
-      }, 1500) // Cambia mensaje cada 1.5 segundos para ver más variedad
+      }, 1500) // Change message every 1.5 seconds to see more variety
     } else {
       setCurrentMessage(0)
     }
@@ -174,8 +174,7 @@ export function QuizGeneratorFormComponent({
 
       if (!success && !quiz) {
         const errorMsg =
-          errorMessage ??
-          'Error generating the quiz. Please try again.'
+          errorMessage ?? 'Error generating the quiz. Please try again.'
         setError(errorMsg)
         setHasError(true)
         toast.error('Quiz generation error', {
@@ -196,8 +195,7 @@ export function QuizGeneratorFormComponent({
       })
       onQuizGenerated?.()
     } catch (error) {
-      const errorMsg =
-        'Unexpected error generating the quiz. Please try again.'
+      const errorMsg = 'Unexpected error generating the quiz. Please try again.'
       setError(errorMsg)
       setHasError(true)
       console.error('Quiz generation error:', error)
@@ -235,21 +233,21 @@ export function QuizGeneratorFormComponent({
 
     const validFiles: File[] = []
     const rejectedFiles: string[] = []
-    const maxFileSize = 10 * 1024 * 1024 // 10 MB en bytes
-    const maxTotalSize = 50 * 1024 * 1024 // 50 MB total en bytes
+    const maxFileSize = 10 * 1024 * 1024 // 10 MB in bytes
+    const maxTotalSize = 50 * 1024 * 1024 // 50 MB total in bytes
     const currentTotalSize = getTotalFileSize()
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       const fileExtension = file.name.split('.').pop()?.toLowerCase()
 
-      // Verificar tamaño del archivo
+      // Check file size
       if (file.size > maxFileSize) {
         rejectedFiles.push(`${file.name} (exceeds 10 MB)`)
         continue
       }
 
-      // Verificar si agregar este archivo excedería el límite total
+      // Check if adding this file would exceed the total limit
       const newTotalSize =
         currentTotalSize +
         validFiles.reduce((sum, f) => sum + f.size, 0) +
@@ -335,13 +333,11 @@ export function QuizGeneratorFormComponent({
                 <AlertDescription className="text-blue-800">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">
-                        Free tier limits
-                      </span>
+                      <span className="font-medium">Free tier limits</span>
                       <Crown className="h-4 w-4 text-yellow-600" />
                     </div>
 
-                    {/* Quizzes sin archivos */}
+                    {/* Quizzes without files */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Quizzes without files</span>
@@ -359,7 +355,7 @@ export function QuizGeneratorFormComponent({
                       />
                     </div>
 
-                    {/* Quizzes con archivos */}
+                    {/* Quizzes with files */}
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
                         <span>Quizzes with files</span>
@@ -388,7 +384,8 @@ export function QuizGeneratorFormComponent({
 
         {/* Dynamic Subscription Indicator */}
         {!limitsLoading &&
-          limits?.hasActiveSubscription &&
+          limits &&
+          limits.hasActiveSubscription &&
           limits.subscriptionInfo &&
           !isGenerating && (
             <motion.div
@@ -407,8 +404,7 @@ export function QuizGeneratorFormComponent({
                       <Sparkles className="h-4 w-4" />
                     </div>
                     <p className="text-sm mt-1">
-                      Enjoy unlimited quizzes and all premium
-                      features
+                      Enjoy unlimited quizzes and all premium features
                     </p>
                   </AlertDescription>
                 </Alert>
@@ -430,7 +426,7 @@ export function QuizGeneratorFormComponent({
                           You still have premium access until{' '}
                           {new Date(
                             limits.subscriptionInfo.endsAt,
-                          ).toLocaleDateString('es-ES')}
+                          ).toLocaleDateString('en-US')}
                         </p>
                         <p className="text-xs mt-1 text-orange-700">
                           {limits.subscriptionInfo.daysRemaining} days remaining
@@ -457,7 +453,7 @@ export function QuizGeneratorFormComponent({
                           You maintain premium access until{' '}
                           {new Date(
                             limits.subscriptionInfo.endsAt,
-                          ).toLocaleDateString('es-ES')}
+                          ).toLocaleDateString('en-US')}
                         </p>
                         <p className="text-xs mt-1 text-blue-700">
                           {limits.subscriptionInfo.daysRemaining} days remaining
@@ -485,9 +481,10 @@ export function QuizGeneratorFormComponent({
                   <Alert className="border-orange-200 bg-orange-50">
                     <AlertTriangle className="h-4 w-4 text-orange-600" />
                     <AlertDescription className="text-orange-800">
-                      <span className="font-medium">Attention!</span> You have only
-                      {limits.withFiles.remaining} quizzes with files
-                      remaining this month.
+                      <span className="font-medium">Attention!</span> You have
+                      only
+                      {limits.withFiles.remaining} quizzes with files remaining
+                      this month.
                     </AlertDescription>
                   </Alert>
                 </motion.div>
@@ -503,9 +500,10 @@ export function QuizGeneratorFormComponent({
                     <Alert className="border-orange-200 bg-orange-50">
                       <AlertTriangle className="h-4 w-4 text-orange-600" />
                       <AlertDescription className="text-orange-800">
-                        <span className="font-medium">Attention!</span> You have only
-                        {limits.withoutFiles.remaining} quizzes without
-                        files remaining this month.
+                        <span className="font-medium">Attention!</span> You have
+                        only
+                        {limits.withoutFiles.remaining} quizzes without files
+                        remaining this month.
                       </AlertDescription>
                     </Alert>
                   </motion.div>
@@ -514,12 +512,12 @@ export function QuizGeneratorFormComponent({
           )}
 
         {isGenerating ? (
-          // Vista de carga - oculta el formulario
+          // Loading view - hides the form
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="w-full max-w-md space-y-4">
-              {/* Animación de carga entretenida */}
+              {/* Entertaining loading animation */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border">
-                {/* Mensaje animado con icono */}
+                {/* Animated message with icon */}
                 <motion.div
                   key={currentMessage}
                   initial={{ opacity: 0, y: 10 }}
@@ -555,7 +553,7 @@ export function QuizGeneratorFormComponent({
                   </span>
                 </motion.div>
 
-                {/* Partículas flotantes */}
+                {/* Floating particles */}
                 <div className="relative mt-4 h-8 overflow-hidden">
                   {[...Array(6)].map((_, i) => (
                     <motion.div
@@ -580,7 +578,7 @@ export function QuizGeneratorFormComponent({
                   ))}
                 </div>
 
-                {/* Spinner central más atractivo */}
+                {/* More attractive central spinner */}
                 <div className="flex justify-center mt-2">
                   <motion.div className="relative w-8 h-8">
                     <motion.div className="absolute inset-0 border-4 border-blue-200 rounded-full" />
@@ -597,7 +595,7 @@ export function QuizGeneratorFormComponent({
                 </div>
               </div>
 
-              {/* Texto adicional de espera */}
+              {/* Additional waiting text */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -605,16 +603,16 @@ export function QuizGeneratorFormComponent({
                 className="text-center"
               >
                 <p className="text-sm text-gray-500">
-                  Estamos creando un quiz personalizado para ti...
+                  We're creating a customized quiz for you...
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Esto puede tomar unos momentos
+                  This may take a few moments
                 </p>
               </motion.div>
             </div>
           </div>
         ) : (
-          // Vista normal del formulario
+          // Normal form view
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Subject */}
             <motion.div
@@ -701,8 +699,8 @@ export function QuizGeneratorFormComponent({
             >
               <Label>Reference files (optional)</Label>
               <p className="text-xs text-gray-600 mb-2">
-                Files help you generate more accurate quizzes based on
-                your specific content.
+                Files help you generate more accurate quizzes based on your
+                specific content.
               </p>
 
               {/* File Upload Block - Only when limits reached */}
@@ -718,8 +716,8 @@ export function QuizGeneratorFormComponent({
                           Limit Reached
                         </p>
                         <p className="text-sm text-gray-600">
-                          You have reached your limit of {limits.withFiles.limit}{' '}
-                          quizzes with files this month
+                          You have reached your limit of{' '}
+                          {limits.withFiles.limit} quizzes with files this month
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
                           Upgrade to Pro for unlimited quizzes
@@ -782,7 +780,7 @@ export function QuizGeneratorFormComponent({
                       </label>
                     </div>
 
-                    {/* Lista de archivos subidos */}
+                    {/* List of uploaded files */}
                     {uploadedFiles.length > 0 && (
                       <div className="space-y-3">
                         <div className="space-y-2">
@@ -795,7 +793,7 @@ export function QuizGeneratorFormComponent({
                             </p>
                           </div>
 
-                          {/* Barra de progreso del límite total */}
+                          {/* Total limit progress bar */}
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
                               className={`h-2 rounded-full transition-all duration-300 ${
@@ -812,7 +810,7 @@ export function QuizGeneratorFormComponent({
                           </div>
                         </div>
 
-                        {/* Advertencia si hay muchos archivos o tamaño grande */}
+                        {/* Warning if there are many files or large size */}
                         {(uploadedFiles.length > 5 ||
                           getTotalFileSize() > 30 * 1024 * 1024) && (
                           <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
@@ -953,7 +951,7 @@ export function QuizGeneratorFormComponent({
                 </div>
               </Button>
 
-              {/* Retry Button - Solo se muestra cuando hay error */}
+              {/* Retry Button - Only shown when there's an error */}
               <AnimatePresence>
                 {hasError && !isGenerating && (
                   <motion.div
