@@ -357,3 +357,43 @@ export function useSubscriptionNotifications() {
     clearNotification: () => setNotification(null),
   }
 }
+
+/**
+ * Hook para obtener información de la suscripción del usuario autenticado
+ * Pero sin suscribirse a los cambios en tiempo real
+ */
+export const useSubscriptionInfo = () => {
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(
+    null,
+  )
+  const [hasActiveSubscription, setHasActiveSubscription] =
+    useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const fetchSubInfo = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/subscription')
+      const data = (await response.json()) as {
+        subscription: SubscriptionData | null
+        hasActiveSubscription: boolean
+      }
+      setSubscription(data.subscription)
+      setHasActiveSubscription(data.hasActiveSubscription)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchSubInfo()
+  }, [])
+
+  return {
+    subscription,
+    hasActiveSubscription,
+    isLoading,
+  }
+}

@@ -14,13 +14,19 @@ import {
   Zap,
 } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function SuccessPage() {
   const [showConfetti, setShowConfetti] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setShowConfetti(true)
+
+    setTimeout(() => {
+      router.replace('/dashboard')
+    }, 7000)
   }, [])
 
   const proFeatures = [

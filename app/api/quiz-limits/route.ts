@@ -54,35 +54,22 @@ export async function GET() {
     // 2. El status NO es 'expired' (puede ser active, canceled, paused)
     // 3. La fecha actual está dentro del período de suscripción (no vencida por fecha)
     const now = new Date()
-    const isWithinDateLimits = subscription &&
+    const isWithinDateLimits =
+      subscription &&
       subscription.starts_at &&
       subscription.ends_at &&
       new Date(subscription.starts_at) <= now &&
       new Date(subscription.ends_at) > now
 
     const hasActiveSubscription =
-      subscription &&
-      subscription.status !== 'expired' &&
-      isWithinDateLimits
+      subscription && subscription.status !== 'expired' && isWithinDateLimits
 
-    console.log('Subscription validation:', {
-      exists: !!subscription,
-      status: subscription?.status,
-      starts_at: subscription?.starts_at,
-      ends_at: subscription?.ends_at,
-      now: now.toISOString(),
-      isWithinDateLimits,
-      hasActiveSubscription
-    })
-
-    // Si no tiene suscripción activa (sin suscripción, cancelada, pausada, o vencida)
-    const isFreeTierUser = !hasActiveSubscription
-
-    // Si tiene suscripción activa, no hay límites
     if (hasActiveSubscription) {
       const endsAt = new Date(subscription.ends_at!)
-      const daysRemaining = Math.ceil((endsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-      
+      const daysRemaining = Math.ceil(
+        (endsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+      )
+
       return NextResponse.json({
         withFiles: {
           used: 0,

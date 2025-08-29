@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useSubscription } from '@/hooks/use-subscription'
+import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { initializePaddle, Paddle } from '@paddle/paddle-js'
 import { motion } from 'framer-motion'
@@ -123,6 +124,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50">
+      <NavBar />
       {/* Header */}
       <div className="container mx-auto px-4 py-16">
         <motion.div

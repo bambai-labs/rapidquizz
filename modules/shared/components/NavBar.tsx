@@ -1,7 +1,7 @@
 'use client'
 import { UserAvatar } from '@/components/auth/user-avatar'
 import { Button } from '@/components/ui/button'
-import { useSubscription } from '@/hooks/use-subscription'
+import { useSubscriptionInfo } from '@/hooks/use-subscription'
 import { motion } from 'framer-motion'
 import { Crown, GraduationCap, Sparkles } from 'lucide-react'
 import Link from 'next/link'
@@ -9,7 +9,8 @@ import { useNavBar } from '../hooks/useNavBar'
 
 export const NavBar = () => {
   const { user, loading, handleLogout } = useNavBar()
-  const { hasActiveSubscription } = useSubscription()
+  const { hasActiveSubscription, isLoading } = useSubscriptionInfo()
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -28,7 +29,7 @@ export const NavBar = () => {
         </Link>
 
         <div className="flex items-center gap-3">
-          {!hasActiveSubscription && (
+          {!hasActiveSubscription && !isLoading && (
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -69,10 +70,10 @@ export const NavBar = () => {
           )}
 
           {user && (
-            <UserAvatar 
-              user={user} 
-              size="sm" 
-              showName={true} 
+            <UserAvatar
+              user={user}
+              size="sm"
+              showName={true}
               hasActiveSubscription={hasActiveSubscription}
               onLogout={handleLogout}
               isLoading={loading}
