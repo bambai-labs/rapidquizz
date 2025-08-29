@@ -1,6 +1,6 @@
+import { createClient } from '@/lib/supabase/server'
 import { QuizGeneratorForm, QuizQuestion } from '@/types/quiz'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import OpenAI from 'openai'
 
 const openai = new OpenAI({
@@ -15,7 +15,7 @@ interface QuizGeneratorFormWithFiles extends QuizGeneratorForm {
 export async function POST(request: NextRequest) {
   try {
     const formData: QuizGeneratorFormWithFiles = await request.json()
-    
+
     // Verificar autenticación
     const supabase = await createClient()
     const {
@@ -39,16 +39,15 @@ export async function POST(request: NextRequest) {
 
     // Verificar si la suscripción permite acceso premium
     const now = new Date()
-    const isWithinDateLimits = subscription &&
+    const isWithinDateLimits =
+      subscription &&
       subscription.starts_at &&
       subscription.ends_at &&
       new Date(subscription.starts_at) <= now &&
       new Date(subscription.ends_at) > now
 
     const hasActiveSubscription =
-      subscription &&
-      subscription.status !== 'expired' &&
-      isWithinDateLimits
+      subscription && subscription.status !== 'expired' && isWithinDateLimits
 
     if (!hasActiveSubscription) {
       // Contar quizzes del mes actual
@@ -73,16 +72,19 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      const quizzesWithFiles = monthlyQuizzes?.filter(q => q.has_files === true) || []
-      const quizzesWithoutFiles = monthlyQuizzes?.filter(q => q.has_files !== true) || []
+      const quizzesWithFiles =
+        monthlyQuizzes?.filter((q) => q.has_files === true) || []
+      const quizzesWithoutFiles =
+        monthlyQuizzes?.filter((q) => q.has_files !== true) || []
 
       // Verificar límites según si usa archivos o no
       if (formData.useFiles) {
         if (quizzesWithFiles.length >= 5) {
           return NextResponse.json(
-            { 
-              success: false, 
-              errorMessage: 'Has alcanzado el límite de 5 quizzes con archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.' 
+            {
+              success: false,
+              errorMessage:
+                'Has alcanzado el límite de 5 quizzes con archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.',
             },
             { status: 403 },
           )
@@ -90,9 +92,10 @@ export async function POST(request: NextRequest) {
       } else {
         if (quizzesWithoutFiles.length >= 20) {
           return NextResponse.json(
-            { 
-              success: false, 
-              errorMessage: 'Has alcanzado el límite de 20 quizzes sin archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.' 
+            {
+              success: false,
+              errorMessage:
+                'Has alcanzado el límite de 20 quizzes sin archivos para usuarios gratuitos este mes. Actualiza a Pro para quizzes ilimitados.',
             },
             { status: 403 },
           )
@@ -182,8 +185,6 @@ Generate the quiz now:`
             content: basePrompt,
           },
         ],
-        temperature: 0.7,
-        max_tokens: 4000,
       })
 
       const responseContent = response.choices[0].message.content
