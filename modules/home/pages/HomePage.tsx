@@ -139,7 +139,7 @@ export const HomePage = () => {
           className="text-center mb-8"
         >
           <h2 className="text-3xl font-bold mb-4">
-            Welcome back, {user?.username ?? 'User'}!
+            Welcome back, {user?.name ?? 'User'}!
           </h2>
           <p className="text-muted-foreground mb-6">
             Create and manage your interactive quizzes
@@ -204,7 +204,7 @@ export const HomePage = () => {
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
                   <p className="text-muted-foreground mt-2">
-                    Cargando quizzes...
+                    Loading quizzes...
                   </p>
                 </div>
               )}
@@ -213,7 +213,7 @@ export const HomePage = () => {
               {!isLoading && userQuizzes.length === 0 && (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">
-                    No tienes quizzes aún. ¡Crea tu primer quiz!
+                    You don't have any quizzes yet. Create your first quiz!
                   </p>
                 </div>
               )}

@@ -12,7 +12,13 @@ import {
 import { cn } from '@/lib/utils'
 import { User } from '@/modules/auth/types/user.type'
 import { motion } from 'framer-motion'
-import { Settings, User as UserIcon } from 'lucide-react'
+import {
+  Crown,
+  LogOut,
+  Settings,
+  Sparkles,
+  User as UserIcon,
+} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface UserAvatarProps {
@@ -20,6 +26,9 @@ interface UserAvatarProps {
   size?: 'sm' | 'md' | 'lg'
   className?: string
   showName?: boolean
+  hasActiveSubscription?: boolean
+  onLogout?: () => void
+  isLoading?: boolean
 }
 
 const sizeClasses = {
@@ -39,6 +48,9 @@ export const UserAvatar = ({
   size = 'md',
   className,
   showName = false,
+  hasActiveSubscription = false,
+  onLogout,
+  isLoading = false,
 }: UserAvatarProps) => {
   const router = useRouter()
 
@@ -60,6 +72,66 @@ export const UserAvatar = ({
   const displayName = user.name || user.username || user.email.split('@')[0]
   const initials = getInitials(user.name, user.email)
 
+  // Premium avatar wrapper component
+  const PremiumAvatarWrapper = ({
+    children,
+  }: {
+    children: React.ReactNode
+  }) => {
+    if (!hasActiveSubscription) return <>{children}</>
+
+    return (
+      <div className="relative">
+        {/* Golden glow effect */}
+        <motion.div
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-400/30 via-amber-500/30 to-yellow-600/30 blur-sm"
+          animate={{
+            scale: [1, 1.1, 1],
+            opacity: [0.5, 0.8, 0.5],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+
+        {/* Sparkles animation */}
+        <motion.div
+          className="absolute -top-1 -right-1 text-yellow-400"
+          animate={{
+            rotate: [0, 360],
+            scale: [0.8, 1.2, 0.8],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <Sparkles className="w-3 h-3" />
+        </motion.div>
+
+        {/* Crown icon for premium users */}
+        <motion.div
+          className="absolute -top-2 -left-1 text-yellow-500"
+          animate={{
+            y: [-2, 0, -2],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        >
+          <Crown className="w-3 h-3" />
+        </motion.div>
+
+        {children}
+      </div>
+    )
+  }
+
   if (showName) {
     return (
       <DropdownMenu>
@@ -72,30 +144,46 @@ export const UserAvatar = ({
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
-            <Avatar
-              className={cn(sizeClasses[size], 'border-2 border-primary/20')}
-            >
-              <AvatarImage
-                src={user.photoUrl}
-                alt={`Foto de perfil de ${displayName}`}
-                className="object-cover"
-              />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/30 text-primary font-semibold">
-                {user.photoUrl ? (
-                  <UserIcon className="h-1/2 w-1/2" />
-                ) : (
-                  initials
+            <PremiumAvatarWrapper>
+              <Avatar
+                className={cn(
+                  sizeClasses[size],
+                  hasActiveSubscription
+                    ? 'border-2 border-yellow-400/50 shadow-lg shadow-yellow-400/25'
+                    : 'border-2 border-primary/20',
                 )}
-              </AvatarFallback>
-            </Avatar>
-            <span
-              className={cn(
-                'font-medium text-foreground',
-                textSizeClasses[size],
-              )}
-            >
-              {displayName}
-            </span>
+              >
+                <AvatarImage
+                  src={user.photoUrl}
+                  alt={`Foto de perfil de ${displayName}`}
+                  className="object-cover"
+                />
+                <AvatarFallback
+                  className={cn(
+                    'text-primary font-semibold',
+                    hasActiveSubscription
+                      ? 'bg-gradient-to-br from-yellow-400/20 to-amber-500/30'
+                      : 'bg-gradient-to-br from-primary/20 to-primary/30',
+                  )}
+                >
+                  {user.photoUrl ? (
+                    <UserIcon className="h-1/2 w-1/2" />
+                  ) : (
+                    initials
+                  )}
+                </AvatarFallback>
+              </Avatar>
+            </PremiumAvatarWrapper>
+            <div className="flex items-center gap-1">
+              <span
+                className={cn(
+                  'font-medium text-foreground',
+                  textSizeClasses[size],
+                )}
+              >
+                {displayName}
+              </span>
+            </div>
           </motion.div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -111,8 +199,21 @@ export const UserAvatar = ({
             onClick={() => router.push('/settings')}
           >
             <Settings className="mr-2 h-4 w-4" />
-            <span>Ajustes</span>
+            <span>Settings</span>
           </DropdownMenuItem>
+          {onLogout && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer text-red-600 focus:text-red-600"
+                onClick={onLogout}
+                disabled={isLoading}
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     )
@@ -125,21 +226,32 @@ export const UserAvatar = ({
       transition={{ duration: 0.2 }}
       className={className}
     >
-      <Avatar
-        className={cn(
-          sizeClasses[size],
-          'border-2 border-primary/20 cursor-pointer hover:border-primary/40 transition-colors',
-        )}
-      >
-        <AvatarImage
-          src={user.photoUrl}
-          alt={`Foto de perfil de ${displayName}`}
-          className="object-cover"
-        />
-        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/30 text-primary font-semibold">
-          {user.photoUrl ? <UserIcon className="h-1/2 w-1/2" /> : initials}
-        </AvatarFallback>
-      </Avatar>
+      <PremiumAvatarWrapper>
+        <Avatar
+          className={cn(
+            sizeClasses[size],
+            hasActiveSubscription
+              ? 'border-2 border-yellow-400/50 shadow-lg shadow-yellow-400/25 cursor-pointer hover:border-yellow-400/70 transition-colors'
+              : 'border-2 border-primary/20 cursor-pointer hover:border-primary/40 transition-colors',
+          )}
+        >
+          <AvatarImage
+            src={user.photoUrl}
+            alt={`Foto de perfil de ${displayName}`}
+            className="object-cover"
+          />
+          <AvatarFallback
+            className={cn(
+              'text-primary font-semibold',
+              hasActiveSubscription
+                ? 'bg-gradient-to-br from-yellow-400/20 to-amber-500/30'
+                : 'bg-gradient-to-br from-primary/20 to-primary/30',
+            )}
+          >
+            {user.photoUrl ? <UserIcon className="h-1/2 w-1/2" /> : initials}
+          </AvatarFallback>
+        </Avatar>
+      </PremiumAvatarWrapper>
     </motion.div>
   )
 }

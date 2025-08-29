@@ -69,22 +69,14 @@ export const NavBar = () => {
           )}
 
           {user && (
-            <div className="flex items-center gap-3">
-              <UserAvatar user={user} size="sm" showName={true} />
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  variant="outline"
-                  onClick={handleLogout}
-                  disabled={loading}
-                  size="sm"
-                >
-                  Logout
-                </Button>
-              </motion.div>
-            </div>
+            <UserAvatar 
+              user={user} 
+              size="sm" 
+              showName={true} 
+              hasActiveSubscription={hasActiveSubscription}
+              onLogout={handleLogout}
+              isLoading={loading}
+            />
           )}
         </div>
       </div>

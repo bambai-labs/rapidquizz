@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { useSubscriptionStatus } from '@/hooks/use-subscription'
+import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { motion } from 'framer-motion'
 import {
@@ -131,6 +132,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <NavBar />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <motion.div
