@@ -6,12 +6,12 @@ import { getQuizResponses } from '@/lib/quiz-database'
 import { useAuthStore } from '@/stores/auth-store'
 import { Result } from '@/types/result.type'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 import { ArrowLeft, Calendar, Clock, Trophy, User } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
 
-// Tipo específico para las respuestas de la base de datos
+// Specific type for database responses
 interface DatabaseQuizResult {
   id: string
   user_id: string
@@ -20,7 +20,7 @@ interface DatabaseQuizResult {
   time_spent: number
   completed_at: string
   created_at: string
-  // Información del usuario
+  // User information
   user_profile?: {
     email: string
     raw_user_meta_data?: {
@@ -64,10 +64,10 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
         if (result.success && result.data) {
           setResponses(result.data)
         } else {
-          setError(result.errorMessage || 'Error al cargar las respuestas')
+          setError(result.errorMessage || 'Error loading responses')
         }
       } catch (err: any) {
-        setError('Error inesperado al cargar las respuestas')
+        setError('Unexpected error loading responses')
       } finally {
         setIsLoading(false)
       }
@@ -85,18 +85,18 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
   }
 
   const getUserDisplayName = (response: DatabaseQuizResult): string => {
-    // Si es el usuario actual, mostrar su información
+    // If it's the current user, show their information
     if (user && response.user_id === user.id) {
-      return user.name || user.username || user.email?.split('@')[0] || 'Tú'
+      return user.name || user.username || user.email?.split('@')[0] || 'You'
     }
 
-    // Para otros usuarios, mostrar información limitada por privacidad
+    // For other users, show limited information for privacy
     const metadata = response.user_profile?.raw_user_meta_data
     return (
       metadata?.name ||
       metadata?.username ||
       response.user_profile?.email?.split('@')[0] ||
-      'Usuario Anónimo'
+      'Anonymous User'
     )
   }
 
@@ -136,7 +136,7 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                   Error
                 </h3>
                 <p className="text-muted-foreground mb-4">{error}</p>
-                <Button onClick={handleBackToQuiz}>Volver al Dashboard</Button>
+                <Button onClick={handleBackToQuiz}>Back to Dashboard</Button>
               </div>
             </CardContent>
           </Card>
@@ -152,21 +152,21 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
         <div className="mb-6">
           <Button variant="ghost" onClick={handleBackToQuiz} className="mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver al Dashboard
+            Back to Dashboard
           </Button>
 
-          <h1 className="text-3xl font-bold mb-2">Respuestas del Quiz</h1>
+          <h1 className="text-3xl font-bold mb-2">Quiz Responses</h1>
           <p className="text-muted-foreground">
-            Todos los intentos realizados en este quiz
+            All attempts made on this quiz
           </p>
         </div>
 
-        {/* Estadísticas generales */}
+        {/* General statistics */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="w-5 h-5" />
-              Estadísticas Generales
+              General Statistics
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -176,7 +176,7 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                   {responses.length}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Total de intentos
+                  Total attempts
                 </div>
               </div>
               <div className="text-center">
@@ -194,7 +194,7 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                   %
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Promedio de aciertos
+                  Average score
                 </div>
               </div>
               <div className="text-center">
@@ -209,24 +209,22 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                     : '0m 0s'}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Tiempo promedio
+                  Average time
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Lista de respuestas */}
+        {/* Response list */}
         {responses.length === 0 ? (
           <Card>
             <CardContent className="p-6">
               <div className="text-center">
                 <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No hay intentos aún
-                </h3>
+                <h3 className="text-lg font-semibold mb-2">No attempts yet</h3>
                 <p className="text-muted-foreground">
-                  Nadie ha realizado este quiz todavía.
+                  No one has taken this quiz yet.
                 </p>
               </div>
             </CardContent>
@@ -243,12 +241,12 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-2">
                         <h3 className="font-semibold">
-                          Intento #{responses.length - index}
+                          Attempt #{responses.length - index}
                         </h3>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4" />
                           {format(new Date(response.completed_at), 'PPp', {
-                            locale: es,
+                            locale: enUS,
                           })}
                         </div>
                       </div>
@@ -283,7 +281,7 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
                           <span className="text-sm">
-                            Usuario: {getUserDisplayName(response)}
+                            User: {getUserDisplayName(response)}
                           </span>
                         </div>
                       </div>
@@ -294,7 +292,7 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
                       size="sm"
                       onClick={() => handleViewDetails(response.id)}
                     >
-                      Ver detalles
+                      View details
                     </Button>
                   </div>
                 </CardContent>

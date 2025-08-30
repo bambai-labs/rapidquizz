@@ -29,7 +29,7 @@ export function QuizResults() {
     setIsLoading(false)
   }
 
-  // Si está cargando, mostrar loader
+  // If loading, show loader
   if (isLoading) {
     return (
       <div className="w-full max-w-4xl mx-auto">
@@ -40,17 +40,17 @@ export function QuizResults() {
     )
   }
 
-  // Si no hay resultados o no hay quiz y NO está cargando, mostrar mensaje de error
+  // If no results or no quiz and NOT loading, show error message
   if ((!results || !currentQuiz) && !isLoading) {
     return (
       <div className="w-full max-w-4xl mx-auto">
         <div className="flex flex-col items-center justify-center gap-4 mt-6">
-          <h1 className="text-2xl font-bold">No se encontraron resultados</h1>
+          <h1 className="text-2xl font-bold">No results found</h1>
           <p className="text-muted-foreground">
-            Por favor regresa a la página principal y comienza un nuevo quiz
+            Please return to the main page and start a new quiz
           </p>
           <Button variant="outline" onClick={onGoHome}>
-            Volver al inicio
+            Back to home
           </Button>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getQuizAttemptDetails } from '@/lib/quiz-database'
 import { useAuthStore } from '@/stores/auth-store'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { enUS } from 'date-fns/locale'
 import {
   ArrowLeft,
   Calendar,
@@ -95,10 +95,10 @@ export default function QuizAttemptDetailPage({
         if (result.success && result.data) {
           setAttemptDetails(result.data)
         } else {
-          setError(result.errorMessage || 'Error al cargar los detalles')
+          setError(result.errorMessage || 'Error loading details')
         }
       } catch (err: any) {
-        setError('Error inesperado al cargar los detalles')
+        setError('Unexpected error loading details')
       } finally {
         setIsLoading(false)
       }
@@ -112,18 +112,18 @@ export default function QuizAttemptDetailPage({
   }
 
   const getUserDisplayName = (result: AttemptDetails['result']): string => {
-    // Si es el usuario actual, mostrar su información
+    // If it's the current user, show their information
     if (user && result.user_id === user.id) {
-      return user.name || user.username || user.email?.split('@')[0] || 'Tú'
+      return user.name || user.username || user.email?.split('@')[0] || 'You'
     }
 
-    // Para otros usuarios, mostrar información limitada por privacidad
+    // For other users, show limited information for privacy
     const metadata = result.user_profile?.raw_user_meta_data
     return (
       metadata?.name ||
       metadata?.username ||
       result.user_profile?.email?.split('@')[0] ||
-      'Usuario Anónimo'
+      'Anonymous User'
     )
   }
 
@@ -163,10 +163,10 @@ export default function QuizAttemptDetailPage({
                   Error
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  {error || 'No se pudieron cargar los detalles'}
+                  {error || 'Could not load details'}
                 </p>
                 <Button onClick={handleBackToResponses}>
-                  Volver a las respuestas
+                  Back to responses
                 </Button>
               </div>
             </CardContent>
@@ -189,19 +189,19 @@ export default function QuizAttemptDetailPage({
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver a las respuestas
+            Back to responses
           </Button>
 
-          <h1 className="text-3xl font-bold mb-2">Detalles del Intento</h1>
+          <h1 className="text-3xl font-bold mb-2">Attempt Details</h1>
           <p className="text-muted-foreground">{result.quizzes.title}</p>
         </div>
 
-        {/* Resumen del intento */}
+        {/* Attempt summary */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="w-5 h-5" />
-              Resumen del Intento
+              Attempt Summary
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -216,7 +216,7 @@ export default function QuizAttemptDetailPage({
                   {result.score}/{result.total_questions}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Puntuación (
+                  Score (
                   {Math.round((result.score / result.total_questions) * 100)}%)
                 </div>
               </div>
@@ -224,27 +224,25 @@ export default function QuizAttemptDetailPage({
                 <div className="text-2xl font-bold text-blue-600">
                   {formatTime(result.time_spent)}
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  Tiempo total
-                </div>
+                <div className="text-sm text-muted-foreground">Total time</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-semibold flex items-center justify-center gap-1">
                   <User className="w-4 h-4" />
                   {getUserDisplayName(result)}
                 </div>
-                <div className="text-sm text-muted-foreground">Usuario</div>
+                <div className="text-sm text-muted-foreground">User</div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-semibold flex items-center justify-center gap-1">
                   <Calendar className="w-4 h-4" />
-                  {format(new Date(result.completed_at), 'dd/MM/yyyy', {
-                    locale: es,
+                  {format(new Date(result.completed_at), 'MM/dd/yyyy', {
+                    locale: enUS,
                   })}
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {format(new Date(result.completed_at), 'HH:mm', {
-                    locale: es,
+                    locale: enUS,
                   })}
                 </div>
               </div>
@@ -252,9 +250,9 @@ export default function QuizAttemptDetailPage({
           </CardContent>
         </Card>
 
-        {/* Respuestas detalladas */}
+        {/* Detailed answers */}
         <div className="space-y-4">
-          <h2 className="text-2xl font-semibold mb-4">Respuestas Detalladas</h2>
+          <h2 className="text-2xl font-semibold mb-4">Detailed Answers</h2>
 
           {answers.map((answer, index) => {
             const isCorrect =
@@ -265,7 +263,7 @@ export default function QuizAttemptDetailPage({
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between">
                     <span className="text-lg">
-                      Pregunta {answer.quiz_questions.question_order + 1}
+                      Question {answer.quiz_questions.question_order + 1}
                     </span>
                     <div className="flex items-center gap-2">
                       <Badge
@@ -277,7 +275,7 @@ export default function QuizAttemptDetailPage({
                         ) : (
                           <XCircle className="w-3 h-3" />
                         )}
-                        {isCorrect ? 'Correcta' : 'Incorrecta'}
+                        {isCorrect ? 'Correct' : 'Incorrect'}
                       </Badge>
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Clock className="w-3 h-3" />
@@ -320,12 +318,12 @@ export default function QuizAttemptDetailPage({
                                 <span>{option}</span>
                                 {isSelected && (
                                   <Badge variant="outline" className="ml-auto">
-                                    Seleccionada
+                                    Selected
                                   </Badge>
                                 )}
                                 {isCorrectOption && !isSelected && (
                                   <Badge variant="default" className="ml-auto">
-                                    Correcta
+                                    Correct
                                   </Badge>
                                 )}
                               </div>
@@ -338,7 +336,7 @@ export default function QuizAttemptDetailPage({
                     {answer.quiz_questions.explanation && (
                       <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                         <h4 className="font-medium text-blue-900 mb-2">
-                          Explicación:
+                          Explanation:
                         </h4>
                         <p className="text-blue-800 text-sm">
                           {answer.quiz_questions.explanation}

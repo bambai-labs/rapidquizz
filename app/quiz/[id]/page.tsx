@@ -49,14 +49,14 @@ export default function QuizByIdPage() {
     if (result.success && result.data) {
       const quiz = result.data
 
-      // Verificar si es el propietario
+      // Check if user is the owner
       const userIsOwner = user && quiz.createdBy === user.id
       setIsOwner(!!userIsOwner)
 
-      // El acceso ya fue verificado en loadQuizForSharing
+      // Access was already verified in loadQuizForSharing
       setAccessDenied(false)
     } else {
-      // Quiz no encontrado o no tiene acceso
+      // Quiz not found or no access
       setAccessDenied(true)
     }
   }
@@ -72,19 +72,19 @@ export default function QuizByIdPage() {
     router.push('/dashboard')
   }
 
-  // Mostrar loader mientras carga
+  // Show loader while loading
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Cargando quiz...</p>
+          <p className="text-muted-foreground">Loading quiz...</p>
         </div>
       </div>
     )
   }
 
-  // Mostrar acceso denegado
+  // Show access denied
   if (accessDenied || error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center p-4">
@@ -98,27 +98,27 @@ export default function QuizByIdPage() {
               <div className="mx-auto w-12 h-12 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
                 <Lock className="w-6 h-6 text-destructive" />
               </div>
-              <CardTitle>Acceso Denegado</CardTitle>
+              <CardTitle>Access Denied</CardTitle>
               <CardDescription>
                 {error
-                  ? 'No se pudo cargar el quiz solicitado'
-                  : 'Este quiz es privado y no tienes permisos para acceder a él'}
+                  ? 'Could not load the requested quiz'
+                  : 'This quiz is private and you do not have permission to access it'}
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <div className="flex items-start gap-3 text-sm text-muted-foreground bg-muted p-3 rounded-md">
                 <Shield className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <div className="text-left">
-                  <p className="font-medium mb-1">¿Por qué no puedo acceder?</p>
+                  <p className="font-medium mb-1">Why can't I access this?</p>
                   <p>
-                    Solo los quizzes marcados como públicos pueden ser
-                    compartidos y tomados por otros usuarios.
+                    Only quizzes marked as public can be shared and taken by
+                    other users.
                   </p>
                 </div>
               </div>
               <Button onClick={handleBackToDashboard} className="w-full">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver al Dashboard
+                Back to Dashboard
               </Button>
             </CardContent>
           </Card>
@@ -127,7 +127,7 @@ export default function QuizByIdPage() {
     )
   }
 
-  // Si el quiz está activo, mostrar la interfaz del quiz
+  // If quiz is active, show quiz interface
   if (isQuizActive && currentQuiz) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -138,7 +138,7 @@ export default function QuizByIdPage() {
     )
   }
 
-  // Mostrar información del quiz antes de comenzar
+  // Show quiz information before starting
   if (currentQuiz) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -161,21 +161,21 @@ export default function QuizByIdPage() {
                   </div>
                   {isOwner && (
                     <div className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                      Tu Quiz
+                      Your Quiz
                     </div>
                   )}
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-6">
-                {/* Información del quiz */}
+                {/* Quiz information */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="font-bold text-lg">
                       {currentQuiz.questions.length}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Preguntas
+                      Questions
                     </div>
                   </div>
                   <div className="text-center p-3 bg-muted rounded-lg">
@@ -183,30 +183,30 @@ export default function QuizByIdPage() {
                       {currentQuiz.difficulty}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Dificultad
+                      Difficulty
                     </div>
                   </div>
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="font-bold text-lg">
                       {currentQuiz.timeLimit
                         ? `${currentQuiz.timeLimit} min`
-                        : 'Sin límite'}
+                        : 'No limit'}
                     </div>
-                    <div className="text-sm text-muted-foreground">Tiempo</div>
+                    <div className="text-sm text-muted-foreground">Time</div>
                   </div>
                   <div className="text-center p-3 bg-muted rounded-lg">
                     <div className="font-bold text-lg">
-                      {currentQuiz.isPublic ? 'Público' : 'Privado'}
+                      {currentQuiz.isPublic ? 'Public' : 'Private'}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Visibilidad
+                      Visibility
                     </div>
                   </div>
                 </div>
 
-                {/* Temas */}
+                {/* Topics */}
                 <div>
-                  <h3 className="font-medium mb-2">Temas incluidos:</h3>
+                  <h3 className="font-medium mb-2">Included topics:</h3>
                   <div className="flex flex-wrap gap-2">
                     {currentQuiz.topics.map((topic, index) => (
                       <span
@@ -219,23 +219,27 @@ export default function QuizByIdPage() {
                   </div>
                 </div>
 
-                {/* Instrucciones */}
+                {/* Instructions */}
                 <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
-                  <h3 className="font-medium mb-2">Instrucciones:</h3>
+                  <h3 className="font-medium mb-2">Instructions:</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Selecciona una respuesta para cada pregunta</li>
-                    <li>• Puedes navegar entre preguntas usando los botones</li>
+                    <li>• Select an answer for each question</li>
+                    <li>
+                      • You can navigate between questions using the buttons
+                    </li>
                     {currentQuiz.timeLimit && (
                       <li>
-                        • Tienes {currentQuiz.timeLimit} minutos para completar
-                        el quiz
+                        • You have {currentQuiz.timeLimit} minutes to complete
+                        the quiz
                       </li>
                     )}
-                    <li>• Al finalizar verás tus resultados inmediatamente</li>
+                    <li>
+                      • You will see your results immediately after finishing
+                    </li>
                   </ul>
                 </div>
 
-                {/* Botones de acción */}
+                {/* Action buttons */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Button
                     onClick={handleBackToDashboard}
@@ -243,13 +247,13 @@ export default function QuizByIdPage() {
                     className="flex-1"
                   >
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Volver
+                    Back
                   </Button>
                   <Button
                     onClick={handleStartQuiz}
                     className="flex-1 text-lg py-6"
                   >
-                    Comenzar Quiz
+                    Start Quiz
                   </Button>
                 </div>
               </CardContent>
