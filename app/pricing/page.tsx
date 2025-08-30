@@ -14,7 +14,6 @@ import { useAuthStore } from '@/stores/auth-store'
 import { initializePaddle, Paddle } from '@paddle/paddle-js'
 import { motion } from 'framer-motion'
 import { Check, Crown, Sparkles, Star, Zap } from 'lucide-react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -346,23 +345,13 @@ export default function PricingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
+                onClick={handlePaddleCheckout}
                 size="lg"
-                variant="secondary"
-                className="bg-white text-purple-600 hover:bg-gray-100 font-semibold"
+                variant="outline"
+                className="border-white text-purple-600 hover:text-white hover:bg-white/10 font-semibold"
               >
-                Try Free for 7 Days
+                Start Now
               </Button>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/register">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-purple-600 hover:text-white hover:bg-white/10 font-semibold"
-                >
-                  Start Now
-                </Button>
-              </Link>
             </motion.div>
           </div>
         </motion.div>
