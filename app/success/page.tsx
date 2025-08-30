@@ -32,27 +32,27 @@ export default function SuccessPage() {
   const proFeatures = [
     {
       icon: <Crown className="w-6 h-6 text-yellow-500" />,
-      title: 'Quizzes ilimitados',
-      description: 'Crea tantos quizzes como necesites',
+      title: 'Unlimited quizzes',
+      description: 'Create as many quizzes as you need',
     },
     {
       icon: <Zap className="w-6 h-6 text-blue-500" />,
-      title: 'IA mejorada',
-      description: 'Preguntas más inteligentes y precisas',
+      title: 'Enhanced AI',
+      description: 'Smarter and more accurate questions',
     },
     {
       icon: <Gift className="w-6 h-6 text-pink-500" />,
-      title: 'Soporte prioritario',
-      description: 'Ayuda cuando la necesites',
+      title: 'Priority support',
+      description: 'Help when you need it',
     },
     {
       icon: <Star className="w-6 h-6 text-purple-500" />,
-      title: 'Funciones premium',
-      description: 'Acceso a todas las herramientas avanzadas',
+      title: 'Premium features',
+      description: 'Access to all advanced tools',
     },
   ]
 
-  // Animación de confetti
+  // Confetti animation
   const confettiElements = Array.from({ length: 50 }, (_, i) => (
     <motion.div
       key={i}
@@ -198,19 +198,19 @@ export default function SuccessPage() {
             className="mb-6"
           >
             <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              ¡Bienvenido a Pro!
+              Welcome to Pro!
             </h1>
             <div className="flex items-center justify-center gap-2 mb-4">
               <PartyPopper className="w-8 h-8 text-primary" />
               <h2 className="text-2xl font-semibold text-foreground">
-                Tu suscripción ha sido exitosa
+                Your subscription was successful
               </h2>
               <PartyPopper className="w-8 h-8 text-primary" />
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              ¡Felicidades! Ahora tienes acceso a todas las funcionalidades
-              premium de QuizCraft. Estás listo para crear quizzes increíbles
-              sin límites.
+              Congratulations! You now have access to all the premium features
+              of QuizCraft. You're ready to create amazing quizzes without
+              limits.
             </p>
           </motion.div>
 
@@ -270,7 +270,7 @@ export default function SuccessPage() {
                   className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold px-8 py-4 text-lg shadow-xl"
                 >
                   <Trophy className="w-5 h-5 mr-2" />
-                  ¡Crear mi primer Quiz Pro!
+                  Create my first Pro Quiz!
                 </Button>
               </Link>
             </motion.div>
@@ -283,7 +283,7 @@ export default function SuccessPage() {
                   className="font-semibold px-8 py-4 text-lg"
                 >
                   <Heart className="w-5 h-5 mr-2" />
-                  Explorar funciones Pro
+                  Explore Pro features
                 </Button>
               </Link>
             </motion.div>
@@ -307,17 +307,16 @@ export default function SuccessPage() {
               }}
             >
               <h3 className="text-2xl font-bold mb-4 text-primary">
-                ¡Gracias por confiar en QuizCraft!
+                Thank you for trusting QuizCraft!
               </h3>
               <p className="text-muted-foreground text-lg">
-                Estamos emocionados de verte crear quizzes increíbles. Si tienes
-                alguna pregunta, nuestro equipo de soporte prioritario está aquí
-                para ayudarte.
+                We're excited to see you create amazing quizzes. If you have any
+                questions, our priority support team is here to help you.
               </p>
               <div className="flex items-center justify-center mt-4 gap-2">
                 <Heart className="w-5 h-5 text-red-400" />
                 <span className="text-muted-foreground">
-                  Hecho con amor por el equipo de QuizCraft
+                  Made with love by the QuizCraft team
                 </span>
                 <Heart className="w-5 h-5 text-red-400" />
               </div>
@@ -332,7 +331,8 @@ export default function SuccessPage() {
             className="mt-8"
           >
             <p className="text-muted-foreground text-sm">
-              Te redirigiremos automáticamente al dashboard en unos segundos...
+              We'll automatically redirect you to the dashboard in a few
+              seconds...
             </p>
           </motion.div>
         </div>
