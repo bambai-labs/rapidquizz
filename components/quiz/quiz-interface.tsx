@@ -43,6 +43,7 @@ export function QuizInterface() {
     previousQuestion,
     submitAnswer,
     finishQuiz,
+    participantName,
   } = useQuizStore()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -98,13 +99,58 @@ export function QuizInterface() {
   }
 
   // Si no hay quiz o no hay pregunta actual y NO está cargando, mostrar mensaje de error
-  if ((!currentQuiz || !currentQuestion) && !isLoading) {
+  if (!currentQuiz && !isLoading) {
     return (
       <div className="w-full max-w-4xl mx-auto">
         <div className="flex flex-col items-center justify-center gap-4 mt-6">
           <h1 className="text-2xl font-bold">No se encontró ningún quiz</h1>
           <p className="text-muted-foreground">
             Por favor regresa a la página principal y comienza un nuevo quiz
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => router.replace('/dashboard')}
+          >
+            Volver al inicio
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Si hay quiz pero no hay preguntas
+  if (
+    currentQuiz &&
+    (!currentQuiz.questions || currentQuiz.questions.length === 0) &&
+    !isLoading
+  ) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <h1 className="text-2xl font-bold">Quiz sin preguntas</h1>
+          <p className="text-muted-foreground">
+            Este quiz no tiene preguntas disponibles
+          </p>
+          <Button
+            variant="outline"
+            onClick={() => router.replace('/dashboard')}
+          >
+            Volver al inicio
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Si no hay pregunta actual específica
+  if (currentQuiz && !currentQuestion && !isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-4 mt-6">
+          <h1 className="text-2xl font-bold">Pregunta no encontrada</h1>
+          <p className="text-muted-foreground">
+            No se pudo cargar la pregunta actual. Index: {currentQuestionIndex},
+            Total: {currentQuiz.questions?.length || 0}
           </p>
           <Button
             variant="outline"
@@ -134,7 +180,9 @@ export function QuizInterface() {
 
       if (isLastQuestion) {
         setIsLoading(true)
-        await finishQuiz(user?.id)
+        // Pass user info or participant name based on authentication status
+        const userName = user?.name || participantName || undefined
+        await finishQuiz(user?.id, userName)
         router.push('/quiz/results')
         setIsLoading(false)
       } else {

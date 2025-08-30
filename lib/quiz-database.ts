@@ -310,11 +310,12 @@ export async function loadUserQuizzes(userId: string): Promise<Result<Quiz[]>> {
  */
 export async function saveQuizResult(
   quizId: string,
-  userId: string,
+  userId: string | undefined,
   answers: QuizAnswer[],
   score: number,
   totalQuestions: number,
   timeSpent: number,
+  participantName?: string | null,
 ): Promise<Result<string>> {
   const supabase = createClient()
 
@@ -324,11 +325,12 @@ export async function saveQuizResult(
       .from('quiz_results')
       .insert({
         quiz_id: quizId,
-        user_id: userId,
+        user_id: userId || null,
         score,
         total_questions: totalQuestions,
         time_spent: timeSpent,
         completed_at: new Date().toISOString(),
+        participant_name: participantName || null,
       })
       .select('id')
       .single()

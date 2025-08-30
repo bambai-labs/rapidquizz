@@ -1,5 +1,6 @@
 'use client'
 
+import { ParticipantNameDialog } from '@/components/quiz/participant-name-dialog'
 import { QuizInterface } from '@/components/quiz/quiz-interface'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,6 +33,7 @@ export default function QuizByIdPage() {
 
   const [accessDenied, setAccessDenied] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
+  const [showNameDialog, setShowNameDialog] = useState(false)
   const quizId = params.id as string
 
   useEffect(() => {
@@ -63,7 +65,20 @@ export default function QuizByIdPage() {
 
   const handleStartQuiz = () => {
     if (currentQuiz) {
-      startQuiz()
+      // If user is authenticated, start quiz immediately
+      if (user) {
+        startQuiz()
+      } else {
+        // If user is not authenticated, show name dialog
+        setShowNameDialog(true)
+      }
+    }
+  }
+
+  const handleNameSubmit = (name: string) => {
+    setShowNameDialog(false)
+    if (currentQuiz) {
+      startQuiz(name)
     }
   }
 
@@ -141,128 +156,145 @@ export default function QuizByIdPage() {
   // Show quiz information before starting
   if (currentQuiz) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl mx-auto"
-          >
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-2xl">
-                      {currentQuiz.title}
-                    </CardTitle>
-                    <CardDescription className="text-lg mt-2">
-                      {currentQuiz.subject}
-                    </CardDescription>
-                  </div>
-                  {isOwner && (
-                    <div className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                      Your Quiz
+      <>
+        <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+          <div className="container mx-auto px-4 py-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-2xl mx-auto"
+            >
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-2xl">
+                        {currentQuiz.title}
+                      </CardTitle>
+                      <CardDescription className="text-lg mt-2">
+                        {currentQuiz.subject}
+                      </CardDescription>
                     </div>
-                  )}
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-6">
-                {/* Quiz information */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <div className="font-bold text-lg">
-                      {currentQuiz.questions.length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Questions
-                    </div>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <div className="font-bold text-lg capitalize">
-                      {currentQuiz.difficulty}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Difficulty
-                    </div>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <div className="font-bold text-lg">
-                      {currentQuiz.timeLimit
-                        ? `${currentQuiz.timeLimit} min`
-                        : 'No limit'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">Time</div>
-                  </div>
-                  <div className="text-center p-3 bg-muted rounded-lg">
-                    <div className="font-bold text-lg">
-                      {currentQuiz.isPublic ? 'Public' : 'Private'}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Visibility
-                    </div>
-                  </div>
-                </div>
-
-                {/* Topics */}
-                <div>
-                  <h3 className="font-medium mb-2">Included topics:</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {currentQuiz.topics.map((topic, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm"
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Instructions */}
-                <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
-                  <h3 className="font-medium mb-2">Instructions:</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Select an answer for each question</li>
-                    <li>
-                      • You can navigate between questions using the buttons
-                    </li>
-                    {currentQuiz.timeLimit && (
-                      <li>
-                        • You have {currentQuiz.timeLimit} minutes to complete
-                        the quiz
-                      </li>
+                    {isOwner && (
+                      <div className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                        Your Quiz
+                      </div>
                     )}
-                    <li>
-                      • You will see your results immediately after finishing
-                    </li>
-                  </ul>
-                </div>
+                  </div>
+                </CardHeader>
 
-                {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    onClick={handleBackToDashboard}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleStartQuiz}
-                    className="flex-1 text-lg py-6"
-                  >
-                    Start Quiz
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                <CardContent className="space-y-6">
+                  {/* Quiz information */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="font-bold text-lg">
+                        {currentQuiz.questions.length}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Questions
+                      </div>
+                    </div>
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="font-bold text-lg capitalize">
+                        {currentQuiz.difficulty}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Difficulty
+                      </div>
+                    </div>
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="font-bold text-lg">
+                        {currentQuiz.timeLimit
+                          ? `${currentQuiz.timeLimit} min`
+                          : 'No limit'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Time</div>
+                    </div>
+                    <div className="text-center p-3 bg-muted rounded-lg">
+                      <div className="font-bold text-lg">
+                        {currentQuiz.isPublic ? 'Public' : 'Private'}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Visibility
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Topics */}
+                  <div>
+                    <h3 className="font-medium mb-2">Included topics:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {currentQuiz.topics.map((topic, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm"
+                        >
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Instructions */}
+                  <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-lg">
+                    <h3 className="font-medium mb-2">Instructions:</h3>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      <li>• Select an answer for each question</li>
+                      <li>
+                        • You can navigate between questions using the buttons
+                      </li>
+                      {currentQuiz.timeLimit && (
+                        <li>
+                          • You have {currentQuiz.timeLimit} minutes to complete
+                          the quiz
+                        </li>
+                      )}
+                      <li>
+                        • You will see your results immediately after finishing
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button
+                      onClick={handleBackToDashboard}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back
+                    </Button>
+                    <Button
+                      onClick={handleStartQuiz}
+                      className="flex-1 text-lg py-6"
+                    >
+                      Start Quiz
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
         </div>
-      </div>
+
+        {/* Participant Name Dialog for anonymous users */}
+        <ParticipantNameDialog
+          open={showNameDialog}
+          onNameSubmit={handleNameSubmit}
+          quizTitle={currentQuiz.title}
+        />
+      </>
     )
   }
 
-  return null
+  // Fallback - this shouldn't normally be reached
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Loading quiz...</p>
+      </div>
+    </div>
+  )
 }

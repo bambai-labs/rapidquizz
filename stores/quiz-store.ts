@@ -16,20 +16,22 @@ interface QuizState {
   results: QuizResult | null
   isLoading: boolean
   error: string | null
+  participantName: string | null
 
   // Actions
   setCurrentQuiz: (quiz: Quiz) => void
   loadQuizById: (quizId: string) => Promise<Result<Quiz>>
   loadQuizForSharing: (quizId: string, userId?: string) => Promise<Result<Quiz>>
-  startQuiz: () => void
+  startQuiz: (participantName?: string) => void
   nextQuestion: () => void
   previousQuestion: () => void
   submitAnswer: (answer: QuizAnswer) => void
-  finishQuiz: (userId?: string) => Promise<void>
+  finishQuiz: (userId?: string, participantName?: string) => Promise<void>
   resetQuiz: () => void
   setResults: (results: QuizResult) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
+  setParticipantName: (name: string) => void
 }
 
 export const useQuizStore = create<QuizState>((set, get) => ({
@@ -41,6 +43,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   results: null,
   isLoading: false,
   error: null,
+  participantName: null,
 
   setCurrentQuiz: (quiz) => set({ currentQuiz: quiz }),
 
@@ -86,13 +89,14 @@ export const useQuizStore = create<QuizState>((set, get) => ({
     }
   },
 
-  startQuiz: () =>
+  startQuiz: (participantName?: string) =>
     set({
       isQuizActive: true,
       startTime: new Date(),
       currentQuestionIndex: 0,
       answers: [],
       results: null,
+      participantName: participantName || null,
     }),
 
   nextQuestion: () =>
@@ -128,7 +132,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       return { answers: updatedAnswers }
     }),
 
-  finishQuiz: async (userId?: string) => {
+  finishQuiz: async (userId?: string, participantName?: string) => {
     const state = get()
     if (!state.currentQuiz || !state.startTime) return
 
@@ -159,9 +163,14 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       timeSpent: Math.round(timeSpent),
     }
 
-    // Guardar el resultado en la base de datos si hay un usuario
-    if (userId && state.currentQuiz.id) {
+    // Guardar el resultado en la base de datos
+    // Para usuarios autenticados o anónimos con nombre
+    if (
+      state.currentQuiz.id &&
+      (userId || participantName || state.participantName)
+    ) {
       try {
+        const finalParticipantName = participantName || state.participantName
         const saveResult = await saveQuizResult(
           state.currentQuiz.id,
           userId,
@@ -169,6 +178,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
           score,
           state.currentQuiz.questions.length,
           Math.round(timeSpent),
+          finalParticipantName,
         )
         if (saveResult.success) {
           results.id = saveResult.data
@@ -194,6 +204,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
       startTime: null,
       isQuizActive: false,
       results: null,
+      participantName: null,
     }),
 
   setResults: (results) => set({ results }),
@@ -201,4 +212,6 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   setLoading: (loading) => set({ isLoading: loading }),
 
   setError: (error) => set({ error }),
+
+  setParticipantName: (name) => set({ participantName: name }),
 }))
