@@ -40,7 +40,7 @@ export default function PricingPage() {
     }
 
     if (hasActiveSubscription) {
-      toast.error('Ya tienes un plan activo')
+      toast.error('You already have an active plan')
       return
     }
 
@@ -75,31 +75,31 @@ export default function PricingPage() {
     {
       name: 'Free',
       price: '0',
-      description: 'Perfecto para empezar',
+      description: 'Perfect to get started',
       features: [
-        'Hasta 5 quizzes',
-        'Hasta 10 preguntas por quiz',
-        'Resultados básicos',
+        'Up to 5 quizzes',
+        'Up to 10 questions per quiz',
+        'Basic results',
       ],
       popular: false,
-      buttonText: hasActiveSubscription ? 'Plan Disponible' : 'Plan Actual',
+      buttonText: hasActiveSubscription ? 'Plan Available' : 'Current Plan',
       buttonVariant: 'outline' as const,
       disabled: hasActiveSubscription ? false : true,
     },
     {
       name: 'Pro',
       price: '9.99',
-      description: 'Ideal para educadores y profesionales',
+      description: 'Ideal for educators and professionals',
       features: [
-        'Quizzes ilimitados',
-        'Más de 10 preguntas por quiz',
-        'Temporizadores personalizados',
-        'Soporte prioritario',
-        'IA mejorada para generar preguntas',
-        'Admite archivos PDF o DOCX',
+        'Unlimited quizzes',
+        'More than 10 questions per quiz',
+        'Custom timers',
+        'Priority support',
+        'Enhanced AI for generating questions',
+        'Supports PDF or DOCX files',
       ],
       popular: !hasActiveSubscription,
-      buttonText: hasActiveSubscription ? 'Plan Actual' : '¡Actualizar a Pro!',
+      buttonText: hasActiveSubscription ? 'Current Plan' : 'Upgrade to Pro!',
       buttonVariant: hasActiveSubscription
         ? ('outline' as const)
         : ('default' as const),
@@ -134,11 +134,11 @@ export default function PricingPage() {
           className="text-center mb-16"
         >
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            Planes y Precios
+            Plans & Pricing
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Elige el plan perfecto para tus necesidades y lleva tus quizzes al
-            siguiente nivel
+            Choose the perfect plan for your needs and take your quizzes to the
+            next level
           </p>
         </motion.div>
 
@@ -183,7 +183,7 @@ export default function PricingPage() {
                 >
                   <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg whitespace-nowrap">
                     <Star className="w-4 h-4" />
-                    Más Popular
+                    Most Popular
                     <Sparkles className="w-4 h-4" />
                   </div>
                 </motion.div>
@@ -204,7 +204,7 @@ export default function PricingPage() {
                 >
                   <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg whitespace-nowrap">
                     <Check className="w-4 h-4" />
-                    Plan Activo
+                    Active Plan
                     <Crown className="w-4 h-4" />
                   </div>
                 </motion.div>
@@ -232,7 +232,7 @@ export default function PricingPage() {
                     <span className="text-3xl">$</span>
                     {plan.price}
                     <span className="text-base font-normal text-gray-500">
-                      /mes
+                      /month
                     </span>
                   </div>
                   <CardDescription className="text-base">
@@ -300,36 +300,33 @@ export default function PricingPage() {
           transition={{ delay: 0.8 }}
           className="mt-20 text-center"
         >
-          <h2 className="text-3xl font-bold mb-8">
-            ¿Por qué elegir QuizCraft Pro?
-          </h2>
+          <h2 className="text-3xl font-bold mb-8">Why choose QuizCraft Pro?</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="space-y-3">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto">
                 <Zap className="w-6 h-6 text-purple-600" />
               </div>
-              <h3 className="font-semibold text-lg">IA Avanzada</h3>
+              <h3 className="font-semibold text-lg">Advanced AI</h3>
               <p className="text-gray-600">
-                Genera preguntas más inteligentes y precisas con nuestra IA
-                mejorada
+                Generate smarter and more precise questions with our enhanced AI
               </p>
             </div>
             <div className="space-y-3">
               <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
                 <Crown className="w-6 h-6 text-indigo-600" />
               </div>
-              <h3 className="font-semibold text-lg">Sin Límites</h3>
+              <h3 className="font-semibold text-lg">No Limits</h3>
               <p className="text-gray-600">
-                Crea tantos quizzes como necesites sin restricciones
+                Create as many quizzes as you need without restrictions
               </p>
             </div>
             <div className="space-y-3">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
                 <Star className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="font-semibold text-lg">Soporte Premium</h3>
+              <h3 className="font-semibold text-lg">Premium Support</h3>
               <p className="text-gray-600">
-                Obtén ayuda prioritaria de nuestro equipo de expertos
+                Get priority help from our team of experts
               </p>
             </div>
           </div>
@@ -342,9 +339,9 @@ export default function PricingPage() {
           transition={{ delay: 1 }}
           className="mt-16 text-center bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white"
         >
-          <h2 className="text-3xl font-bold mb-4">¿Listo para empezar?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2>
           <p className="text-lg mb-6 opacity-90">
-            Únete a miles de educadores que ya confían en QuizCraft Pro
+            Join thousands of educators who already trust QuizCraft Pro
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -353,7 +350,7 @@ export default function PricingPage() {
                 variant="secondary"
                 className="bg-white text-purple-600 hover:bg-gray-100 font-semibold"
               >
-                Prueba Gratis 7 Días
+                Try Free for 7 Days
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -363,7 +360,7 @@ export default function PricingPage() {
                   variant="outline"
                   className="border-white text-purple-600 hover:text-white hover:bg-white/10 font-semibold"
                 >
-                  Comenzar Ahora
+                  Start Now
                 </Button>
               </Link>
             </motion.div>

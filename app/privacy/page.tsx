@@ -15,97 +15,95 @@ import {
 } from 'lucide-react'
 
 export default function PrivacyPolicyPage() {
-  const lastUpdated = '15 de enero de 2025'
+  const lastUpdated = 'January 15, 2025'
 
   const sections = [
     {
-      id: 'informacion-recopilada',
-      title: 'Información que recopilamos',
+      id: 'information-collected',
+      title: 'Information we collect',
       icon: <Database className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            En nuestra aplicación de generación de quizzes con inteligencia
-            artificial, recopilamos únicamente la información esencial para
-            proporcionarte nuestros servicios:
+            In our AI-powered quiz generation application, we only collect
+            essential information to provide you with our services:
           </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
               <Mail className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
               <span>
-                <strong>Correo electrónico:</strong> Necesario para crear tu
-                cuenta, autenticación y comunicaciones importantes del servicio.
+                <strong>Email:</strong> Required to create your account,
+                authentication, and important service communications.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <FileText className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
               <span>
-                <strong>Nombre:</strong> Para personalizar tu experiencia y
-                identificación en la plataforma.
+                <strong>Name:</strong> To personalize your experience and
+                identification on the platform.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <CreditCard className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
               <span>
-                <strong>Información de suscripción:</strong> Gestionada a través
-                de Paddle para procesar pagos de manera segura.
+                <strong>Subscription information:</strong> Managed through
+                Paddle to securely process payments.
               </span>
             </li>
           </ul>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
             <p className="text-sm text-blue-800">
-              <strong>Compromiso de privacidad:</strong> No recopilamos
-              información adicional innecesaria. Tu privacidad es nuestra
-              prioridad.
+              <strong>Privacy commitment:</strong> We do not collect unnecessary
+              additional information. Your privacy is our priority.
             </p>
           </div>
         </div>
       ),
     },
     {
-      id: 'uso-informacion',
-      title: 'Cómo utilizamos tu información',
+      id: 'information-usage',
+      title: 'How we use your information',
       icon: <Eye className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Utilizamos tu información personal únicamente para los siguientes
-            propósitos legítimos:
+            We use your personal information only for the following legitimate
+            purposes:
           </p>
           <ul className="space-y-3 text-sm">
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Provisión del servicio:</strong> Para permitirte crear,
-                guardar y gestionar tus quizzes generados con IA.
+                <strong>Service provision:</strong> To allow you to create,
+                save, and manage your AI-generated quizzes.
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Autenticación y seguridad:</strong> Para verificar tu
-                identidad y proteger tu cuenta.
+                <strong>Authentication and security:</strong> To verify your
+                identity and protect your account.
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Gestión de suscripciones:</strong> Para procesar pagos y
-                gestionar tu plan de suscripción.
+                <strong>Subscription management:</strong> To process payments
+                and manage your subscription plan.
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Comunicaciones esenciales:</strong> Para enviarte
-                actualizaciones importantes sobre el servicio.
+                <strong>Essential communications:</strong> To send you important
+                service updates.
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Mejora del servicio:</strong> Para optimizar la
-                funcionalidad de generación de quizzes con IA.
+                <strong>Service improvement:</strong> To optimize the AI quiz
+                generation functionality.
               </span>
             </li>
           </ul>
@@ -113,41 +111,41 @@ export default function PrivacyPolicyPage() {
       ),
     },
     {
-      id: 'compartir-informacion',
-      title: 'Compartir información con terceros',
+      id: 'information-sharing',
+      title: 'Sharing information with third parties',
       icon: <Lock className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
               <Lock className="w-4 h-4" />
-              Política de no compartir
+              No-sharing policy
             </h4>
             <p className="text-sm text-green-700 leading-relaxed">
               <strong>
-                No vendemos, alquilamos o compartimos tu información personal
-                con terceros
+                We do not sell, rent, or share your personal information with
+                third parties
               </strong>{' '}
-              para fines comerciales o de marketing.
+              for commercial or marketing purposes.
             </p>
           </div>
 
           <div className="space-y-3">
-            <h4 className="font-semibold text-sm">Excepciones limitadas:</h4>
+            <h4 className="font-semibold text-sm">Limited exceptions:</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
                 <span>
-                  <strong>Proveedores de servicios esenciales:</strong> Supabase
-                  (base de datos) y Paddle (procesamiento de pagos) que operan
-                  bajo estrictos acuerdos de confidencialidad.
+                  <strong>Essential service providers:</strong> Supabase
+                  (database) and Paddle (payment processing) operating under
+                  strict confidentiality agreements.
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
                 <span>
-                  <strong>Requerimientos legales:</strong> Solo cuando sea
-                  obligatorio por ley o para proteger derechos legítimos.
+                  <strong>Legal requirements:</strong> Only when mandatory by
+                  law or to protect legitimate rights.
                 </span>
               </li>
             </ul>
@@ -156,8 +154,8 @@ export default function PrivacyPolicyPage() {
       ),
     },
     {
-      id: 'almacenamiento-seguridad',
-      title: 'Almacenamiento y seguridad',
+      id: 'storage-security',
+      title: 'Storage and security',
       icon: <Database className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
@@ -165,100 +163,99 @@ export default function PrivacyPolicyPage() {
             <div className="space-y-3">
               <h4 className="font-semibold text-sm flex items-center gap-2">
                 <Database className="w-4 h-4 text-primary" />
-                Infraestructura
+                Infrastructure
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Base de datos segura en Supabase</li>
-                <li>• Cifrado de datos en tránsito y reposo</li>
-                <li>• Servidores certificados y monitoreados</li>
-                <li>• Copias de seguridad automáticas</li>
+                <li>• Secure database on Supabase</li>
+                <li>• Data encryption in transit and at rest</li>
+                <li>• Certified and monitored servers</li>
+                <li>• Automatic backups</li>
               </ul>
             </div>
             <div className="space-y-3">
               <h4 className="font-semibold text-sm flex items-center gap-2">
                 <Shield className="w-4 h-4 text-primary" />
-                Medidas de protección
+                Protection measures
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Autenticación segura</li>
-                <li>• Acceso limitado por roles</li>
-                <li>• Monitoreo de seguridad 24/7</li>
-                <li>• Actualizaciones de seguridad regulares</li>
+                <li>• Secure authentication</li>
+                <li>• Role-based access control</li>
+                <li>• 24/7 security monitoring</li>
+                <li>• Regular security updates</li>
               </ul>
             </div>
           </div>
 
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
-              <strong>Importante:</strong> Aunque implementamos las mejores
-              prácticas de seguridad, ningún sistema es 100% seguro. Te
-              recomendamos usar contraseñas fuertes y únicas.
+              <strong>Important:</strong> Although we implement best security
+              practices, no system is 100% secure. We recommend using strong and
+              unique passwords.
             </p>
           </div>
         </div>
       ),
     },
     {
-      id: 'derechos-usuario',
-      title: 'Tus derechos como usuario',
+      id: 'user-rights',
+      title: 'Your rights as a user',
       icon: <FileText className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            De acuerdo con las regulaciones de protección de datos, tienes los
-            siguientes derechos:
+            According to data protection regulations, you have the following
+            rights:
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
               <h4 className="font-semibold text-sm">
-                Derechos de acceso y control:
+                Access and control rights:
               </h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Acceso:</strong> Solicitar una copia de tus datos
-                    personales
+                    <strong>Access:</strong> Request a copy of your personal
+                    data
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Rectificación:</strong> Corregir datos inexactos o
-                    incompletos
+                    <strong>Rectification:</strong> Correct inaccurate or
+                    incomplete data
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Eliminación:</strong> Solicitar la eliminación de
-                    tus datos
+                    <strong>Deletion:</strong> Request deletion of your data
                   </span>
                 </li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">Derechos adicionales:</h4>
+              <h4 className="font-semibold text-sm">Additional rights:</h4>
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Portabilidad:</strong> Recibir tus datos en formato
-                    estructurado
+                    <strong>Portability:</strong> Receive your data in
+                    structured format
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Limitación:</strong> Restringir el procesamiento de
-                    tus datos
+                    <strong>Limitation:</strong> Restrict processing of your
+                    data
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                   <span>
-                    <strong>Oposición:</strong> Oponerte al procesamiento de tus
-                    datos
+                    <strong>Objection:</strong> Object to processing of your
+                    data
                   </span>
                 </li>
               </ul>
@@ -266,49 +263,46 @@ export default function PrivacyPolicyPage() {
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
-              Para ejercer cualquiera de estos derechos, contáctanos a través de
-              la configuración de tu cuenta o enviando un email. Responderemos
-              en un plazo máximo de 30 días.
+              To exercise any of these rights, contact us through your account
+              settings or by sending an email. We will respond within a maximum
+              of 30 days.
             </p>
           </div>
         </div>
       ),
     },
     {
-      id: 'cookies-tecnologias',
-      title: 'Cookies y tecnologías de seguimiento',
+      id: 'cookies-tracking',
+      title: 'Cookies and tracking technologies',
       icon: <Eye className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Utilizamos cookies y tecnologías similares para mejorar tu
-            experiencia en nuestra plataforma:
+            We use cookies and similar technologies to improve your experience
+            on our platform:
           </p>
           <div className="space-y-4">
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">Cookies esenciales</h4>
+              <h4 className="font-semibold text-sm mb-2">Essential cookies</h4>
               <p className="text-sm text-muted-foreground">
-                Necesarias para el funcionamiento básico del sitio,
-                autenticación y seguridad. No se pueden desactivar.
+                Necessary for basic site operation, authentication and security.
+                Cannot be disabled.
               </p>
             </div>
             <div className="border border-border rounded-lg p-4">
               <h4 className="font-semibold text-sm mb-2">
-                Cookies de funcionalidad
+                Functionality cookies
               </h4>
               <p className="text-sm text-muted-foreground">
-                Permiten recordar tus preferencias y configuraciones para
-                mejorar tu experiencia de usuario.
+                Allow remembering your preferences and settings to improve your
+                user experience.
               </p>
             </div>
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">
-                Cookies de análisis
-              </h4>
+              <h4 className="font-semibold text-sm mb-2">Analytics cookies</h4>
               <p className="text-sm text-muted-foreground">
-                Nos ayudan a entender cómo usas la aplicación para mejorar
-                nuestros servicios. Puedes desactivarlas sin afectar la
-                funcionalidad.
+                Help us understand how you use the application to improve our
+                services. You can disable them without affecting functionality.
               </p>
             </div>
           </div>
@@ -316,67 +310,61 @@ export default function PrivacyPolicyPage() {
       ),
     },
     {
-      id: 'menores-edad',
-      title: 'Protección de menores',
+      id: 'minors-protection',
+      title: 'Protection of minors',
       icon: <Shield className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <h4 className="font-semibold text-red-800 mb-2">
-              Restricción de edad
-            </h4>
+            <h4 className="font-semibold text-red-800 mb-2">Age restriction</h4>
             <p className="text-sm text-red-700 leading-relaxed">
-              Nuestro servicio está dirigido a usuarios mayores de 13 años. No
-              recopilamos conscientemente información personal de menores de 13
-              años.
+              Our service is intended for users over 13 years old. We do not
+              knowingly collect personal information from children under 13.
             </p>
           </div>
           <p className="text-sm text-muted-foreground">
-            Si descubrimos que hemos recopilado información de un menor de 13
-            años sin el consentimiento parental verificable, tomaremos medidas
-            inmediatas para eliminar dicha información de nuestros servidores.
+            If we discover that we have collected information from a child under
+            13 without verifiable parental consent, we will take immediate
+            measures to delete such information from our servers.
           </p>
           <p className="text-sm text-muted-foreground">
-            Si eres padre o tutor y tienes conocimiento de que tu hijo nos ha
-            proporcionado información personal, por favor contáctanos
-            inmediatamente.
+            If you are a parent or guardian and know that your child has
+            provided us with personal information, please contact us
+            immediately.
           </p>
         </div>
       ),
     },
     {
-      id: 'cambios-politica',
-      title: 'Cambios en esta política',
+      id: 'policy-changes',
+      title: 'Changes to this policy',
       icon: <Calendar className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Nos reservamos el derecho de actualizar esta política de privacidad
-            en cualquier momento para reflejar cambios en nuestros servicios o
-            en la legislación aplicable.
+            We reserve the right to update this privacy policy at any time to
+            reflect changes in our services or applicable legislation.
           </p>
           <div className="space-y-3">
-            <h4 className="font-semibold text-sm">Proceso de actualización:</h4>
+            <h4 className="font-semibold text-sm">Update process:</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Publicaremos cualquier cambio en esta página</span>
+                <span>We will publish any changes on this page</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Actualizaremos la fecha de "última actualización"</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>
-                  Para cambios significativos, te notificaremos por email
-                </span>
+                <span>We will update the "last updated" date</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
                 <span>
-                  Te recomendamos revisar esta política periódicamente
+                  For significant changes, we will notify you by email
                 </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
+                <span>We recommend reviewing this policy periodically</span>
               </li>
             </ul>
           </div>
@@ -384,21 +372,19 @@ export default function PrivacyPolicyPage() {
       ),
     },
     {
-      id: 'contacto',
-      title: 'Contacto y consultas',
+      id: 'contact',
+      title: 'Contact and inquiries',
       icon: <Mail className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Si tienes preguntas, inquietudes o solicitudes relacionadas con esta
-            política de privacidad o el tratamiento de tus datos personales, no
-            dudes en contactarnos:
+            If you have questions, concerns, or requests related to this privacy
+            policy or the processing of your personal data, don't hesitate to
+            contact us:
           </p>
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border rounded-lg p-6">
             <div className="space-y-4">
-              <h4 className="font-semibold text-sm">
-                Información de contacto:
-              </h4>
+              <h4 className="font-semibold text-sm">Contact information:</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-primary flex-shrink-0" />
@@ -414,17 +400,14 @@ export default function PrivacyPolicyPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <FileText className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span>
-                    Formulario de contacto disponible en la configuración de tu
-                    cuenta
-                  </span>
+                  <span>Contact form available in your account settings</span>
                 </div>
               </div>
               <div className="mt-4 p-3 bg-background rounded border">
                 <p className="text-xs text-muted-foreground">
-                  <strong>Tiempo de respuesta:</strong> Nos comprometemos a
-                  responder todas las consultas relacionadas con privacidad en
-                  un plazo máximo de 30 días hábiles.
+                  <strong>Response time:</strong> We commit to responding to all
+                  privacy-related inquiries within a maximum of 30 business
+                  days.
                 </p>
               </div>
             </div>
@@ -445,20 +428,20 @@ export default function PrivacyPolicyPage() {
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl font-bold">Política de Privacidad</h1>
+            <h1 className="text-4xl font-bold">Privacy Policy</h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            En nuestra aplicación de generación de quizzes con inteligencia
-            artificial, tu privacidad es fundamental. Esta política explica cómo
-            recopilamos, utilizamos y protegemos tu información personal.
+            In our AI-powered quiz generation application, your privacy is
+            fundamental. This policy explains how we collect, use, and protect
+            your personal information.
           </p>
           <div className="flex items-center justify-center gap-2 mt-6 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
-            <span>Última actualización: {lastUpdated}</span>
+            <span>Last updated: {lastUpdated}</span>
           </div>
         </motion.div>
 
-        {/* Resumen ejecutivo */}
+        {/* Executive summary */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -469,30 +452,30 @@ export default function PrivacyPolicyPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <Eye className="w-6 h-6 text-primary" />
-                Resumen de nuestra política
+                Policy summary
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center space-y-2">
                   <Database className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Datos mínimos</h3>
+                  <h3 className="font-semibold">Minimal data</h3>
                   <p className="text-sm text-muted-foreground">
-                    Solo recopilamos tu email y nombre
+                    We only collect your email and name
                   </p>
                 </div>
                 <div className="text-center space-y-2">
                   <Lock className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Sin compartir</h3>
+                  <h3 className="font-semibold">No sharing</h3>
                   <p className="text-sm text-muted-foreground">
-                    No vendemos ni compartimos tus datos
+                    We don't sell or share your data
                   </p>
                 </div>
                 <div className="text-center space-y-2">
                   <Shield className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Máxima seguridad</h3>
+                  <h3 className="font-semibold">Maximum security</h3>
                   <p className="text-sm text-muted-foreground">
-                    Cifrado y protección avanzada
+                    Encryption and advanced protection
                   </p>
                 </div>
               </div>
@@ -500,7 +483,7 @@ export default function PrivacyPolicyPage() {
           </Card>
         </motion.div>
 
-        {/* Secciones de la política */}
+        {/* Policy sections */}
         <div className="space-y-8">
           {sections.map((section, index) => (
             <motion.div
@@ -524,7 +507,7 @@ export default function PrivacyPolicyPage() {
           ))}
         </div>
 
-        {/* Footer de la política */}
+        {/* Policy footer */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -533,11 +516,11 @@ export default function PrivacyPolicyPage() {
         >
           <Separator className="mb-8" />
           <div className="bg-muted/30 rounded-xl p-8">
-            <h2 className="text-2xl font-bold mb-4">¿Tienes preguntas?</h2>
+            <h2 className="text-2xl font-bold mb-4">Have questions?</h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Estamos aquí para ayudarte. Si tienes cualquier duda sobre nuestra
-              política de privacidad o el manejo de tus datos, no hesites en
-              contactarnos.
+              We're here to help you. If you have any questions about our
+              privacy policy or the handling of your data, don't hesitate to
+              contact us.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
@@ -545,10 +528,10 @@ export default function PrivacyPolicyPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                Contactar por email
+                Contact by email
               </a>
               <span className="text-sm text-muted-foreground">
-                o utiliza el formulario en la configuración de tu cuenta
+                or use the form in your account settings
               </span>
             </div>
           </div>
