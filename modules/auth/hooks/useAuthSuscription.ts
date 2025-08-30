@@ -11,7 +11,6 @@ export const useAuthSuscription = () => {
     const { data, error } = await supabase.auth.getUser()
     if (error) {
       setUser(undefined)
-      console.error(error)
       return
     }
 

@@ -110,6 +110,7 @@ export async function logout(): Promise<Result<void>> {
   const { error } = await supabase.auth.signOut()
 
   if (error) {
+    console.error('Error signing out:', error)
     return {
       success: false,
       errorMessage: error.message,
