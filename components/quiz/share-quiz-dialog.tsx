@@ -38,7 +38,7 @@ export function ShareQuizDialog({
   useEffect(() => {
     if (quiz) {
       setIsPublic(quiz.isPublic || false)
-      // Generar URL siempre con la misma ruta
+      // Always generate URL with the same path
       const baseUrl =
         typeof window !== 'undefined' ? window.location.origin : ''
       setShareUrl(`${baseUrl}/quiz/${quiz.id}`)
@@ -57,14 +57,14 @@ export function ShareQuizDialog({
       setIsPublic(newIsPublic)
 
       toast({
-        title: 'Configuración actualizada',
-        description: `El quiz ahora es ${newIsPublic ? 'público' : 'privado'}`,
+        title: 'Settings updated',
+        description: `The quiz is now ${newIsPublic ? 'public' : 'private'}`,
       })
     } catch (error) {
       console.error('Error updating quiz visibility:', error)
       toast({
         title: 'Error',
-        description: 'No se pudo actualizar la configuración del quiz',
+        description: 'Could not update quiz settings',
         variant: 'destructive',
       })
     } finally {
@@ -76,14 +76,14 @@ export function ShareQuizDialog({
     try {
       await navigator.clipboard.writeText(shareUrl)
       toast({
-        title: 'Enlace copiado',
-        description: 'El enlace se ha copiado al portapapeles',
+        title: 'Link copied',
+        description: 'The link has been copied to the clipboard',
       })
     } catch (error) {
       console.error('Error copying to clipboard:', error)
       toast({
         title: 'Error',
-        description: 'No se pudo copiar el enlace',
+        description: 'Could not copy the link',
         variant: 'destructive',
       })
     }
@@ -99,21 +99,21 @@ export function ShareQuizDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Compartir Quiz</DialogTitle>
+          <DialogTitle>Share Quiz</DialogTitle>
           <DialogDescription>
-            Configura cómo quieres compartir "{quiz.title}"
+            Configure how you want to share "{quiz.title}"
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Switch para público/privado */}
+          {/* Switch for public/private */}
           <div className="flex items-center justify-between space-x-2">
             <div className="space-y-1">
-              <Label htmlFor="public-switch">Hacer público</Label>
+              <Label htmlFor="public-switch">Make public</Label>
               <p className="text-sm text-muted-foreground">
                 {isPublic
-                  ? 'Cualquiera con el enlace puede acceder'
-                  : 'Solo tú puedes acceder al quiz'}
+                  ? 'Anyone with the link can access'
+                  : 'Only you can access the quiz'}
               </p>
             </div>
             <Switch
@@ -124,9 +124,9 @@ export function ShareQuizDialog({
             />
           </div>
 
-          {/* Campo del enlace */}
+          {/* Share link field */}
           <div className="space-y-2">
-            <Label htmlFor="share-url">Enlace para compartir</Label>
+            <Label htmlFor="share-url">Share link</Label>
             <div className="flex space-x-2">
               <Input
                 id="share-url"
@@ -139,7 +139,7 @@ export function ShareQuizDialog({
                 variant="outline"
                 size="icon"
                 onClick={copyToClipboard}
-                title="Copiar enlace"
+                title="Copy link"
               >
                 <Copy className="h-4 w-4" />
               </Button>
@@ -148,29 +148,29 @@ export function ShareQuizDialog({
                 variant="outline"
                 size="icon"
                 onClick={openInNewTab}
-                title="Abrir en nueva pestaña"
+                title="Open in new tab"
               >
                 <ExternalLink className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {/* Información adicional */}
+          {/* Additional information */}
           <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">
             <p>
-              <strong>Público:</strong> El quiz aparecerá en búsquedas y
-              cualquiera puede tomarlo
+              <strong>Public:</strong> The quiz will appear in searches and
+              anyone can take it
             </p>
             <p>
-              <strong>Privado:</strong> Solo las personas con el enlace directo
-              pueden acceder
+              <strong>Private:</strong> Only people with the direct link can
+              access
             </p>
           </div>
         </div>
 
         <DialogFooter>
           <Button onClick={onClose} variant="outline">
-            Cerrar
+            Close
           </Button>
         </DialogFooter>
       </DialogContent>

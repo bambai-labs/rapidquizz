@@ -36,7 +36,7 @@ export function DeleteQuizDialog({
     try {
       await onConfirm()
     } catch (err: any) {
-      setError(err.message || 'Error al eliminar el quiz')
+      setError(err.message || 'Error deleting quiz')
     }
   }
 
@@ -51,11 +51,11 @@ export function DeleteQuizDialog({
     <AlertDialog open={isOpen} onOpenChange={handleClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>¿Eliminar quiz?</AlertDialogTitle>
+          <AlertDialogTitle>Delete quiz?</AlertDialogTitle>
           <AlertDialogDescription>
-            ¿Estás seguro de que quieres eliminar el quiz{' '}
-            <span className="font-semibold">"{quiz?.title}"</span>? Esta acción
-            no se puede deshacer y se eliminarán todas las preguntas asociadas.
+            Are you sure you want to delete the quiz{' '}
+            <span className="font-semibold">"{quiz?.title}"</span>? This action
+            cannot be undone and all associated questions will be deleted.
           </AlertDialogDescription>
           {error && (
             <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -64,7 +64,7 @@ export function DeleteQuizDialog({
           )}
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
             disabled={isDeleting}
@@ -73,10 +73,10 @@ export function DeleteQuizDialog({
             {isDeleting ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Eliminando...
+                Deleting...
               </>
             ) : (
-              'Eliminar'
+              'Delete'
             )}
           </AlertDialogAction>
         </AlertDialogFooter>

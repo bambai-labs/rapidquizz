@@ -37,9 +37,9 @@ export function ExportProgressDialog({
 }: ExportProgressDialogProps) {
   const getTypeLabel = (type: ExportType | null) => {
     const typeMap = {
-      questions: 'Solo preguntas',
-      answers: 'Solo respuestas',
-      both: 'Preguntas y respuestas',
+      questions: 'Questions only',
+      answers: 'Answers only',
+      both: 'Questions and answers',
     }
     return type ? typeMap[type] : ''
   }
@@ -47,15 +47,15 @@ export function ExportProgressDialog({
   const getStatusMessage = () => {
     switch (status) {
       case 'preparing':
-        return 'Preparando exportación...'
+        return 'Preparing export...'
       case 'exporting':
-        return 'Generando archivo...'
+        return 'Generating file...'
       case 'completed':
-        return '¡Exportación completada!'
+        return 'Export completed!'
       case 'error':
-        return 'Error en la exportación'
+        return 'Export error'
       default:
-        return 'Procesando...'
+        return 'Processing...'
     }
   }
 
@@ -91,7 +91,7 @@ export function ExportProgressDialog({
     }
   }
 
-  // Auto-cerrar después de 2 segundos si está completado
+  // Auto-close after 2 seconds if completed
   React.useEffect(() => {
     if (status === 'completed') {
       const timer = setTimeout(() => {
@@ -107,7 +107,7 @@ export function ExportProgressDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
-            Exportar Quiz
+            Export Quiz
           </DialogTitle>
           <DialogDescription>
             {quiz && (
@@ -121,18 +121,18 @@ export function ExportProgressDialog({
         </DialogHeader>
 
         <div className="flex flex-col items-center space-y-6 py-4">
-          {/* Icono de estado */}
+          {/* Status icon */}
           <div className="flex items-center justify-center">
             {getStatusIcon()}
           </div>
 
-          {/* Mensaje de estado */}
+          {/* Status message */}
           <div className="text-center">
             <p className="text-lg font-medium">{getStatusMessage()}</p>
             {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
           </div>
 
-          {/* Barra de progreso */}
+          {/* Progress bar */}
           {status !== 'error' && (
             <div className="w-full space-y-2">
               <Progress value={progress} className="w-full h-2" />
@@ -144,7 +144,7 @@ export function ExportProgressDialog({
             </div>
           )}
 
-          {/* Mensaje adicional para estado completado */}
+          {/* Additional message for completed status */}
           {status === 'completed' && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -152,15 +152,15 @@ export function ExportProgressDialog({
               className="text-center"
             >
               <p className="text-sm text-green-600">
-                La descarga comenzará automáticamente
+                Download will start automatically
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                Este diálogo se cerrará en 2 segundos
+                This dialog will close in 2 seconds
               </p>
             </motion.div>
           )}
 
-          {/* Indicadores de pasos */}
+          {/* Step indicators */}
           <div className="flex items-center justify-center space-x-4 w-full">
             <div
               className={`flex flex-col items-center space-y-1 ${
@@ -180,7 +180,7 @@ export function ExportProgressDialog({
                     : 'bg-gray-300'
                 }`}
               />
-              <span className="text-xs">Preparando</span>
+              <span className="text-xs">Preparing</span>
             </div>
 
             <div
@@ -205,7 +205,7 @@ export function ExportProgressDialog({
                     : 'bg-gray-300'
                 }`}
               />
-              <span className="text-xs">Generando</span>
+              <span className="text-xs">Generating</span>
             </div>
 
             <div
@@ -224,7 +224,7 @@ export function ExportProgressDialog({
                   status === 'completed' ? 'bg-green-600' : 'bg-gray-300'
                 }`}
               />
-              <span className="text-xs">Completado</span>
+              <span className="text-xs">Completed</span>
             </div>
           </div>
         </div>
