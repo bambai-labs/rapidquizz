@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { motion } from 'framer-motion'
@@ -146,6 +147,7 @@ export default function QuizByIdPage() {
   if (isQuizActive && currentQuiz) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <NavBar />
         <div className="container mx-auto px-4 py-8">
           <QuizInterface />
         </div>

@@ -20,7 +20,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { NavBar } from '@/modules/shared/components/NavBar'
 import { useAuthStore } from '@/stores/auth-store'
 import { useQuizStore } from '@/stores/quiz-store'
 import { QuizAnswer } from '@/types/quiz'
@@ -203,7 +202,6 @@ export function QuizInterface() {
 
   return (
     <div className="w-full">
-      <NavBar />
       <div className="w-full max-w-4xl mx-auto mt-6">
         {/* Header */}
         <motion.div
