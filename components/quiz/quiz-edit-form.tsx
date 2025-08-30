@@ -28,7 +28,7 @@ interface QuizEditFormProps {
   onCancel: () => void
 }
 
-// Definimos el tipo FormData para que coincida exactamente con el esquema omitido
+// Define FormData type to exactly match the omitted schema
 type FormData = {
   title: string
   subject: string
@@ -83,7 +83,7 @@ export const QuizEditForm = ({
     name: 'questions',
   })
 
-  // Simplificamos el manejo de temas
+  // Simplify topic handling
   const addTopic = () => {
     if (newTopic.trim() && !topics.includes(newTopic.trim())) {
       const updatedTopics = [...topics, newTopic.trim()]
@@ -127,7 +127,7 @@ export const QuizEditForm = ({
       )
       setValue(`questions.${questionIndex}.options`, newOptions)
 
-      // Ajustar la respuesta correcta si es necesario
+      // Adjust correct answer if necessary
       const currentCorrect = currentQuestions[questionIndex]?.correctAnswer || 0
       if (currentCorrect >= optionIndex && currentCorrect > 0) {
         setValue(
@@ -153,29 +153,29 @@ export const QuizEditForm = ({
         createdAt: quiz.createdAt,
         createdBy: quiz.createdBy,
         topics,
-        isPublic: data.isPublic ?? false, // Aseguramos que isPublic sea boolean
+        isPublic: data.isPublic ?? false, // Ensure isPublic is boolean
       }
 
       const result = await updateQuiz(updatedQuiz, user.id)
 
       if (result.success) {
         toast({
-          title: 'Quiz actualizado',
-          description: 'Los cambios se han guardado correctamente.',
+          title: 'Quiz updated',
+          description: 'Changes have been saved successfully.',
         })
         onQuizUpdated()
       } else {
         toast({
-          title: 'Error al actualizar',
-          description: result.errorMessage || 'No se pudo actualizar el quiz.',
+          title: 'Update error',
+          description: result.errorMessage || 'Could not update the quiz.',
           variant: 'destructive',
         })
       }
     } catch (error) {
       console.error('Error:', error)
       toast({
-        title: 'Error inesperado',
-        description: 'Ocurrió un error al actualizar el quiz.',
+        title: 'Unexpected error',
+        description: 'An error occurred while updating the quiz.',
         variant: 'destructive',
       })
     } finally {
@@ -187,33 +187,33 @@ export const QuizEditForm = ({
     setValue('difficulty', value)
   }
 
-  // Eliminamos la virtualización compleja y usamos una solución más simple
+  // Remove complex virtualization and use a simpler solution
   const [visibleQuestions, setVisibleQuestions] = useState<number[]>([])
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Inicialmente hacer todas las preguntas visibles
+    // Initially make all questions visible
     setVisibleQuestions(fields.map((_, index) => index))
 
-    // Para quizzes muy largos, podríamos implementar una virtualización simple
-    // pero por ahora mostramos todas las preguntas para evitar problemas
+    // For very long quizzes, we could implement simple virtualization
+    // but for now we show all questions to avoid problems
   }, [fields])
 
   return (
     <div className="max-w-4xl mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Información básica del quiz */}
+        {/* Basic quiz information */}
         <Card>
           <CardHeader>
-            <CardTitle>Información del Quiz</CardTitle>
+            <CardTitle>Quiz Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="title">Título del Quiz</Label>
+              <Label htmlFor="title">Quiz Title</Label>
               <Input
                 id="title"
                 {...register('title')}
-                placeholder="Introduce el título del quiz"
+                placeholder="Enter quiz title"
               />
               {errors.title && (
                 <p className="text-red-500 text-sm mt-1">
@@ -223,11 +223,11 @@ export const QuizEditForm = ({
             </div>
 
             <div>
-              <Label htmlFor="subject">Materia</Label>
+              <Label htmlFor="subject">Subject</Label>
               <Input
                 id="subject"
                 {...register('subject')}
-                placeholder="Introduce la materia"
+                placeholder="Enter subject"
               />
               {errors.subject && (
                 <p className="text-red-500 text-sm mt-1">
@@ -237,12 +237,12 @@ export const QuizEditForm = ({
             </div>
 
             <div>
-              <Label>Temas</Label>
+              <Label>Topics</Label>
               <div className="flex gap-2 mb-2">
                 <Input
                   value={newTopic}
                   onChange={(e) => setNewTopic(e.target.value)}
-                  placeholder="Añadir tema"
+                  placeholder="Add topic"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault()
@@ -281,18 +281,18 @@ export const QuizEditForm = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="difficulty">Dificultad</Label>
+                <Label htmlFor="difficulty">Difficulty</Label>
                 <Select
                   value={watch('difficulty')}
                   onValueChange={handleDifficultyChange}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecciona la dificultad" />
+                    <SelectValue placeholder="Select difficulty" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="easy">Fácil</SelectItem>
-                    <SelectItem value="medium">Medio</SelectItem>
-                    <SelectItem value="hard">Difícil</SelectItem>
+                    <SelectItem value="easy">Easy</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="hard">Hard</SelectItem>
                   </SelectContent>
                 </Select>
                 {errors.difficulty && (
@@ -303,12 +303,12 @@ export const QuizEditForm = ({
               </div>
 
               <div>
-                <Label htmlFor="timeLimit">Límite de tiempo (minutos)</Label>
+                <Label htmlFor="timeLimit">Time limit (minutes)</Label>
                 <Input
                   id="timeLimit"
                   type="number"
                   {...register('timeLimit', { valueAsNumber: true })}
-                  placeholder="Opcional"
+                  placeholder="Optional"
                 />
                 {errors.timeLimit && (
                   <p className="text-red-500 text-sm mt-1">
@@ -320,13 +320,13 @@ export const QuizEditForm = ({
           </CardContent>
         </Card>
 
-        {/* Preguntas */}
+        {/* Questions */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Preguntas</CardTitle>
+            <CardTitle>Questions</CardTitle>
             <Button type="button" onClick={addQuestion} size="sm">
               <Plus className="w-4 h-4 mr-2" />
-              Añadir Pregunta
+              Add Question
             </Button>
           </CardHeader>
           <CardContent>
@@ -337,7 +337,7 @@ export const QuizEditForm = ({
               {fields.map((field, index) => (
                 <div key={field.id} className="border rounded-lg p-4 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold">Pregunta {index + 1}</h4>
+                    <h4 className="font-semibold">Question {index + 1}</h4>
                     <Button
                       type="button"
                       variant="destructive"
@@ -349,10 +349,10 @@ export const QuizEditForm = ({
                   </div>
 
                   <div>
-                    <Label>Texto de la pregunta</Label>
+                    <Label>Question text</Label>
                     <Textarea
                       {...register(`questions.${index}.question`)}
-                      placeholder="Introduce la pregunta"
+                      placeholder="Enter the question"
                       rows={2}
                     />
                     {errors.questions?.[index]?.question && (
@@ -364,7 +364,7 @@ export const QuizEditForm = ({
 
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <Label>Opciones de respuesta</Label>
+                      <Label>Answer options</Label>
                       <Button
                         type="button"
                         onClick={() => addOption(index)}
@@ -404,7 +404,7 @@ export const QuizEditForm = ({
                               {...register(
                                 `questions.${index}.options.${optionIndex}`,
                               )}
-                              placeholder={`Opción ${optionIndex + 1}`}
+                              placeholder={`Option ${optionIndex + 1}`}
                               className="flex-1"
                             />
                             {watch(`questions.${index}.options`).length > 2 && (
@@ -429,10 +429,10 @@ export const QuizEditForm = ({
                   </div>
 
                   <div>
-                    <Label>Explicación (opcional)</Label>
+                    <Label>Explanation (optional)</Label>
                     <Textarea
                       {...register(`questions.${index}.explanation`)}
-                      placeholder="Explica por qué esta es la respuesta correcta"
+                      placeholder="Explain why this is the correct answer"
                       rows={2}
                     />
                   </div>
@@ -445,13 +445,13 @@ export const QuizEditForm = ({
             {fields.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
                 <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-                <p>No hay preguntas aún. Añade al menos una pregunta.</p>
+                <p>No questions yet. Add at least one question.</p>
               </div>
             )}
           </CardContent>
         </Card>
 
-        {/* Botones de acción */}
+        {/* Action buttons */}
         <div className="flex gap-4 justify-end">
           <Button
             type="button"
@@ -460,18 +460,18 @@ export const QuizEditForm = ({
             disabled={isSubmitting}
           >
             <X className="w-4 h-4 mr-2" />
-            Cancelar
+            Cancel
           </Button>
           <Button type="submit" disabled={isSubmitting || fields.length === 0}>
             {isSubmitting ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Guardando...
+                Saving...
               </>
             ) : (
               <>
                 <Save className="w-4 h-4 mr-2" />
-                Guardar Cambios
+                Save Changes
               </>
             )}
           </Button>
