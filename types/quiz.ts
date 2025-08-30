@@ -15,9 +15,7 @@ export const QuizSchema = z.object({
   id: z.string(),
   title: z.string().min(1, 'Title is required'),
   subject: z.string().min(1, 'Subject is required'),
-  topics: z
-    .array(z.string().min(1, 'Topic cannot be empty'))
-    .min(1, 'At least one topic required'),
+  topics: z.array(z.string()),
   questions: z
     .array(QuizQuestionSchema)
     .min(1, 'At least one question required'),

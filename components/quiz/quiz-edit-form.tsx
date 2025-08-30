@@ -143,7 +143,14 @@ export const QuizEditForm = ({
   }
 
   const onSubmit = async (data: FormData) => {
-    if (!user) return
+    if (!user) {
+      toast({
+        title: 'Authentication required',
+        description: 'Please log in to save changes.',
+        variant: 'destructive',
+      })
+      return
+    }
 
     setIsSubmitting(true)
     try {
@@ -152,8 +159,8 @@ export const QuizEditForm = ({
         id: quiz.id,
         createdAt: quiz.createdAt,
         createdBy: quiz.createdBy,
-        topics,
-        isPublic: data.isPublic ?? false, // Ensure isPublic is boolean
+        topics: data.topics,
+        isPublic: data.isPublic ?? false,
       }
 
       const result = await updateQuiz(updatedQuiz, user.id)
@@ -451,6 +458,23 @@ export const QuizEditForm = ({
           </CardContent>
         </Card>
 
+        {Object.keys(errors).length > 0 && (
+          <Card className="border-destructive">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 text-destructive">
+                <AlertCircle className="w-5 h-5" />
+                <h3 className="font-semibold">Form Errors</h3>
+              </div>
+              <ul className="mt-2 list-disc list-inside">
+                {Object.entries(errors).map(([field, error]) => (
+                  <li key={field}>
+                    {field}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
         {/* Action buttons */}
         <div className="flex gap-4 justify-end">
           <Button
