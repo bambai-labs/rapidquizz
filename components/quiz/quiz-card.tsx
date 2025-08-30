@@ -96,7 +96,7 @@ export function QuizCard({
   }
 
   const handleExport = async (format: ExportFormat, type: ExportType) => {
-    // Configurar estado inicial
+    // Set initial state
     setExportFormat(format)
     setExportType(type)
     setExportProgress(0)
@@ -105,11 +105,11 @@ export function QuizCard({
     setIsExportDialogOpen(true)
 
     try {
-      // Simulación de progreso para preparación
+      // Simulate preparation progress
       setExportProgress(20)
       await new Promise((resolve) => setTimeout(resolve, 500))
 
-      // Cambiar a estado de exportación
+      // Change to exporting state
       setExportStatus('exporting')
       setExportProgress(50)
 
@@ -117,12 +117,12 @@ export function QuizCard({
         await onExportQuiz(quiz, format, type)
       }
 
-      // Completar
+      // Complete
       setExportProgress(100)
       setExportStatus('completed')
     } catch (error: any) {
       setExportStatus('error')
-      setExportError(error.message || 'Error al exportar el quiz')
+      setExportError(error.message || 'Error exporting quiz')
     }
   }
 
@@ -133,7 +133,7 @@ export function QuizCard({
         await onDeleteQuiz(quiz)
         setIsDeleteDialogOpen(false)
       } catch (error) {
-        console.error('Error al eliminar quiz:', error)
+        console.error('Error deleting quiz:', error)
       } finally {
         setIsDeleting(false)
       }
@@ -191,7 +191,7 @@ export function QuizCard({
             className="w-full"
             size="sm"
           >
-            Comenzar Quiz
+            Start Quiz
           </Button>
           <div className="flex gap-2 w-full">
             <Button
@@ -201,33 +201,33 @@ export function QuizCard({
               size="sm"
             >
               <Edit className="w-4 h-4 mr-2" />
-              Editar
+              Edit
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="flex-1" size="sm">
                   <MoreVertical className="w-4 h-4 mr-2" />
-                  Más opciones
+                  More options
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={handleShare}>
                   <Share className="w-4 h-4 mr-2" />
-                  Compartir
+                  Share
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleViewResponses}>
                   <FileText className="w-4 h-4 mr-2" />
-                  Ver respuestas
+                  View responses
                 </DropdownMenuItem>
 
-                {/* Submenu de Exportación */}
+                {/* Export Submenu */}
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>
                     <Download className="w-4 h-4 mr-2" />
-                    Exportar como
+                    Export as
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent className="w-56">
-                    {/* Opciones PDF */}
+                    {/* PDF Options */}
                     <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">
                       PDF
                     </div>
@@ -235,24 +235,24 @@ export function QuizCard({
                       onClick={() => handleExport('pdf', 'questions')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Solo preguntas
+                      Questions only
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleExport('pdf', 'answers')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Solo respuestas
+                      Answers only
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleExport('pdf', 'both')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Preguntas y respuestas
+                      Questions and answers
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />
 
-                    {/* Opciones DOCX */}
+                    {/* DOCX Options */}
                     <div className="px-2 py-1.5 text-sm font-semibold text-gray-900">
                       DOCX
                     </div>
@@ -260,19 +260,19 @@ export function QuizCard({
                       onClick={() => handleExport('docx', 'questions')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Solo preguntas
+                      Questions only
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleExport('docx', 'answers')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Solo respuestas
+                      Answers only
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => handleExport('docx', 'both')}
                     >
                       <FileText className="w-4 h-4 mr-2" />
-                      Preguntas y respuestas
+                      Questions and answers
                     </DropdownMenuItem>
                   </DropdownMenuSubContent>
                 </DropdownMenuSub>
@@ -283,7 +283,7 @@ export function QuizCard({
                   className="text-red-600 focus:text-red-600"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
-                  Eliminar
+                  Delete
                 </DropdownMenuItem>  */}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -320,5 +320,5 @@ export function QuizCard({
   )
 }
 
-// Exportar tipos para uso en otros componentes
+// Export types for use in other components
 export type { ExportFormat, ExportType }
