@@ -44,7 +44,8 @@ interface AttemptDetails {
   result: {
     id: string
     quiz_id: string
-    user_id: string
+    user_id: string | null
+    participant_name: string | null
     score: number
     total_questions: number
     time_spent: number
@@ -112,12 +113,24 @@ export default function QuizAttemptDetailPage({
   }
 
   const getUserDisplayName = (result: AttemptDetails['result']): string => {
+    // Debug logging to help identify the issue
+    console.log('getUserDisplayName called with:', {
+      user_id: result.user_id,
+      participant_name: result.participant_name,
+      user_profile: result.user_profile,
+    })
+
+    // For anonymous users with participant name
+    if (!result.user_id && result.participant_name) {
+      return result.participant_name
+    }
+
     // If it's the current user, show their information
     if (user && result.user_id === user.id) {
       return user.name || user.username || user.email?.split('@')[0] || 'You'
     }
 
-    // For other users, show limited information for privacy
+    // For other authenticated users, show limited information for privacy
     const metadata = result.user_profile?.raw_user_meta_data
     return (
       metadata?.name ||

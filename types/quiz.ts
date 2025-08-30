@@ -93,7 +93,8 @@ export interface DatabaseQuizQuestion {
 export interface DatabaseQuizResult {
   id: string
   quiz_id: string
-  user_id: string
+  user_id: string | null
+  participant_name: string | null
   score: number
   total_questions: number
   time_spent: number

@@ -5,7 +5,8 @@ import { Result } from '@/types/result.type'
 // Tipo específico para las respuestas de la base de datos
 interface DatabaseQuizResult {
   id: string
-  user_id: string
+  user_id: string | null
+  participant_name: string | null
   score: number
   total_questions: number
   time_spent: number
@@ -718,6 +719,7 @@ export async function getQuizResponses(
         `
         id,
         user_id,
+        participant_name,
         score,
         total_questions,
         time_spent,
@@ -784,6 +786,7 @@ export async function getQuizAttemptDetails(
         id,
         quiz_id,
         user_id,
+        participant_name,
         score,
         total_questions,
         time_spent,
