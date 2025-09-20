@@ -25,8 +25,9 @@ export default function PrivacyPolicyPage() {
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            In our AI-powered quiz generation application, we only collect
-            essential information to provide you with our services:
+            En RapidQuizz, nuestra aplicación de generación de cuestionarios con
+            IA, solo recopilamos información esencial para proporcionarte
+            nuestros servicios:
           </p>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start gap-2">
@@ -53,8 +54,9 @@ export default function PrivacyPolicyPage() {
           </ul>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
             <p className="text-sm text-blue-800">
-              <strong>Privacy commitment:</strong> We do not collect unnecessary
-              additional information. Your privacy is our priority.
+              <strong>Compromiso de privacidad de RapidQuizz:</strong> No
+              recopilamos información adicional innecesaria. Tu privacidad es
+              nuestra prioridad.
             </p>
           </div>
         </div>
@@ -123,10 +125,10 @@ export default function PrivacyPolicyPage() {
             </h4>
             <p className="text-sm text-green-700 leading-relaxed">
               <strong>
-                We do not sell, rent, or share your personal information with
-                third parties
+                RapidQuizz no vende, alquila ni comparte tu información personal
+                con terceros
               </strong>{' '}
-              for commercial or marketing purposes.
+              con fines comerciales o de marketing.
             </p>
           </div>
 
@@ -318,8 +320,9 @@ export default function PrivacyPolicyPage() {
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <h4 className="font-semibold text-red-800 mb-2">Age restriction</h4>
             <p className="text-sm text-red-700 leading-relaxed">
-              Our service is intended for users over 13 years old. We do not
-              knowingly collect personal information from children under 13.
+              RapidQuizz está destinado para usuarios mayores de 13 años. No
+              recopilamos conscientemente información personal de niños menores
+              de 13 años.
             </p>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -391,10 +394,10 @@ export default function PrivacyPolicyPage() {
                   <span>
                     Email:{' '}
                     <a
-                      href="mailto:privacy@quizapp.com"
+                      href="mailto:privacy@rapidquizz.com"
                       className="text-primary hover:underline"
                     >
-                      privacy@quizapp.com
+                      privacy@rapidquizz.com
                     </a>
                   </span>
                 </div>
@@ -415,6 +418,56 @@ export default function PrivacyPolicyPage() {
         </div>
       ),
     },
+    {
+      id: 'terms-conditions',
+      title: 'Términos y Condiciones',
+      icon: <FileText className="w-5 h-5" />,
+      content: (
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Esta Política de Privacidad debe leerse junto con nuestros Términos
+            y Condiciones, que establecen las reglas y regulaciones para el uso
+            de RapidQuizz.
+          </p>
+          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border rounded-lg p-6">
+            <div className="space-y-4">
+              <h4 className="font-semibold text-sm flex items-center gap-2">
+                <FileText className="w-4 h-4 text-primary" />
+                Documentos relacionados:
+              </h4>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span>
+                    <a
+                      href="/terms"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      Términos y Condiciones de RapidQuizz
+                    </a>{' '}
+                    - Reglas de uso de nuestra plataforma
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Shield className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span>
+                    Política de Privacidad de RapidQuizz - Protección de tus
+                    datos personales
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-background rounded border">
+                <p className="text-xs text-muted-foreground">
+                  <strong>Importante:</strong> Al usar RapidQuizz, aceptas tanto
+                  nuestra Política de Privacidad como nuestros Términos y
+                  Condiciones.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
   ]
 
   return (
@@ -428,12 +481,14 @@ export default function PrivacyPolicyPage() {
         >
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="w-10 h-10 text-primary" />
-            <h1 className="text-4xl font-bold">Privacy Policy</h1>
+            <h1 className="text-4xl font-bold">
+              Política de Privacidad de RapidQuizz
+            </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            In our AI-powered quiz generation application, your privacy is
-            fundamental. This policy explains how we collect, use, and protect
-            your personal information.
+            En RapidQuizz, nuestra aplicación de generación de cuestionarios con
+            IA, tu privacidad es fundamental. Esta política explica cómo
+            recopilamos, usamos y protegemos tu información personal.
           </p>
           <div className="flex items-center justify-center gap-2 mt-6 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
@@ -524,7 +579,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
-                href="mailto:privacy@quizapp.com"
+                href="mailto:privacy@rapidquizz.com"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
                 <Mail className="w-4 h-4" />
