@@ -1,35 +1,46 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-// The client you created from the Server-Side Auth instructions
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // if "next" is in param, use it as the redirect URL
   let next = searchParams.get('next') ?? '/'
+
   if (!next.startsWith('/')) {
-    // if "next" is not a relative URL, use the default
     next = '/'
+  }
+
+  // 🔧 Función para obtener el baseUrl correcto
+  function getBaseUrl(request: Request): string {
+    const isLocalEnv = process.env.NODE_ENV === 'development'
+
+    if (isLocalEnv) {
+      return new URL(request.url).origin
+    }
+
+    // En producción, prioriza los headers de proxy
+    const forwardedHost = request.headers.get('x-forwarded-host')
+    const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
+
+    if (forwardedHost) {
+      return `${forwardedProto}://${forwardedHost}`
+    }
+
+    // Fallback a tu dominio
+    return 'https://rapidquizz.com'
   }
 
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+
     if (!error) {
-      const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        console.log('redirecting to', `https://${forwardedHost}${next}`)
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
+      const baseUrl = getBaseUrl(request)
+      console.log('🔍 Redirecting to:', `${baseUrl}${next}`)
+      return NextResponse.redirect(`${baseUrl}${next}`)
     }
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+  const baseUrl = getBaseUrl(request)
+  return NextResponse.redirect(`${baseUrl}/auth/auth-code-error`)
 }
