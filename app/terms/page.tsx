@@ -22,21 +22,21 @@ export default function TermsOfServicePage() {
   const sections = [
     {
       id: 'acceptance',
-      title: 'Aceptación de los Términos',
+      title: 'Acceptance of Terms',
       icon: <CheckCircle className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Al acceder y utilizar RapidQuizz, nuestra plataforma de generación
-            de cuestionarios con IA, aceptas estar sujeto a estos Términos y
-            Condiciones. Si no estás de acuerdo con alguno de estos términos, no
-            debes usar nuestro servicio.
+            By accessing and using RapidQuizz, our AI-powered quiz generation
+            platform, you agree to be bound by these Terms and Conditions. If
+            you do not agree with any of these terms, you should not use our
+            service.
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
-              <strong>Importante:</strong> Estos términos constituyen un acuerdo
-              legal vinculante entre tú y RapidQuizz. Te recomendamos leerlos
-              cuidadosamente.
+              <strong>Important:</strong> These terms constitute a legally
+              binding agreement between you and RapidQuizz. We recommend reading
+              them carefully.
             </p>
           </div>
         </div>
@@ -44,41 +44,39 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'service-description',
-      title: 'Descripción del Servicio',
+      title: 'Service Description',
       icon: <FileText className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            RapidQuizz es una aplicación web que utiliza inteligencia artificial
-            para generar cuestionarios personalizados. Nuestro servicio incluye:
+            RapidQuizz is a web application that uses artificial intelligence to
+            generate personalized quizzes. Our service includes:
           </p>
           <ul className="space-y-3 text-sm">
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Generación automática de cuestionarios</strong>{' '}
-                utilizando IA avanzada
+                <strong>Automatic quiz generation</strong> using advanced AI
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Personalización de contenido</strong> según tus
-                necesidades específicas
+                <strong>Content personalization</strong> according to your
+                specific needs
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Almacenamiento seguro</strong> de tus cuestionarios y
-                datos
+                <strong>Secure storage</strong> of your quizzes and data
               </span>
             </li>
             <li className="flex items-start gap-3">
               <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
               <span>
-                <strong>Gestión de cuenta</strong> y historial de cuestionarios
-                generados
+                <strong>Account management</strong> and history of generated
+                quizzes
               </span>
             </li>
           </ul>
@@ -87,40 +85,36 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'user-accounts',
-      title: 'Cuentas de Usuario',
+      title: 'User Accounts',
       icon: <User className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Para utilizar RapidQuizz, debes crear una cuenta y proporcionarnos
-            información precisa y completa.
+            To use RapidQuizz, you must create an account and provide us with
+            accurate and complete information.
           </p>
           <div className="space-y-4">
             <div className="border border-border rounded-lg p-4">
               <h4 className="font-semibold text-sm mb-2">
-                Responsabilidades del Usuario
+                User Responsibilities
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Mantener la confidencialidad de tu contraseña</li>
-                <li>• Proporcionar información veraz y actualizada</li>
+                <li>• Maintain the confidentiality of your password</li>
+                <li>• Provide truthful and up-to-date information</li>
                 <li>
-                  • Notificar inmediatamente cualquier uso no autorizado de tu
-                  cuenta
+                  • Immediately notify any unauthorized use of your account
                 </li>
                 <li>
-                  • Ser responsable de todas las actividades realizadas bajo tu
-                  cuenta
+                  • Be responsible for all activities performed under your
+                  account
                 </li>
               </ul>
             </div>
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">
-                Restricciones de Edad
-              </h4>
+              <h4 className="font-semibold text-sm mb-2">Age Restrictions</h4>
               <p className="text-sm text-muted-foreground">
-                Debes tener al menos 13 años para usar RapidQuizz. Si eres menor
-                de 18 años, necesitas el consentimiento de tus padres o tutores
-                legales.
+                You must be at least 13 years old to use RapidQuizz. If you are
+                under 18, you need consent from your parents or legal guardians.
               </p>
             </div>
           </div>
@@ -129,43 +123,42 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'acceptable-use',
-      title: 'Uso Aceptable',
+      title: 'Acceptable Use',
       icon: <Shield className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Al usar RapidQuizz, te comprometes a utilizar el servicio de manera
-            responsable y legal.
+            By using RapidQuizz, you agree to use the service responsibly and
+            legally.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-3">
               <h4 className="font-semibold text-sm text-green-700">
-                ✅ Usos Permitidos
+                ✅ Permitted Uses
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Crear cuestionarios para uso educativo</li>
-                <li>• Generar contenido para entrenamientos corporativos</li>
-                <li>• Desarrollar evaluaciones profesionales</li>
-                <li>• Uso personal y académico</li>
+                <li>• Create quizzes for educational use</li>
+                <li>• Generate content for corporate training</li>
+                <li>• Develop professional assessments</li>
+                <li>• Personal and academic use</li>
               </ul>
             </div>
             <div className="space-y-3">
               <h4 className="font-semibold text-sm text-red-700">
-                ❌ Usos Prohibidos
+                ❌ Prohibited Uses
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Generar contenido ilegal o dañino</li>
-                <li>• Crear cuestionarios con contenido ofensivo</li>
-                <li>• Intentar hackear o comprometer el sistema</li>
-                <li>• Revender o redistribuir el servicio</li>
+                <li>• Generate illegal or harmful content</li>
+                <li>• Create quizzes with offensive content</li>
+                <li>• Attempt to hack or compromise the system</li>
+                <li>• Resell or redistribute the service</li>
               </ul>
             </div>
           </div>
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
-              <strong>Advertencia:</strong> El incumplimiento de estas reglas
-              puede resultar en la suspensión o terminación de tu cuenta sin
-              previo aviso.
+              <strong>Warning:</strong> Violation of these rules may result in
+              suspension or termination of your account without prior notice.
             </p>
           </div>
         </div>
@@ -173,50 +166,40 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'subscription-payment',
-      title: 'Suscripciones y Pagos',
+      title: 'Subscriptions and Payments',
       icon: <CreditCard className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            RapidQuizz ofrece diferentes planes de suscripción para acceder a
-            nuestras funcionalidades premium.
+            RapidQuizz offers different subscription plans to access our premium
+            features.
           </p>
           <div className="space-y-4">
             <div className="border border-border rounded-lg p-4">
               <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-primary" />
-                Procesamiento de Pagos
+                Payment Processing
               </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  • Los pagos se procesan de forma segura a través de Paddle
-                </li>
-                <li>
-                  • Aceptamos las principales tarjetas de crédito y débito
-                </li>
-                <li>
-                  • Los precios se muestran en la moneda local cuando sea
-                  posible
-                </li>
-                <li>• Las suscripciones se renuevan automáticamente</li>
+                <li>• Payments are processed securely through Paddle</li>
+                <li>• We accept major credit and debit cards</li>
+                <li>• Prices are displayed in local currency when possible</li>
+                <li>• Subscriptions renew automatically</li>
               </ul>
             </div>
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">
-                Política de Reembolsos
-              </h4>
+              <h4 className="font-semibold text-sm mb-2">Refund Policy</h4>
               <p className="text-sm text-muted-foreground">
-                Ofrecemos reembolsos completos dentro de los primeros 14 días
-                después de la compra. Para solicitar un reembolso, contacta
-                nuestro soporte.
+                We offer full refunds within the first 14 days after purchase.
+                To request a refund, contact our support.
               </p>
             </div>
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">Cancelación</h4>
+              <h4 className="font-semibold text-sm mb-2">Cancellation</h4>
               <p className="text-sm text-muted-foreground">
-                Puedes cancelar tu suscripción en cualquier momento desde tu
-                panel de cuenta. La cancelación será efectiva al final del
-                período de facturación actual.
+                You can cancel your subscription at any time from your account
+                dashboard. Cancellation will be effective at the end of the
+                current billing period.
               </p>
             </div>
           </div>
@@ -225,36 +208,36 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'intellectual-property',
-      title: 'Propiedad Intelectual',
+      title: 'Intellectual Property',
       icon: <Lock className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">Propiedad de RapidQuizz</h4>
+              <h4 className="font-semibold text-sm">RapidQuizz Property</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• La plataforma y su tecnología</li>
-                <li>• Algoritmos de inteligencia artificial</li>
-                <li>• Diseño e interfaz de usuario</li>
-                <li>• Marca y logotipos</li>
+                <li>• The platform and its technology</li>
+                <li>• Artificial intelligence algorithms</li>
+                <li>• Design and user interface</li>
+                <li>• Brand and logos</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">Tu Propiedad</h4>
+              <h4 className="font-semibold text-sm">Your Property</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Cuestionarios que generes</li>
-                <li>• Contenido original que proporciones</li>
-                <li>• Datos y respuestas de tus cuestionarios</li>
-                <li>• Configuraciones personalizadas</li>
+                <li>• Quizzes you generate</li>
+                <li>• Original content you provide</li>
+                <li>• Data and responses from your quizzes</li>
+                <li>• Personal settings</li>
               </ul>
             </div>
           </div>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-sm text-blue-800">
-              <strong>Licencia de Uso:</strong> Te otorgamos una licencia
-              limitada, no exclusiva y revocable para usar RapidQuizz según
-              estos términos. No puedes copiar, modificar o distribuir nuestra
-              tecnología.
+              <strong>Usage License:</strong> We grant you a limited,
+              non-exclusive, and revocable license to use RapidQuizz according
+              to these terms. You may not copy, modify, or distribute our
+              technology.
             </p>
           </div>
         </div>
@@ -262,20 +245,19 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'privacy-data',
-      title: 'Privacidad y Protección de Datos',
+      title: 'Privacy and Data Protection',
       icon: <Shield className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            La protección de tu privacidad es fundamental para RapidQuizz.
-            Nuestro manejo de datos personales se rige por nuestra Política de
-            Privacidad.
+            Protecting your privacy is fundamental to RapidQuizz. Our handling
+            of personal data is governed by our Privacy Policy.
           </p>
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border rounded-lg p-6">
             <div className="space-y-4">
               <h4 className="font-semibold text-sm flex items-center gap-2">
                 <Shield className="w-4 h-4 text-primary" />
-                Documentos relacionados:
+                Related documents:
               </h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
@@ -285,16 +267,16 @@ export default function TermsOfServicePage() {
                       href="/privacy"
                       className="text-primary hover:underline font-medium"
                     >
-                      Política de Privacidad de RapidQuizz
+                      RapidQuizz Privacy Policy
                     </a>{' '}
-                    - Detalles sobre protección de datos personales
+                    - Details about personal data protection
                   </span>
                 </div>
               </div>
               <div className="mt-4 p-3 bg-background rounded border">
                 <p className="text-xs text-muted-foreground">
-                  <strong>Compromiso:</strong> Cumplimos con GDPR, CCPA y otras
-                  regulaciones de protección de datos aplicables.
+                  <strong>Commitment:</strong> We comply with GDPR, CCPA, and
+                  other applicable data protection regulations.
                 </p>
               </div>
             </div>
@@ -304,34 +286,32 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'service-availability',
-      title: 'Disponibilidad del Servicio',
+      title: 'Service Availability',
       icon: <AlertTriangle className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Nos esforzamos por mantener RapidQuizz disponible 24/7, pero pueden
-            ocurrir interrupciones por mantenimiento, actualizaciones o
-            circunstancias imprevistas.
+            We strive to keep RapidQuizz available 24/7, but interruptions may
+            occur due to maintenance, updates, or unforeseen circumstances.
           </p>
           <div className="space-y-4">
             <div className="border border-border rounded-lg p-4">
               <h4 className="font-semibold text-sm mb-2">
-                Mantenimiento Programado
+                Scheduled Maintenance
               </h4>
               <p className="text-sm text-muted-foreground">
-                Te notificaremos con al menos 24 horas de anticipación sobre
-                cualquier mantenimiento programado que pueda afectar el
-                servicio.
+                We will notify you at least 24 hours in advance of any scheduled
+                maintenance that may affect the service.
               </p>
             </div>
             <div className="border border-border rounded-lg p-4">
               <h4 className="font-semibold text-sm mb-2">
-                Interrupciones No Programadas
+                Unscheduled Interruptions
               </h4>
               <p className="text-sm text-muted-foreground">
-                En caso de interrupciones imprevistas, trabajaremos para
-                restaurar el servicio lo más rápido posible y te mantendremos
-                informado del progreso.
+                In case of unexpected interruptions, we will work to restore the
+                service as quickly as possible and keep you informed of
+                progress.
               </p>
             </div>
           </div>
@@ -340,42 +320,38 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'limitation-liability',
-      title: 'Limitación de Responsabilidad',
+      title: 'Limitation of Liability',
       icon: <AlertTriangle className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <h4 className="font-semibold text-yellow-800 mb-2">
-              Limitaciones Importantes
+              Important Limitations
             </h4>
             <p className="text-sm text-yellow-700 leading-relaxed">
-              RapidQuizz se proporciona "tal como es" sin garantías de ningún
-              tipo. No seremos responsables por daños indirectos, incidentales o
-              consecuentes.
+              RapidQuizz is provided "as is" without warranties of any kind. We
+              will not be liable for indirect, incidental, or consequential
+              damages.
             </p>
           </div>
           <div className="space-y-3">
-            <h4 className="font-semibold text-sm">
-              Exclusiones de Responsabilidad:
-            </h4>
+            <h4 className="font-semibold text-sm">Liability Exclusions:</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Pérdida de datos debido a factores externos</span>
+                <span>Data loss due to external factors</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>
-                  Interrupciones del servicio por causas de fuerza mayor
-                </span>
+                <span>Service interruptions due to force majeure</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Uso inadecuado del contenido generado por IA</span>
+                <span>Improper use of AI-generated content</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Problemas derivados del uso de terceros</span>
+                <span>Issues arising from third-party use</span>
               </li>
             </ul>
           </div>
@@ -384,39 +360,35 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'termination',
-      title: 'Terminación del Servicio',
+      title: 'Service Termination',
       icon: <AlertTriangle className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">
-                Terminación por tu parte
-              </h4>
+              <h4 className="font-semibold text-sm">Termination by you</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Puedes cancelar tu cuenta en cualquier momento</li>
+                <li>• You can cancel your account at any time</li>
                 <li>
-                  • La cancelación es efectiva al final del período pagado
+                  • Cancellation is effective at the end of the paid period
                 </li>
-                <li>• Puedes exportar tus datos antes de cancelar</li>
+                <li>• You can export your data before canceling</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold text-sm">
-                Terminación por nuestra parte
-              </h4>
+              <h4 className="font-semibold text-sm">Termination by us</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Por violación de estos términos</li>
-                <li>• Por uso fraudulento o abusivo</li>
-                <li>• Por falta de pago (después de aviso)</li>
+                <li>• For violation of these terms</li>
+                <li>• For fraudulent or abusive use</li>
+                <li>• For non-payment (after notice)</li>
               </ul>
             </div>
           </div>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-sm text-red-700">
-              <strong>Importante:</strong> Tras la terminación, tendrás 30 días
-              para exportar tus datos antes de que sean eliminados
-              permanentemente de nuestros servidores.
+              <strong>Important:</strong> After termination, you will have 30
+              days to export your data before it is permanently deleted from our
+              servers.
             </p>
           </div>
         </div>
@@ -424,30 +396,28 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'legal-jurisdiction',
-      title: 'Ley Aplicable y Jurisdicción',
+      title: 'Applicable Law and Jurisdiction',
       icon: <Gavel className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Estos términos se rigen por las leyes de [PAÍS/ESTADO] sin
-            considerar conflictos de leyes.
+            These terms are governed by the laws of [COUNTRY/STATE] without
+            regard to conflict of laws principles.
           </p>
           <div className="space-y-4">
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">
-                Resolución de Disputas
-              </h4>
+              <h4 className="font-semibold text-sm mb-2">Dispute Resolution</h4>
               <p className="text-sm text-muted-foreground">
-                Cualquier disputa relacionada con estos términos será resuelta
-                mediante arbitraje vinculante o en los tribunales competentes de
-                [JURISDICCIÓN].
+                Any dispute related to these terms will be resolved through
+                binding arbitration or in the competent courts of
+                [JURISDICTION].
               </p>
             </div>
             <div className="border border-border rounded-lg p-4">
-              <h4 className="font-semibold text-sm mb-2">Separabilidad</h4>
+              <h4 className="font-semibold text-sm mb-2">Severability</h4>
               <p className="text-sm text-muted-foreground">
-                Si alguna disposición de estos términos se considera inválida,
-                las demás disposiciones permanecerán en pleno vigor y efecto.
+                If any provision of these terms is deemed invalid, the remaining
+                provisions will remain in full force and effect.
               </p>
             </div>
           </div>
@@ -456,37 +426,34 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'changes-terms',
-      title: 'Modificaciones a los Términos',
+      title: 'Changes to Terms',
       icon: <Calendar className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            RapidQuizz se reserva el derecho de modificar estos términos en
-            cualquier momento para reflejar cambios en nuestros servicios o la
-            legislación aplicable.
+            RapidQuizz reserves the right to modify these terms at any time to
+            reflect changes in our services or applicable legislation.
           </p>
           <div className="space-y-3">
-            <h4 className="font-semibold text-sm">Proceso de actualización:</h4>
+            <h4 className="font-semibold text-sm">Update process:</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Publicaremos los cambios en esta página</span>
+                <span>We will publish changes on this page</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>Actualizaremos la fecha de "última actualización"</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
-                <span>
-                  Para cambios significativos, te notificaremos por email
-                </span>
+                <span>We will update the "last updated" date</span>
               </li>
               <li className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
                 <span>
-                  El uso continuado implica aceptación de los nuevos términos
+                  For significant changes, we will notify you by email
                 </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <div className="w-1.5 h-1.5 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></div>
+                <span>Continued use implies acceptance of the new terms</span>
               </li>
             </ul>
           </div>
@@ -495,24 +462,22 @@ export default function TermsOfServicePage() {
     },
     {
       id: 'contact-support',
-      title: 'Contacto y Soporte',
+      title: 'Contact and Support',
       icon: <Mail className="w-5 h-5" />,
       content: (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Si tienes preguntas sobre estos términos o necesitas soporte
-            técnico, no dudes en contactarnos:
+            If you have questions about these terms or need technical support,
+            don't hesitate to contact us:
           </p>
           <div className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-border rounded-lg p-6">
             <div className="space-y-4">
-              <h4 className="font-semibold text-sm">
-                Información de contacto:
-              </h4>
+              <h4 className="font-semibold text-sm">Contact information:</h4>
               <div className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                   <span>
-                    Email general:{' '}
+                    General email:{' '}
                     <a
                       href="mailto:support@rapidquizz.com"
                       className="text-primary hover:underline"
@@ -524,7 +489,7 @@ export default function TermsOfServicePage() {
                 <div className="flex items-center gap-3">
                   <Gavel className="w-4 h-4 text-primary flex-shrink-0" />
                   <span>
-                    Temas legales:{' '}
+                    Legal matters:{' '}
                     <a
                       href="mailto:legal@rapidquizz.com"
                       className="text-primary hover:underline"
@@ -535,17 +500,13 @@ export default function TermsOfServicePage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <FileText className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span>
-                    Formulario de contacto disponible en la configuración de tu
-                    cuenta
-                  </span>
+                  <span>Contact form available in your account settings</span>
                 </div>
               </div>
               <div className="mt-4 p-3 bg-background rounded border">
                 <p className="text-xs text-muted-foreground">
-                  <strong>Tiempo de respuesta:</strong> Nos comprometemos a
-                  responder todas las consultas relacionadas con términos
-                  legales en un máximo de 48 horas.
+                  <strong>Response time:</strong> We commit to responding to all
+                  legal terms-related inquiries within a maximum of 48 hours.
                 </p>
               </div>
             </div>
@@ -567,17 +528,17 @@ export default function TermsOfServicePage() {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Gavel className="w-10 h-10 text-primary" />
             <h1 className="text-4xl font-bold">
-              Términos y Condiciones de RapidQuizz
+              RapidQuizz Terms and Conditions
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Estos términos establecen las reglas y regulaciones para el uso de
-            RapidQuizz, nuestra plataforma de generación de cuestionarios con
-            inteligencia artificial.
+            These terms establish the rules and regulations for the use of
+            RapidQuizz, our artificial intelligence-powered quiz generation
+            platform.
           </p>
           <div className="flex items-center justify-center gap-2 mt-6 text-sm text-muted-foreground">
             <Calendar className="w-4 h-4" />
-            <span>Última actualización: {lastUpdated}</span>
+            <span>Last updated: {lastUpdated}</span>
           </div>
         </motion.div>
 
@@ -592,30 +553,30 @@ export default function TermsOfServicePage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xl">
                 <CheckCircle className="w-6 h-6 text-primary" />
-                Resumen de Términos
+                Terms Summary
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
                 <div className="text-center space-y-2">
                   <User className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Uso Responsable</h3>
+                  <h3 className="font-semibold">Responsible Use</h3>
                   <p className="text-sm text-muted-foreground">
-                    Utiliza RapidQuizz de forma ética y legal
+                    Use RapidQuizz ethically and legally
                   </p>
                 </div>
                 <div className="text-center space-y-2">
                   <CreditCard className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Pagos Seguros</h3>
+                  <h3 className="font-semibold">Secure Payments</h3>
                   <p className="text-sm text-muted-foreground">
-                    Procesamiento seguro vía Paddle
+                    Secure processing via Paddle
                   </p>
                 </div>
                 <div className="text-center space-y-2">
                   <Shield className="w-8 h-8 text-primary mx-auto" />
-                  <h3 className="font-semibold">Tus Derechos</h3>
+                  <h3 className="font-semibold">Your Rights</h3>
                   <p className="text-sm text-muted-foreground">
-                    Proteges tu contenido y datos
+                    You protect your content and data
                   </p>
                 </div>
               </div>
@@ -657,11 +618,11 @@ export default function TermsOfServicePage() {
           <Separator className="mb-8" />
           <div className="bg-muted/30 rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-4">
-              ¿Tienes preguntas legales?
+              Do you have legal questions?
             </h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Estamos aquí para ayudarte. Si tienes alguna pregunta sobre estos
-              términos o el uso de RapidQuizz, no dudes en contactarnos.
+              We're here to help you. If you have any questions about these
+              terms or the use of RapidQuizz, don't hesitate to contact us.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
@@ -669,10 +630,10 @@ export default function TermsOfServicePage() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                Contactar por email
+                Contact by email
               </a>
               <span className="text-sm text-muted-foreground">
-                o usa el formulario en la configuración de tu cuenta
+                or use the form in your account settings
               </span>
             </div>
           </div>
