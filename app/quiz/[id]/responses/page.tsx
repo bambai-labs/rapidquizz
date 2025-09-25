@@ -293,16 +293,26 @@ export default function QuizResponsesPage({ params }: QuizResponsesPageProps) {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {responses.length > 0
-                    ? Math.round(
-                        (responses.reduce((sum, r) => sum + r.score, 0) /
-                          responses.reduce(
-                            (sum, r) => sum + r.total_questions,
-                            0,
-                          )) *
-                          100,
-                      )
-                    : 0}
+                  {(() => {
+                    if (responses.length === 0) return 0
+
+                    // Calcular el promedio de porcentajes individuales
+                    const validResponses = responses.filter(
+                      (r) => r.total_questions > 0,
+                    )
+                    if (validResponses.length === 0) return 0
+
+                    const averagePercentage =
+                      validResponses.reduce((sum, r) => {
+                        const percentage = (r.score / r.total_questions) * 100
+                        return sum + percentage
+                      }, 0) / validResponses.length
+
+                    // Asegurar que el resultado esté entre 0 y 100
+                    return Math.round(
+                      Math.min(100, Math.max(0, averagePercentage)),
+                    )
+                  })()}
                   %
                 </div>
                 <div className="text-sm text-muted-foreground">

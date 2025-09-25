@@ -175,7 +175,7 @@ export const useQuizStore = create<QuizState>((set, get) => ({
           state.currentQuiz.id,
           userId,
           state.answers,
-          score,
+          correctAnswers, // Pasar el número de respuestas correctas, no el porcentaje
           state.currentQuiz.questions.length,
           Math.round(timeSpent),
           finalParticipantName,
